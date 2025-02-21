@@ -1,0 +1,83 @@
+/* General*/
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", sans-serif;
+  background-color: lightgoldenrodyellow;
+}
+
+/* Navigation Bar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 100px;
+  background-color: lightskyblue;
+}
+
+.navbar .menu a {
+  position: relative;
+  margin: 0 15px;
+  text-decoration: none;
+  color: black;
+}
+
+.navbar .menu a:hover {
+  color: black;
+}
+
+/* Dropdown Menu */
+.navbar .menu a {
+  position: relative;
+}
+
+.navbar .menu .dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: gray;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.navbar .menu a:hover .dropdown {
+  display: none;
+}
+
+.navbar .menu a:nth-child(3):hover .dropdown {
+  display: block;
+}
+
+.navbar .menu .dropdown a {
+  display: block;
+  margin: 10px 0;
+}
+
+/* Basic Layout */
+.layout {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 20px auto;
+  gap: 10px;
+}
+
+/* Side Bar */
+.side {
+  width: 30%;
+  background: deepskyblue;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* Main */
+.main {
+  width: 60%;
+  background: deepskyblue;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+h2 {
+  text-align: center;
+}
