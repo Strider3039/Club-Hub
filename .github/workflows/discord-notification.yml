@@ -1,0 +1,35 @@
+name: Notify Discord on Push
+
+on:
+  push:
+    branches:
+      - main  # Change if needed
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Ensures we have the previous commit to compare changes
+
+      - name: Get Commit Details
+        id: commit_info
+        run: |
+          echo "MESSAGE=$(git log -1 --pretty=format:%s)" >> $GITHUB_ENV
+          echo "AUTHOR=$(git log -1 --pretty=format:%an)" >> $GITHUB_ENV
+          FILES=$(git diff --name-only HEAD^ HEAD | tr '\n' ', ')
+          echo "FILES=${FILES:-No files changed}" >> $GITHUB_ENV
+
+      - name: Send message to Discord
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            **New commit to the repository!** 🚀  
+            **Committer:** ${{ env.AUTHOR }}  
+            **Commit Message:** ${{ env.MESSAGE }}  
+            **Files Changed:** ${{ env.FILES }}  
+            **View Commit:** [Click Here](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
