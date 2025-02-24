@@ -56,9 +56,9 @@ body {
 /* Basic Layout */
 .layout {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Ensures all sections stay in one row */
   justify-content: space-between;
-  max-width: 100%;
+  max-width: 1200px;
   margin: 20px auto;
   gap: 10px;
   padding: 0 5%;
@@ -66,7 +66,8 @@ body {
 
 /* Side Bar */
 .side {
-  flex: 1 1 60%;
+  flex: 1;
+  max-width: 20%;
   background: deepskyblue;
   padding: 20px;
   border-radius: 10px;
@@ -75,18 +76,34 @@ body {
 
 /* Main */
 .main {
-  width: 60%;
+  flex: 2;
   background: deepskyblue;
   padding: 20px;
   border-radius: 10px;
+  box-sizing: border-box;
+}
+
+/* Right Side */
+.side.right {
+  flex: 1;
+  max-width: 20%;
+  background: deepskyblue;
+  padding: 20px;
+  border-radius: 10px;
+  box-sizing: border-box;
 }
 
 h2 {
   text-align: center;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .side, .main {
     flex: 1 1 100%;
+  }
+
+  .layout {
+    flex-wrap: wrap; /* Stacks elements in smaller screens */
   }
 }
