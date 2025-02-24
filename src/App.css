@@ -84,3 +84,9 @@ body {
 h2 {
   text-align: center;
 }
+
+@media (max-width: 768px) {
+  .side, .main {
+    flex: 1 1 100%;
+  }
+}
