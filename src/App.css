@@ -1,6 +1,5 @@
 /* General*/
 body {
-  display: flex;
   margin: 0;
   font-family: "Trebuchet MS", sans-serif;
   background-color: lightgoldenrodyellow;
@@ -11,13 +10,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 100px;
+  padding: 20px 5%;
   background-color: lightskyblue;
 }
 
 .navbar .menu a {
   position: relative;
-  margin: 0 15px;
+  margin: 0 1rem;
   text-decoration: none;
   color: black;
 }
@@ -57,18 +56,21 @@ body {
 /* Basic Layout */
 .layout {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 20px auto;
   gap: 10px;
+  padding: 0 5%;
 }
 
 /* Side Bar */
 .side {
-  width: 30%;
+  flex: 1 1 60%;
   background: deepskyblue;
   padding: 20px;
   border-radius: 10px;
+  box-sizing: border-box;
 }
 
 /* Main */
