@@ -6,7 +6,7 @@ function Home() {
         <div className="Home">
             {/* Navigation Menu */}
             <nav className="navbar">
-                <h1>TODO: Name</h1>
+                <h1>TODO: Ethan farts a lot</h1>
                 <div className="menu">
                     <a href="#">Home</a>
                     <a href="#">Clubs</a>

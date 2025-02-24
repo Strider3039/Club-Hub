@@ -1,5 +1,6 @@
 /* General*/
 body {
+  display: flex;
   margin: 0;
   font-family: "Trebuchet MS", sans-serif;
   background-color: lightgoldenrodyellow;
