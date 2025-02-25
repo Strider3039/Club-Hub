@@ -1,10 +1,16 @@
 import React from "react";
 import Home from "./Home";
+import Login from "./Login/Login";
 
 function App(){
     return (
 
-        <Home/>
+        // <Home/>
+        <body>
+        <Login/>
+
+        </body>
+
     )
 }
  

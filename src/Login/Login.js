@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./Login.css";
 
 function Login() {
     const [username, setUsername] = useState("");
@@ -23,10 +24,11 @@ function Login() {
     };
 
     return (
-        <div>
+        <div className={"Login"}>
             <h2>{isSignup ? "Sign Up" : "Login"}</h2>
             <form onSubmit={handleSubmit}>
                 <input
+                    className="inputUsername"
                     type="text"
                     placeholder="Username"
                     value={username}
@@ -34,17 +36,20 @@ function Login() {
                     required
                 />
                 <input
+                    className="inputPassword"
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit"> {isSignup ? "Sign Up" : "Login"} </button>
+                <button
+                    className={"submitButton"} type="submit"> {isSignup ? "Sign Up" : "Login"}
+                </button>
+                <button className={"signupButton"} onClick={() => setIsSignup(!isSignup)}>
+                    {isSignup ? "Already have an account? Login" : "Don't have an account? Sign Up"}
+                </button>
             </form>
-            <button onClick={() => setIsSignup(!isSignup)}>
-                {isSignup ? "Already have an account? Login" : "Don't have an account? Sign Up"}
-            </button>
         </div>
     );
 }

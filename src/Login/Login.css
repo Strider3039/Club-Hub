@@ -1,0 +1,48 @@
+.Login {
+    box-sizing: border-box;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background: darkgray;
+    border: 1px solid black;
+    width: 250px;
+    height: 325px;
+    margin: 150px auto;
+    padding-top: 20px; /* Add some space at the top */
+}
+
+.Login h2 {
+    padding-bottom: 20px;
+    margin-top: 10px;
+    align-self: center;
+}
+
+.inputUsername, .inputPassword {
+    display: flex;
+    margin: 10px auto;
+    padding: 2px;
+    width: 100%;
+    flex-direction: column;
+    align-self: center;
+    height: 30px;
+}
+
+.submitButton {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    margin: 40px auto 10px;
+    width: 100%;
+}
+
+.signupButton {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    margin: 10px auto;
+    width: 100%;
+}
