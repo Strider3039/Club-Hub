@@ -8,16 +8,26 @@ function Layout() {
         <div className={"Layout"}>
             <div className={"content-left"}>
                 <h2>Left side</h2>
+                    <p>
+                        user profile--the side that the outside world sees
+                    </p>
             </div>
             <div className={"content-middle"}>
-                <h2>Middle</h2>
+                <h2>Middle content</h2>
+                    <p>
+                        this area is for the user feed, like club announcements or events.
+                    </p>
             </div>
             <div className={"content-right"}>
                 <h2>Right side</h2>
+                <p>
+                    friends or calendar with event reminders. maybe active clubs could be here too
+                </p>
             </div>
         </div>
     )
 }
+
 
         // <div className="layout">
         //      <aside className="side left">
