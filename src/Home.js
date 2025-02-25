@@ -4,12 +4,10 @@ import Layout from "./Layout/Layout";
 
 function Home(){
     return (
-        <>
-            <body>
-                <NavBar/>
-                <Layout/>
-            </body>
-        </>
+        <body>
+            <NavBar/>
+            <Layout/>
+        </body>
     )
 }
 

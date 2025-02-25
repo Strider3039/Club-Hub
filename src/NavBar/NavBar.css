@@ -5,6 +5,7 @@
     align-items: center;
     padding: 20px 5%;
     background-color: lightskyblue;
+    flex-wrap: nowrap;
 }
 
 .navbar .menu a {

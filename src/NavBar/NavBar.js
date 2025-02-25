@@ -6,7 +6,7 @@ function NavBar() {
 
     return (
     <nav className="navbar">
-        <h1>TODO: Ethan farts a lot</h1>
+        <h1>TODO: Ethan [redacted] a lot</h1>
         <div className="menu">
             <a href="#">Home</a>  {/* '#' will be replaced with link to next page*/}
             {/*<Link to="/club">Clubs</Link>*/}
