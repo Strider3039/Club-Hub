@@ -2,10 +2,10 @@ import psycopg2
 
 # Database connection parameters
 db_params = {
-    "dbname": "mydatabase",
+    "dbname": "clubhubdb",
     "user": "myuser",
     "password": "mypassword",
-    "host": "localhost",
+    "host": "*",
     "port": 5432
 }
 
