@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
 
@@ -6,20 +7,24 @@ function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isSignup, setIsSignup] = useState(false);
+    const navigate = useNavigate(); // Hook for navigation
+
+    // Dummy account for testing
+    const dummyUser = {
+        username: "testuser",
+        password: "testpass"
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const endpoint = isSignup ? "/signup" : "/login";
-        try {
-            const response = await axios.post(`http://localhost:8000${endpoint}`, { username, password });
-            if (response.data.success) {
-                // Redirect to the main app page
-                window.location.href = "/";
-            } else {
-                alert(response.data.message);
-            }
-        } catch (error) {
-            console.error("There was an error!", error);
+
+        // Check if username and password match the dummy account
+        if (username === dummyUser.username && password === dummyUser.password) {
+            // Simulate successful login
+            alert("Login successful!");
+            navigate("/home"); // Redirect to Home page (adjust path if needed)
+        } else {
+            alert("Invalid username or password.");
         }
     };
 
