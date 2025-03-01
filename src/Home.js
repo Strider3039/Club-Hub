@@ -6,7 +6,16 @@ function Home(){
     return (
         <body>
             <NavBar/>
-            <Layout/>
+            <Layout
+                leftContentHeader={"Left Content"}
+                leftContentBody={<p>left test</p>}
+
+                middleContentHeader={"Middle Content"}
+                middleContentBody={<p>middle test</p>}
+
+                rightContentHeader={"Right Content"}
+                rightContentBody={<p>right test</p>}
+            />
         </body>
     )
 }
