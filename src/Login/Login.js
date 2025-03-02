@@ -11,8 +11,8 @@ function Login() {
 
     // Dummy account for testing
     const dummyUser = {
-        username: "testuser",
-        password: "testpass"
+        username: "admin",
+        password: "admin"
     };
 
     const handleSubmit = async (e) => {
