@@ -1,0 +1,34 @@
+.friend-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px;
+    margin: 10px 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-align: left;
+}
+
+.friend-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.friend-pfp {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+h2 {
+    font-size: 16px;
+    font-weight: normal;
+    color: #333;
+    margin: 0;
+}
