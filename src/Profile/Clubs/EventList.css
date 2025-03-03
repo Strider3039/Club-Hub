@@ -1,0 +1,8 @@
+.event-list {
+    max-height: 35vh;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    scrollbar-width: thin;
+}

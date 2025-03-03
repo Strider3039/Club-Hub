@@ -12,73 +12,28 @@
     justify-content: space-between;
     gap: 10px;
     padding: 10px;
+    /*background-color: ghostwhite;*/
 }
 
 .content-left, .content-right {
     text-align: center;
     flex: 1;
-    background: aquamarine;
-    height: 200px;
+    /*background: lightgray;*/
+    height: 90vh;
     border-radius: 10px;
+}
+
+.content-right {
+    margin-right: 50px;
+}
+.content-left {
+    margin-left: 50px;
 }
 
 .content-middle {
     text-align: center;
     flex: 3;
-    background: deepskyblue;
-    height: 200px;
+    /*background: lightgray;*/
+    height: 90vh;
     border-radius: 10px;
 }
-
-/*!* Basic Layout *!*/
-/*.layout {*/
-/*    display: flex;*/
-/*    !*flex-direction: row;*!*/
-/*    !*align-items: center;*!*/
-/*    flex-wrap: nowrap; !* Ensures all sections stay in one row *!*/
-/*    justify-content: space-between;*/
-/*    width: 90%;*/
-/*    !*max-width: 1200px;*!*/
-/*    margin: 20px auto;*/
-/*    gap: 10px;*/
-/*    padding: 0 5%;*/
-/*}*/
-
-/*!* Side Bar *!*/
-/*.side {*/
-/*    flex: 0 1 auto;*/
-/*    !*max-width: 20%;*!*/
-/*    !*width: 400px;*!*/
-/*    background: deepskyblue;*/
-/*    padding: 20px;*/
-/*    border-radius: 10px;*/
-/*    box-sizing: border-box;*/
-/*}*/
-
-/*!* Main *!*/
-/*.main {*/
-/*    flex: 2;*/
-/*    background: deepskyblue;*/
-/*    padding: 20px;*/
-/*    border-radius: 10px;*/
-/*    box-sizing: border-box;*/
-/*}*/
-
-/*!* Right Side *!*/
-/*.side.right {*/
-/*    flex: 1;*/
-/*    !*max-width: 20%;*!*/
-/*    !*width: 400px;*!*/
-/*    background: deepskyblue;*/
-/*    padding: 20px;*/
-/*    border-radius: 10px;*/
-/*    box-sizing: border-box;*/
-/*}*/
-
-/*.layout {*/
-/*    flex-wrap: wrap; !* Stacks elements in smaller screens *!*/
-/*}*/
-
-/*h2 {*/
-/*    text-align: center;*/
-/*}*/
