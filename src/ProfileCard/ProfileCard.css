@@ -1,16 +1,17 @@
 .card{
-    border: 1px solid hsl(0, 0%, 80%);
-    border-readius: 10px;
-    box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.1);
+    /*border: 1px solid hsl(0, 0%, 80%);*/
+    border-radius: 10px;
+    /*box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.1);*/
     padding: 20px;
     margin: 10px;
     text-align: center;
-    max-width: 250px;
+    /*max-width: %;*/
+    /*width: 80%;*/
     display: inline-block;
 }
 
 .card .card-image{
-    max-width: 60%;
+    max-width: 50%;
     height: auto;
     border-radius: 50%;
     margin-bottom: 10px;

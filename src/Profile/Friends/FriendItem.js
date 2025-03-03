@@ -1,5 +1,4 @@
 
-// import { useHistory } from 'react-router-dom'; // assuming you're using React Router
 import './FriendItem.css'
 
 function FriendItem(props) {
