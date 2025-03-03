@@ -12,7 +12,7 @@ function FriendsList(props) {
         <>
             <h1>Friends</h1>
             <hr style={{ border: '0', borderTop: '1px solid #ccc', margin: '20px 0' }}></hr>
-            <div className={"scrollable-list"}>
+            <div className={"friend-list"}>
                 <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                     {list}
                 </ul>
