@@ -1,25 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./Home";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
 
 const isAuthenticated = () => {
-  return localStorage.getItem("token") !== null;
+  const token = localStorage.getItem("token");
+  console.log("Token check:", token); // Log the token to debug
+  return token !== null;
 };
 
 function App() {
+  useEffect(() => {
+    // Clear token if it's there and we're on the login page
+    if (window.location.pathname === "/login" && isAuthenticated()) {
+      localStorage.removeItem("token");
+    }
+  }, []);
+
   return (
     <Router>
       <Routes>
-        {/* Public Routes - Allow login and register pages regardless of authentication */}
+        {/* Public Routes */}
         <Route path="/login" element={!isAuthenticated() ? <Login /> : <Navigate to="/home" />} />
         <Route path="/register" element={!isAuthenticated() ? <Register /> : <Navigate to="/home" />} />
 
-        {/* Protected Route - Redirect to login if not authenticated */}
+        {/* Protected Route */}
         <Route path="/home" element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
 
-        {/* Redirect to login if no matching route */}
+        {/* Default Route */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
@@ -27,7 +36,6 @@ function App() {
 }
 
 export default App;
-
 
 
 //TESTING CARD

@@ -4,21 +4,27 @@ import axios from "axios";
 import "./Login.css";
 
 function Login() {
-    const navigate = useNavigate();
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState(""); // For error message
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-        try {
-            const response = await axios.post("http://127.0.0.1:8000/login/", {
-                username,
-                password,
-            });
+    console.log("Login button clicked!"); // Check if button is clicked
 
-            console.log("Login successful:", response); // Log the full response
+    try {
+        const response = await axios.post("http://127.0.0.1:8000/login/", {
+            username,
+            password,
+        });
+
+        console.log("Login response:", response); // Log the response from the server
+
+        // Ensure that you have a valid token in response.data.access
+        if (response.data.access) {
+            console.log("Token received:", response.data.access);
 
             // Store the token correctly
             localStorage.setItem("token", response.data.access);
@@ -29,44 +35,42 @@ function Login() {
             // Redirect to the home page
             navigate("/home");
             console.log("Navigated to /home");
-
-        } catch (error) {
-            console.error("Error logging in", error);
-            setError("Login failed. Please check your credentials.");
+        } else {
+            setError("Invalid response from server.");
         }
-    };
+    } catch (error) {
+        console.error("Error logging in", error);
+        setError("Login failed. Please check your credentials.");
+    }
+};
 
-    return (
-        <div className="Login">
-            <h1>Login</h1>
-            <form onSubmit={handleLogin}>
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <button type="submit">Login</button>
-            </form>
+  return (
+    <div className="Login">
+      <h1>Login</h1>
+      <form onSubmit={handleLogin}>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit">Login</button>
+      </form>
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
-            {/* Link to Register page */}
-            <p>
-                Don't have an account? <a href="/register">Register here</a>
-            </p>
-        </div>
-    );
+      <p>Don't have an account? <a href="/register">Register here</a></p>
+    </div>
+  );
 }
 
 export default Login;
-
 
 
 // import React, { useState } from "react";
