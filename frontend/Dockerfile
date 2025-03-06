@@ -33,7 +33,11 @@ FROM node:18-slim as development
 
 WORKDIR /app
 
-# Copy source code and install dependencies for development
+# Copy package.json and install dependencies
+COPY package.json package-lock.json /app/
+RUN npm install
+
+# Copy source code for development
 COPY . /app/
 
 # Expose port 3000 for development
