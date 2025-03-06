@@ -3,8 +3,37 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
 
-function displaySignInFields() {
-
+function displaySignInFields(isSignup, setIsSignup, username, setUsername, password, setPassword, handleSubmit) {
+    return (
+        <div className={"Login"}>
+            <h2>{isSignup ? "Sign Up" : "Login"}</h2>
+            <form onSubmit={handleSubmit}>
+                <input
+                    className="inputUsername"
+                    type="text"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                />
+                <input
+                    className="inputPassword"
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                <button
+                    className={"submitButton"} type="submit"> {isSignup ? "Sign Up" : "Login"}
+                </button>
+                <button
+                    className={"signupButton"} onClick={() => setIsSignup(!isSignup)}>
+                    {isSignup ? "Already have an account? Login" : "Don't have an account? Sign Up"}
+                </button>
+            </form>
+        </div>
+    );
 }
 
 function Login() {
@@ -58,40 +87,7 @@ function Login() {
 
     };
 
-    return (
-        <div className={"Login"}>
-            <h2>{isSignup ? "Sign Up" : "Login"}</h2>
-            <form onSubmit={handleSubmit}>
-                <input
-                    className="inputUsername"
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-                <input
-                    className="inputPassword"
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <button
-                    // if isSignup == true, button displays "Sign Up". Displays "Login" otherwise
-                    className={"submitButton"} type="submit"> {isSignup ? "Sign Up" : "Login"}
-                </button>
-                <button
-                    // flip the state of isSignup
-                    className={"signupButton"} onClick={() => setIsSignup(!isSignup)}>
-
-                    {/*// "Already have an account? Login" if true. "Don't have an account? Sign Up" if false.*/}
-                    {isSignup ? "Already have an account? Login" : "Don't have an account? Sign Up"}
-                </button>
-            </form>
-        </div>
-    );
+    return displaySignInFields(isSignup, setIsSignup, username, setUsername, password, setPassword, handleSubmit);
 }
 
 export default Login;
