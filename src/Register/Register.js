@@ -1,32 +1,25 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Login.css";
+import "./Register.css";
 
-function Login() {
+function Register() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    // const [isSignup, setIsSignup] = useState(false);
-    const navigate = useNavigate(); // Hook for navigation
-
-    // Dummy account for testing
-    // const dummyUser = {
-    //     username: "testuser",
-    //     password: "testpass"
-    // };
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await axios.post("http://localhost:8000/login/", {
+            const response = await axios.post("http://localhost:8000/signup/", {
                 username,
                 password
             });
 
             if (response.data.success) {
                 alert(response.data.message);
-                navigate("/home"); // Redirect to Home page
+                navigate("/login"); // Redirect to Login page
             } else {
                 alert(response.data.detail);
             }
@@ -34,19 +27,10 @@ function Login() {
             alert(error.response.data.detail || "An error occurred");
         }
     };
-        // Check if username and password match the dummy account
-    //     if (username === dummyUser.username && password === dummyUser.password) {
-    //         // Simulate successful login
-    //         alert("Login successful!");
-    //         navigate("/home"); // Redirect to Home page (adjust path if needed)
-    //     } else {
-    //         alert("Invalid username or password.");
-    //     }
-    // };
 
     return (
-        <div className={"Login"}>
-            <h2>{isSignup ? "Sign Up" : "Login"}</h2>
+        <div className={"Register"}>
+            <h2>Sign Up</h2>
             <form onSubmit={handleSubmit}>
                 <input
                     className="inputUsername"
@@ -64,15 +48,10 @@ function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button
-                    className={"submitButton"} type="submit"> {isSignup ? "Sign Up" : "Login"}
-                </button>
-                <button className={"signupButton"} onClick={() => setIsSignup(!isSignup)}>
-                    {isSignup ? "Already have an account? Login" : "Don't have an account? Sign Up"}
-                </button>
+                <button className={"submitButton"} type="submit">Sign Up</button>
             </form>
         </div>
     );
 }
 
-export default Login;
+export default Register;
