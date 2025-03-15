@@ -3,10 +3,13 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Home from "./Home";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
+import Clubs from "./Clubs/Clubs";
+import Friends from "./Friends/Friends";
+import Dashboard from "./Dashboard/Dashboard";
 
 const isAuthenticated = () => {
   const token = localStorage.getItem("token");
-  console.log("Token check:", token); // Log the token to debug
+  console.log("Token check:", token); // Debugging token
   return token !== null;
 };
 
@@ -27,6 +30,9 @@ function App() {
 
         {/* Protected Route */}
         <Route path="/home" element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
+        <Route path="/clubs" element={isAuthenticated() ? <Clubs /> : <Navigate to="/login" />} />
+        <Route path="/friends" element={isAuthenticated() ? <Friends /> : <Navigate to="/login" />} />
+        <Route path="/dashboard" element={isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />} />
 
         {/* Default Route */}
         <Route path="*" element={<Navigate to="/login" />} />

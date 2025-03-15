@@ -12,29 +12,20 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    console.log("Login button clicked!"); // Check if button is clicked
-
     try {
         const response = await axios.post("http://127.0.0.1:8000/login/", {
             username,
             password,
         });
 
-        console.log("Login response:", response); // Log the response from the server
-
         // Ensure that you have a valid token in response.data.access
         if (response.data.access) {
-            console.log("Token received:", response.data.access);
-
             // Store the token correctly
             localStorage.setItem("token", response.data.access);
 
-            // Log the token to confirm it's being stored
-            console.log("Token stored in localStorage:", localStorage.getItem("token"));
-
             // Redirect to the home page
             navigate("/home");
-            console.log("Navigated to /home");
+            window.location.reload();
         } else {
             setError("Invalid response from server.");
         }

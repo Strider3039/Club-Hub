@@ -1,7 +1,7 @@
 // navigation bar component
 import React from "react";
 import "./NavBar.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function NavBar(props) {
     const navigate = useNavigate(); // Hook for navigation
@@ -12,24 +12,24 @@ function NavBar(props) {
 
         // Redirect to login page
         navigate("/login");
+        window.location.reload();
     }
 
     return (
     <nav className="navbar">
         <h1>{props.page}</h1>
         <div className="menu">
-            <a href="#">Home</a>  {/* '#' will be replaced with link to next page*/}
-            {/*<Link to="/club">Clubs</Link>*/}
-            <a href="#">Clubs</a>
-            <a href="#">
+            <Link to="/Home">Home</Link>
+            <Link to="/Clubs">Clubs</Link>
+            <Link to="/friends">
                 Friends
                 <div className="dropdown">
                     <a href={"#"}>My Friends</a>
                     <a href={"#"}>Requests</a>
                     <a href={"#"}>Search</a>
                 </div>
-            </a>
-            <a href="#">Dashboard</a>
+            </Link>
+            <Link to="/dashboard">Dashboard</Link>
 
             {/*Add a button to logout*/}
             <button onClick={handleLogout} className={"logout-button"}>Logout</button>

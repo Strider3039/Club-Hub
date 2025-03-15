@@ -1,0 +1,31 @@
+.friends-page {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  padding: 20px;
+  text-align: center;
+}
+
+.friends-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.friends-container h2 {
+  color: #333;
+}
+
+.friends-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.friends-container li {
+  background: #e3e3e3;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
