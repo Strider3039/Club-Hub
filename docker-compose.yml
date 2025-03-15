@@ -17,7 +17,7 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/app
-      # - /app/node_modules  # Commented out to avoid potential issues
+      - /app/node_modules  # Commented out to avoid potential issues
     stdin_open: true
     tty: true
     command: ["npm", "start"]  # Make sure that its running the dev server
