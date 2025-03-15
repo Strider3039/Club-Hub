@@ -20,6 +20,10 @@ jobs:
           echo "MESSAGE=$(git log -1 --pretty=format:%s)" >> $GITHUB_ENV
           echo "AUTHOR=$(git log -1 --pretty=format:%an)" >> $GITHUB_ENV
           FILES=$(git diff --name-only HEAD^ HEAD | tr '\n' ', ')
+          # Truncate FILES if it's too long
+          if [ ${#FILES} -gt 100 ]; then
+            FILES="${FILES:0:97}..."
+          fi
           echo "FILES=${FILES:-No files changed}" >> $GITHUB_ENV
 
       - name: Send message to Discord
