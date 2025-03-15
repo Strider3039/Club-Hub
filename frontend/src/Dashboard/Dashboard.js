@@ -1,32 +1,43 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import NavBar from "../NavBar/NavBar";
 import "./Dashboard.css";
 
 function Dashboard() {
-  // Dummy user data for now
-  const userData = {
-    name: "first and last name while registering",
-    username: "username in database",
-    email: "email while registering",
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
     clubs: ["Clubs they will sign up too"],
     bio: "editable bio for everyone"
-  };
+  });
+
+  useEffect(() => {
+    // Retrieve user details from localStorage (if stored after login/registration)
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (storedUser) {
+      setUser(storedUser);
+    } else {
+      console.warn("No user data found in localStorage.");
+    }
+  }, []);
 
   return (
-    <div className="dashboard-page">
+    <div className="dashboard">
       <NavBar page="Dashboard" />
       <div className="dashboard-container">
         <div className="profile-card">
-          <h2>{userData.name}</h2>
-          <p>@{userData.username}</p>
-          <p>Email: {userData.email}</p>
+          <h2>{user.firstName} {user.lastName}</h2>
+          <p><strong>Username:</strong> {user.username}</p>
+          <p><strong>Email:</strong> {user.email}</p>
           <h3>Clubs</h3>
           <ul>
-            {userData.clubs.map((club, index) => (
+            {user.clubs.map((club, index) => (
               <li key={index}>{club}</li>
             ))}
           </ul>
-          <p className="bio">{userData.bio}</p>
+          <p className="bio">{user.bio}</p>
         </div>
       </div>
     </div>
