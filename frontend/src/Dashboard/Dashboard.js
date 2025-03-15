@@ -24,23 +24,23 @@ function Dashboard() {
   }, []);
 
   return (
-    <div className="dashboard">
-      <NavBar page="Dashboard" />
-      <div className="dashboard-container">
-        <div className="profile-card">
-          <h2>{user.firstName} {user.lastName}</h2>
-          <p><strong>Username:</strong> {user.username}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <h3>Clubs</h3>
-          <ul>
-            {user.clubs.map((club, index) => (
-              <li key={index}>{club}</li>
-            ))}
-          </ul>
-          <p className="bio">{user.bio}</p>
+      <div className="dashboard">
+        <NavBar page={"Dashboard"}/>
+        <div className="dashboard-container">
+          <div className="profile-card">
+            <h2>{user.firstName} {user.lastName}</h2>
+            <p><strong>Username:</strong> {user.username}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+            <h3>Clubs</h3>
+            <ul>
+              {user.clubs.map((club, index) => (
+                  <li key={index}>{club}</li>
+              ))}
+            </ul>
+            <p className="bio">{user.bio}</p>
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 

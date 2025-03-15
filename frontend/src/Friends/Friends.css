@@ -1,21 +1,27 @@
 .friends-page {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-  padding: 20px;
-  text-align: center;
+  display: flex;
+  justify-content: center;   /* Centers content horizontally */
+  align-items: flex-start;   /* Aligns content to the top (right below the navbar) */
+  height: 100vh;
+  margin: 0;
+  padding-top: 80px;         /* Adjust this to the height of your navbar */
 }
 
 .friends-container {
   max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
   background: white;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 .friends-container h2 {
   color: #333;
+  margin-bottom: 20px;
 }
 
 .friends-container ul {

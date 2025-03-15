@@ -3,9 +3,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 5%;
+    padding: 10px 5%;
     background-color: cornflowerblue;
     flex-wrap: nowrap;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.navbar + * {
+    margin-top: calc(60px);
 }
 
 .navbar .menu a {
