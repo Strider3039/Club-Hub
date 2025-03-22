@@ -29,6 +29,10 @@ function Clubs() {
             <option value="arts">Arts</option>
           </select>
         </div>
+        {/*________*/}
+        {/*|       |*/}
+        {/*|       |*/}
+        {/*|_______|*/}
 
         {/* Main content area */}
         <div className="clubs-content">
