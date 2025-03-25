@@ -3,13 +3,23 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Home from "./Home";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
-import Clubs from "./Clubs/Clubs";
+import ClubSearch from "./Clubs/ClubSearch";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import ClubDash from "./Clubs/ClubDashboard";
+
+// for testing
+import ClubDashboard from "./Clubs/ClubDashboard";
+
 import Friends from "./Friends/Friends";
 import Dashboard from "./Dashboard/Dashboard";
 
 const isAuthenticated = () => {
   const token = localStorage.getItem("token");
   console.log("Token check:", token); // Debugging token
+
+  // FOR FRONTEND DEV PURPOSES. REMOVE BEFORE MERGING
+  return true;
+
   return token !== null;
 };
 
@@ -30,7 +40,7 @@ function App() {
 
         {/* Protected Route */}
         <Route path="/home" element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/clubs" element={isAuthenticated() ? <Clubs /> : <Navigate to="/login" />} />
+        <Route path="/clubs" element={isAuthenticated() ? <ClubDashboard /> : <Navigate to="/login" />} />
         <Route path="/friends" element={isAuthenticated() ? <Friends /> : <Navigate to="/login" />} />
         <Route path="/dashboard" element={isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />} />
 

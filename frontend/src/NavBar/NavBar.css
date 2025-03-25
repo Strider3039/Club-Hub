@@ -4,7 +4,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 5%;
-    background-color: cornflowerblue;
+    background-color: white;
+    border: lightgray 1px solid;
     flex-wrap: nowrap;
     position: fixed;
     top: 0;
@@ -22,6 +23,8 @@
     margin: 0 1rem;
     text-decoration: none;
     color: black;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .navbar .menu a:hover {

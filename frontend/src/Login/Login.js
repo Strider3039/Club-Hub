@@ -12,27 +12,28 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
-        const response = await axios.post("http://127.0.0.1:8000/login/", {
-            username,
-            password,
-        });
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/login/", {
+                username,
+                password,
+            });
 
-        // Ensure that you have a valid token in response.data.access
-        if (response.data.access) {
-            // Store the token correctly
-            localStorage.setItem("token", response.data.access);
+            // Ensure that you have a valid token in response.data.access
+            if (response.data.access) {
+                // Store the token correctly
+                localStorage.setItem("token", response.data.access);
 
-            // Redirect to the home page
-            navigate("/home");
-            window.location.reload();
-        } else {
-            setError("Invalid response from server.");
+                // Redirect to the home page
+                navigate("/home");
+                window.location.reload();
+            } else {
+                setError("Invalid response from server.");
+            }
+        } catch (error) {
+            console.error("Error logging in", error);
+            setError("Login failed. Please check your credentials.");
         }
-    } catch (error) {
-        console.error("Error logging in", error);
-        setError("Login failed. Please check your credentials.");
-    }
+
 };
 
   return (
