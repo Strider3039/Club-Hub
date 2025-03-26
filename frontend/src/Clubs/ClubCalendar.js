@@ -3,16 +3,15 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Button from "react-bootstrap/Button";
 
-// Calendar component that will handle logic for pulling club events
+// Calendar component that will handle logic for pulling club events. user can add events
 function ClubCalendar() {
-    const [date, setDate] = useState(new Date()); // date initialized with the real-time date from (new Date())
-    const [events, setEvents] = useState([]); // events initialized with an empty list. will store event items having a name and a date.
+    const [date, setDate] = useState(new Date()); // for showing real-time date
+    const [events, setEvents] = useState([]); // stores event names & dates
     const [showForm, setShowForm] = useState(false); // should we collect user input?
-    const [error, setError] = useState("");
-    const [eventName, setEventName] = useState("");
-    const [eventDate, setEventDate] = useState("");
+    const [error, setError] = useState(""); // holds error message
+    const [eventName, setEventName] = useState(""); // new event name
+    const [eventDate, setEventDate] = useState(new Date()); // new event date
 
-    // this will handle adding event to calendar. will be called by onSubmit from the form.
     const createNewEvent = (eventName, eventDate) => {
         // Validate that both event name and date are provided
         if (!eventName || !eventDate) {
@@ -20,42 +19,41 @@ function ClubCalendar() {
             return;
         }
 
-        // Convert the eventDate string into a Date object (if it isn't one already)
-        const newEventDate = new Date(eventDate);
+        // this line adds events to events list
+        setEvents(prevEvents => [...prevEvents, { name: eventName, date: eventDate }]);
 
-        // Add the new event to the events list
-        setEvents(prevEvents => [...prevEvents, { name: eventName, date: newEventDate }]);
-
-        // Reset the input fields and clear any error messages
+        // resets input fields
         setEventName("");
-        setEventDate("");
+        setEventDate(new Date());
         setError("");
 
         // Close the form popup
         setShowForm(false);
     };
 
-
-
     return (
         <div>
             <h3>{date.toDateString()}</h3>
 
             {/* button to trigger adding a new event */}
-            <Button onClick={(e) => setShowForm(true)}>
+            <Button
+                className={"m-2 mt-0"}
+                onClick={(e) => setShowForm(true)}
+                onClickDay={(e) => setEventDate(e.date) & setShowForm(true)}
+            >
                 Add Event
             </Button>
 
-            {/* Calendar component */}
             <Calendar
                 onChange={setDate}
+                onClickDay={(clickedDate) => setEventDate(clickedDate) & setShowForm(true)}
                 value={date}
                 tileContent={({ date, view }) => {
                     // Format date to YYYY-MM-DD to compare
                     const dateStr = date.toISOString().split("T")[0];
                     const event = events.find(event => event.date.toISOString().split("T")[0] === dateStr);
 
-                    // ff event exists, return a styled div
+                    // if event exists, put a red dot on day
                     return event ? (
                         <div style={{
                             backgroundColor: "red",
@@ -76,18 +74,22 @@ function ClubCalendar() {
                     <form onSubmit={(e) => {e.preventDefault(); createNewEvent(eventName, eventDate);
                     }}>
                         <input
+                            style={{marginRight: "2px", width: "fit-content"}}
                             type="text"
                             placeholder="Event Name"
                             value={eventName}
                             onChange={(e) => setEventName(e.target.value)}
                         />
                         <input
+                            style={{marginLeft: "2px", width: "fit-content"}}
                             type="date"
-                            placeholder="When is the Event?"
-                            value={eventDate}
-                            onChange={(e) => setEventDate(e.target.value)}
+                            value={eventDate.toISOString().split("T")[0]}
+                            onChange={(e) => setEventDate(new Date(e.target.value))}
                         />
-                        <Button onClick={(e) => createNewEvent(eventName, eventDate)}>
+                        <Button
+                            className={"m-2 mb-0"}
+                            onClick={(e) => createNewEvent(eventName, eventDate)}
+                        >
                             Submit
                         </Button>
                     </form>
