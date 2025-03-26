@@ -5,7 +5,6 @@ import Login from "./Login/Login";
 import Register from "./Register/Register";
 import ClubSearch from "./Clubs/ClubSearch";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ClubDash from "./Clubs/ClubDashboard";
 
 // for testing
 import ClubDashboard from "./Clubs/ClubDashboard";

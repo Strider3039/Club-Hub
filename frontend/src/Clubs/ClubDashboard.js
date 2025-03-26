@@ -3,8 +3,11 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Navbar from "../NavBar/NavBar";
+import Calendar from "./ClubCalendar"
 
+// layout for a club dashboard. layout uses bootstrap containers
 function ClubDashboard() {
+
     return (
         <>
             <Navbar page={"Club Dashboard"} />
@@ -16,8 +19,12 @@ function ClubDashboard() {
                             inside it. see?
                         </p>
                     </Col>
-                    <Col xs={6} className="p-3 mt-0 m-2 bg-light border border-dark-subtle text-dark rounded"> this column is wider. it will contain the  </Col>
-                    <Col className="p-3 mt-0 m-2 bg-light border border-dark-subtle text-dark rounded">3 of 3</Col>
+                    <Col xs={6} className="p-3 mt-0 m-2 bg-light border border-dark-subtle text-dark rounded">
+                        this column is wider. it will contain the
+                    </Col>
+                    <Col className="p-3 mt-0 m-2 bg-light border border-dark-subtle text-dark rounded">
+                        <Calendar/>
+                    </Col>
                 </Row>
             </Container>
         </>
