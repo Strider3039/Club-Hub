@@ -41,3 +41,61 @@
   border-radius: 5px;
   margin: 5px 0;
 }
+
+
+
+.change-password-box {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.change-password-box input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.change-password-box button {
+  padding: 10px;
+  background-color: #0077b5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.change-password-box button:hover {
+  background-color: #005f8a;
+}
+
+
+
+.delete-account-box {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.delete-account-box input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.delete-account-box button {
+  padding: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-account-box button:hover {
+  background-color: rgb(126, 0, 0);
+}
