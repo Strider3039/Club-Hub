@@ -13,7 +13,7 @@ function Login() {
     e.preventDefault();
 
     try {
-        const response = await axios.post(`${process.env.REACT_APP_API_BASE}/register/`, {
+        const response =await axios.post("https://clubhub-backend-gmap.onrender.com/login/", {
             username,
             password,
         });
