@@ -17,4 +17,4 @@ COPY . /app/
 EXPOSE 8000
 
 # Step 7: Run Django development server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["bash", "./start.sh"]
