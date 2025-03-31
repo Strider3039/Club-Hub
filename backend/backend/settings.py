@@ -64,7 +64,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://clubhub-frontend.onrender.com",
+    "https://club-hub.onrender.com",
 ]
 
 ROOT_URLCONF = 'backend.urls'
