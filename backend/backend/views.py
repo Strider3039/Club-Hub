@@ -5,13 +5,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .serializers import RegisterSerializer
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
 def home(request):
     return HttpResponse("Welcome to the ClubHub!")
 
-@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)

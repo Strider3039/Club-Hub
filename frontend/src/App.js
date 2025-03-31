@@ -35,7 +35,7 @@ function App() {
         <Route path="/dashboard" element={isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />} />
 
         {/* Default Route */}
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={isAuthenticated() ? <Navigate to="/home" /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
   );
