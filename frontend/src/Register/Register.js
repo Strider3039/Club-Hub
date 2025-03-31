@@ -23,7 +23,7 @@ function Register() {
     }
 
     try {
-      const response = await axios.post("https://clubhub-backend-gmap.onrender.com/login/", {
+      const response = await axios.post("https://clubhub-backend-gmap.onrender.com/register/", {
         first_name: firstName,
         last_name: lastName,
         email,
