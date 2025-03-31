@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .serializers import RegisterSerializer
 from django.http import HttpResponse
+import traceback
 
 def home(request):
     return HttpResponse("Welcome to the ClubHub!")
@@ -13,11 +14,19 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            # Save the user if the serializer is valid
-            serializer.save()
-            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
-        # Return validation errors if invalid
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                user = serializer.save()
+                refresh = RefreshToken.for_user(user)
+                return Response({
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token)
+                }, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                print("🔥 Exception during register:", str(e))
+                traceback.print_exc()  # Full traceback
+                return Response({"error": "Something went wrong."}, status=500)
+        print("❌ Serializer errors:", serializer.errors)
+        return Response(serializer.errors, status=400)
 
 class LoginView(APIView):
     def post(self, request):
