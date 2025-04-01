@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
+import axios from "axios";
 import NavBar from "../NavBar/NavBar";
 import "./Dashboard.css";
+import { Link, useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const [user, setUser] = useState({
@@ -11,6 +13,76 @@ function Dashboard() {
     clubs: ["Clubs they will sign up too"],
     bio: "editable bio for everyone"
   });
+
+  const [currentPassword, setInput1] = useState("");
+  const [newPassword, setInput2] = useState("");
+  const [newPasswordConfirm, setInput3] = useState("");
+
+  const [passwordConfirmation, setInput4] = useState("");
+  const navigate = useNavigate(); // Hook for navigation
+
+
+  const changePasswordButton = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://127.0.0.1:8000/change-password/",
+        {
+          current_password: currentPassword,
+          new_password: newPassword,
+          confirm_password: newPasswordConfirm,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response.data.message);
+      //alert("Password updated successfully!");
+
+      // Remove the token from localStorage
+      localStorage.removeItem("token");
+
+      // Redirect to login page
+      navigate("/login");
+      window.location.reload();
+    } catch (error) {
+      console.error(error.response.data.error);
+      //alert(error.response.data.error || "Failed to update password.");
+    }
+  };
+
+  const deleteButtonClick = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://127.0.0.1:8000/delete-account/",
+        {
+          password_confirmation: passwordConfirmation,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response.data.message);
+      //alert("Account deleted successfully!");
+
+      // Remove the token from localStorage
+      localStorage.removeItem("token");
+
+      // Redirect to login page
+      navigate("/login");
+      window.location.reload();
+    } catch (error) {
+      console.error(error.response.data.error);
+      //alert(error.response.data.error || "Failed to delete account.");
+    }
+  };
 
   useEffect(() => {
     // Retrieve user details from localStorage (if stored after login/registration)
@@ -39,6 +111,40 @@ function Dashboard() {
             </ul>
             <p className="bio">{user.bio}</p>
           </div>
+
+          {/* Change Password */}
+        <div className="change-password-box">
+          <input
+            type="text"
+            placeholder="Current Password"
+            value={currentPassword}
+            onChange={(e) => setInput1(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="New Password"
+            value={newPassword}
+            onChange={(e) => setInput2(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Confirm New Password"
+            value={newPasswordConfirm}
+            onChange={(e) => setInput3(e.target.value)}
+          />
+          <button onClick={changePasswordButton}>Change Password</button>
+        </div>
+
+        {/* Delete Account */}
+        <div className="delete-account-box">
+          <input
+            type="text"
+            placeholder="Enter Password"
+            value={passwordConfirmation}
+            onChange={(e) => setInput4(e.target.value)}
+          />
+          <button onClick={deleteButtonClick}>Delete Account</button>
+        </div>
         </div>
       </div>
   );

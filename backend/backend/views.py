@@ -6,6 +6,9 @@ from django.contrib.auth import authenticate
 from .serializers import RegisterSerializer
 from django.http import HttpResponse
 import traceback
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.contrib.auth.hashers import make_password
 
 def home(request):
     return HttpResponse("Welcome to the ClubHub!")
@@ -22,10 +25,8 @@ class RegisterView(APIView):
                     "access": str(refresh.access_token)
                 }, status=status.HTTP_201_CREATED)
             except Exception as e:
-                print("🔥 Exception during register:", str(e))
                 traceback.print_exc()  # Full traceback
                 return Response({"error": "Something went wrong."}, status=500)
-        print("❌ Serializer errors:", serializer.errors)
         return Response(serializer.errors, status=400)
 
 class LoginView(APIView):
@@ -40,3 +41,39 @@ class LoginView(APIView):
             return Response({"refresh": str(refresh), "access": str(refresh.access_token)})
         # Return error for invalid credentials
         return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ChangePasswordView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        current_password = request.data.get("current_password")
+        new_password = request.data.get("new_password")
+        confirm_password = request.data.get("confirm_password")
+
+        if not user.check_password(current_password):
+            return Response({"error": "Current password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if new_password != confirm_password:
+            return Response({"error": "New passwords do not match"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+        return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
+
+
+class DeleteAccountView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        password_confirmation = request.data.get("password_confirmation")
+
+        if not user.check_password(password_confirmation):
+            return Response({"error": "Password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.delete()
+        return Response({"message": "Account deleted successfully"}, status=status.HTTP_200_OK)
