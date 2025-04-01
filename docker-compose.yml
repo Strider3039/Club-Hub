@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres
+    container_name: clubhub_db
+    restart: always
+    environment:
+      POSTGRES_DB: clubhub
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   backend:
     build: ./backend
     ports:
@@ -8,19 +21,30 @@ services:
     volumes:
       - ./backend:/app
     command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    depends_on:
+      - db
+    environment:
+      - DB_NAME=clubhub
+      - DB_USER=admin
+      - DB_PASSWORD=admin123
+      - DB_HOST=db
+      - DB_PORT=5432
 
   frontend:
     build:
       context: ./frontend
-      target: development  # Use the "development" stage from Dockerfile
+      target: development
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
-      - /app/node_modules  # Commented out to avoid potential issues
+      - /app/node_modules
     stdin_open: true
     tty: true
-    command: ["npm", "start"]  # Make sure that its running the dev server
+    command: ["npm", "start"]
+
+volumes:
+  postgres_data:
 
   # Uncomment to enable production with Nginx
   # frontend-prod:

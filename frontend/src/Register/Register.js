@@ -23,7 +23,7 @@ function Register() {
     }
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/register/", {
+      const response = await axios.post("https://clubhub-backend-gmap.onrender.com/register/", {
         first_name: firstName,
         last_name: lastName,
         email,
