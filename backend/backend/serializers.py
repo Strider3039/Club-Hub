@@ -19,6 +19,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 class ClubSerializer(serializers.ModelSerializer):
     # get the members of the club using the primary key
     members = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all())
+    # get the officers of the club using the primary key
+    officers = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
 
     class Meta:
         model = Club
@@ -26,18 +28,26 @@ class ClubSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        # get the request object to access the user
+        # get the request from context
         request = self.context.get('request')
-        # get the user from the request
+        # set creator to the user making the request
         creator = request.user if request else None
-        # pop the members from the validated data
+
+        # pop the members and officers from the validated data
         members = validated_data.pop('members', [])
-        # create the club object
+        officers = validated_data.pop('officers', [])
+
+        # create the club with the validated data
         club = Club.objects.create(**validated_data)
 
-        # Add creator to members list if not already there
+        # Ensure creator is in both lists
         if creator and creator not in members:
             members.append(creator)
-        # set the members of the club
+        if creator and creator not in officers:
+            officers.append(creator)
+
+        # set the members and officers of the club
         club.members.set(members)
+        club.officers.set(officers)
+
         return club
