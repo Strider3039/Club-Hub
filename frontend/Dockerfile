@@ -9,7 +9,8 @@ COPY package.json package-lock.json /app/
 
 # Step 4: Install dependencies
 RUN npm install
-
+RUN npm install bootstrap react-bootstrap
+RUN npm install react-calendar
 # Step 5: Copy the rest of the frontend code
 COPY . /app/
 
