@@ -9,6 +9,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.hashers import make_password
 from .serializers import ClubSerializer
+from .serializers import FriendshipSerializer
+from .models import Friendship
+from django.db.models import Q
 
 def home(request):
     return HttpResponse("Welcome to the ClubHub!")
@@ -86,3 +89,60 @@ class ClubRegistrationView(APIView):
             return Response({"message": "Club created successfully"}, status=status.HTTP_201_CREATED)
         # return validation errors if invalid
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Handles sending and accepting friend requests
+class FriendshipView(APIView):
+
+    # POST /friend-requests/: Creates a new friend request
+    def post(self, request):
+        # Deserialize the incoming data (to_user_id) and inject current user into context
+        serializer = FriendshipSerializer(data=request.data, context={'request': request})
+
+        # Validate the data and create a new Friendship if valid
+        if serializer.is_valid():
+            serializer.save()  # creates a 'pending' request from request.user to to_user
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        # If the request is invalid, return error details
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # PATCH /friend-requests/<pk>/: Accepts a friend request
+    def patch(self, request, pk):
+        try:
+            # Find the friendship where the current user is the recipient (to_user)
+            friendship = Friendship.objects.get(pk=pk, to_user=request.user)
+        except Friendship.DoesNotExist:
+            # Return error if not found or not authorized
+            return Response({'error': 'Request not found or unauthorized.'}, status=404)
+
+        # Accept the friend request
+        friendship.status = 'accepted'
+        friendship.save()
+
+        return Response({'message': 'Friend request accepted.'})
+
+
+# Lists all accepted friends for the current user
+class FriendListView(APIView):
+
+    # GET /friends/
+    def get(self, request):
+        user = request.user  # Current authenticated user
+
+        # Find all accepted friendships where the user is either side of the relationship
+        friendships = Friendship.objects.filter(
+            Q(from_user=user) | Q(to_user=user),
+            status='accepted'
+        )
+
+        # Prepare a simplified list of friend info (excluding current user)
+        friends = []
+        for f in friendships:
+            # Determine the "other" user in the friendship
+            friend = f.to_user if f.from_user == user else f.from_user
+            friends.append({
+                'id': friend.id,
+                'username': friend.username
+            })
+
+        return Response(friends)

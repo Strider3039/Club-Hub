@@ -25,4 +25,6 @@ urlpatterns = [
     path('change-password/', views.ChangePasswordView.as_view(), name='change-password'),
     path('delete-account/', views.DeleteAccountView.as_view(), name='delete-account'),
     path('clubs/', views.ClubRegistrationView.as_view(), name='club-register'),
-]
+    path('friends/', views.FriendshipView.as_view(), name='friendship'),
+    path('friends/<int:friend_id>/', views.FriendshipView.as_view(), name='friendship-detail'),
+]   

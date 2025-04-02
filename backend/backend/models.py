@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.conf import settings
 
 class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=30)
@@ -28,3 +28,18 @@ class Event(models.Model):
     def __str__(self):
         return f"{self.title} - {self.club.name}"
 
+class Friendship(models.Model):
+    from_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name='sent_friend_requests', on_delete=models.CASCADE
+    )
+    to_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name='received_friend_requests', on_delete=models.CASCADE
+    )
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted')])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('from_user', 'to_user')
+
+    def str(self):
+        return f"{self.from_user} -> {self.to_user} ({self.status})"
