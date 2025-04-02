@@ -1,0 +1,85 @@
+.ClubRegister {
+    box-sizing: border-box;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    width: 300px;
+    margin: 100px auto;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ClubRegister h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.ClubRegister form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ClubRegister input[type="text"]{
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.clubDescription {
+    height: 200px;
+    width: 90%;
+    resize: vertical;
+    padding: 10px;
+    font-size: 16px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.ClubRegister button {
+    width: 90%;
+    padding: 10px;
+    margin: 20px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.ClubRegister button:hover {
+    background-color: #0056b3;
+}
+
+.ClubRegister p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.ClubRegister a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.ClubRegister a:hover {
+    text-decoration: underline;
+}
+
+.ClubRegister .error {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}

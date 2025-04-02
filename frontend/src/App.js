@@ -3,12 +3,25 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Home from "./Home";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
-import Clubs from "./Clubs/Clubs";
+import ClubSearch from "./Clubs/ClubSearch";
+import ClubRegister from "./Clubs/RegisterClub";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+// for testing
+import ClubDashboard from "./Clubs/ClubDashboard";
+
 import Friends from "./Friends/Friends";
 import Dashboard from "./Dashboard/Dashboard";
 
 const isAuthenticated = () => {
   const token = localStorage.getItem("token");
+  console.log("Token check:", token); // Debugging token
+
+  // FOR FRONTEND DEV PURPOSES. REMOVE BEFORE MERGING
+  // return true;
+
+  return token !== null;
   try {
     if (!token) return false;
     // Optionally: add more checks later like expiry
@@ -36,9 +49,12 @@ function App() {
 
         {/* Protected Route */}
         <Route path="/home" element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/clubs" element={isAuthenticated() ? <Clubs /> : <Navigate to="/login" />} />
+        <Route path="/clubs" element={isAuthenticated() ? <ClubSearch /> : <Navigate to="/login" />} />
         <Route path="/friends" element={isAuthenticated() ? <Friends /> : <Navigate to="/login" />} />
         <Route path="/dashboard" element={isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="/clubHome" element={isAuthenticated() ? <ClubDashboard /> : <Navigate to="/login" />} />
+        <Route path="/clubRegister" element={isAuthenticated() ? <ClubRegister /> : <Navigate to="/login" />} />
+
 
         {/* Default Route */}
         <Route path="*" element={isAuthenticated() ? <Navigate to="/home" /> : <Navigate to="/login" />} />

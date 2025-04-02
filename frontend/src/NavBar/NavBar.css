@@ -4,13 +4,16 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 5%;
-    background-color: cornflowerblue;
+    background-color: white;
+    border: lightgray 1px solid;
     flex-wrap: nowrap;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+
 }
 
 .navbar + * {
@@ -22,6 +25,8 @@
     margin: 0 1rem;
     text-decoration: none;
     color: black;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .navbar .menu a:hover {

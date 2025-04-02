@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.hashers import make_password
+from .serializers import ClubSerializer
 
 def home(request):
     return HttpResponse("Welcome to the ClubHub!")
@@ -68,3 +69,20 @@ class DeleteAccountView(APIView):
 
         user.delete()
         return Response({"message": "Account deleted successfully"}, status=status.HTTP_200_OK)
+    
+
+class ClubRegistrationView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        # get the user from the request
+        serializer = ClubSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            # save the club 
+            serializer.save()
+            # return success message
+            return Response({"message": "Club created successfully"}, status=status.HTTP_201_CREATED)
+        # return validation errors if invalid
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

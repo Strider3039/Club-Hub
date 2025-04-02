@@ -10,3 +10,21 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class Club(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    members= models.ManyToManyField(CustomUser, related_name='clubs')
+    officers = models.ManyToManyField(CustomUser, related_name='club_officers', blank=True)
+
+    def __str__(self):
+        return self.name
+    
+class Event(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    date = models.DateTimeField()
+    club = models.ForeignKey(Club, related_name='events', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.title} - {self.club.name}"
+

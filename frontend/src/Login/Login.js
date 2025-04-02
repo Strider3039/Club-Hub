@@ -18,21 +18,22 @@ function Login() {
             password,
         });
 
-        // Ensure that you have a valid token in response.data.access
-        if (response.data.access) {
-            // Store the token correctly
-            localStorage.setItem("token", response.data.access);
+            // Ensure that you have a valid token in response.data.access
+            if (response.data.access) {
+                // Store the token correctly
+                localStorage.setItem("token", response.data.access);
 
-            // Redirect to the home page
-            navigate("/home");
-            window.location.reload();
-        } else {
-            setError("Invalid response from server.");
+                // Redirect to the home page
+                navigate("/home");
+                window.location.reload();
+            } else {
+                setError("Invalid response from server.");
+            }
+        } catch (error) {
+            console.error("Error logging in", error);
+            setError("Login failed. Please check your credentials.");
         }
-    } catch (error) {
-        console.error("Error logging in", error);
-        setError("Login failed. Please check your credentials.");
-    }
+
 };
 
   return (
