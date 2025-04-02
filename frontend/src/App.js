@@ -47,7 +47,7 @@ function App() {
 
         {/* Protected Route */}
         <Route path="/home" element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/clubs" element={isAuthenticated() ? <ClubDashboard /> : <Navigate to="/login" />} />
+        <Route path="/clubs" element={isAuthenticated() ? <ClubSearch /> : <Navigate to="/login" />} />
         <Route path="/friends" element={isAuthenticated() ? <Friends /> : <Navigate to="/login" />} />
         <Route path="/dashboard" element={isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />} />
 
