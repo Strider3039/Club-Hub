@@ -1,12 +1,11 @@
 .friends-page {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-  display: flex;
-  justify-content: center;   /* Centers content horizontally */
-  align-items: flex-start;   /* Aligns content to the top (right below the navbar) */
   height: 100vh;
   margin: 0;
-  padding-top: 80px;         /* Adjust this to the height of your navbar */
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .friends-container {
