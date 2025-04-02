@@ -14,7 +14,7 @@ class CustomUser(AbstractUser):
 class Club(models.Model):
     name = models.CharField(max_length=100, Unique=True)
     members= models.ManyToManyField(CustomUser, related_name='clubs')
-    description = models.TextField()
+    officers = models.ManyToManyField(CustomUser, related_name='club_officers', blank=True)
 
     def __str__(self):
         return self.name

@@ -82,7 +82,6 @@ class ClubRegistrationView(APIView):
         if serializer.is_valid():
             # save the club 
             serializer.save()
-            
             # return success message
             return Response({"message": "Club created successfully"}, status=status.HTTP_201_CREATED)
         # return validation errors if invalid
