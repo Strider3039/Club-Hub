@@ -19,7 +19,7 @@ const isAuthenticated = () => {
   console.log("Token check:", token); // Debugging token
 
   // FOR FRONTEND DEV PURPOSES. REMOVE BEFORE MERGING
-  return true;
+  // return true;
 
   return token !== null;
   try {
