@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import "./ClubSearch.css";
 import {useNavigate} from "react-router-dom";
+import Button from "react-bootstrap/Button";
+
 
 function ClubSearch() {
   const navigate = useNavigate();
@@ -54,7 +56,12 @@ function ClubSearch() {
           </div>
         </div>
       </div>
-        <button className="register-Button" onClick={handleRegister}></button>
+      <Button
+          className={""}
+          onClick={(e) => handleRegister()}
+      >
+        Create Club
+      </Button>
     </div>
   );
 }
