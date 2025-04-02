@@ -4,7 +4,9 @@ import Home from "./Home";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
 import ClubSearch from "./Clubs/ClubSearch";
+import ClubRegister from "./Clubs/RegisterClub";
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 // for testing
 import ClubDashboard from "./Clubs/ClubDashboard";
@@ -50,6 +52,9 @@ function App() {
         <Route path="/clubs" element={isAuthenticated() ? <ClubSearch /> : <Navigate to="/login" />} />
         <Route path="/friends" element={isAuthenticated() ? <Friends /> : <Navigate to="/login" />} />
         <Route path="/dashboard" element={isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="/clubHome" element={isAuthenticated() ? <ClubDashboard /> : <Navigate to="/login" />} />
+        <Route path="/clubRegister" element={isAuthenticated() ? <ClubRegister /> : <Navigate to="/login" />} />
+
 
         {/* Default Route */}
         <Route path="*" element={isAuthenticated() ? <Navigate to="/home" /> : <Navigate to="/login" />} />

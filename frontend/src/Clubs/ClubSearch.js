@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import "./ClubSearch.css";
+import {useNavigate} from "react-router-dom";
 
 function ClubSearch() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
 
@@ -13,6 +15,10 @@ function ClubSearch() {
   const handleGenreChange = (e) => {
     setSelectedGenre(e.target.value);
   };
+
+  const handleRegister = (e) => {
+    navigate("/clubRegister");
+  }
 
   return (
     <div className="clubs-page">
@@ -48,6 +54,7 @@ function ClubSearch() {
           </div>
         </div>
       </div>
+        <button className="register-Button" onClick={handleRegister}></button>
     </div>
   );
 }
