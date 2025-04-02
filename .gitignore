@@ -6,8 +6,6 @@ backend/db.sqlite3
 # Ignore Python cache files
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
 
 # Ignore environment files
 *.env

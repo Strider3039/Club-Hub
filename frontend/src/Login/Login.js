@@ -11,12 +11,12 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-        try {
-            const response = await axios.post("http://127.0.0.1:8000/login/", {
-                username,
-                password,
-            });
+
+    try {
+        const response =await axios.post("https://clubhub-backend-gmap.onrender.com/login/", {
+            username,
+            password,
+        });
 
             // Ensure that you have a valid token in response.data.access
             if (response.data.access) {

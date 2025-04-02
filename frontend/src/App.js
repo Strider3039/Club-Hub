@@ -20,22 +20,30 @@ const isAuthenticated = () => {
   return true;
 
   return token !== null;
+  try {
+    if (!token) return false;
+    // Optionally: add more checks later like expiry
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 function App() {
   useEffect(() => {
-    // Clear token if it's there and we're on the login page
-    if (window.location.pathname === "/login" && isAuthenticated()) {
+    const currentPath = window.location.pathname;
+    if (["/login", "/register"].includes(currentPath)) {
       localStorage.removeItem("token");
     }
   }, []);
+
 
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={!isAuthenticated() ? <Login /> : <Navigate to="/home" />} />
-        <Route path="/register" element={!isAuthenticated() ? <Register /> : <Navigate to="/home" />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Protected Route */}
         <Route path="/home" element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
@@ -44,7 +52,7 @@ function App() {
         <Route path="/dashboard" element={isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />} />
 
         {/* Default Route */}
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={isAuthenticated() ? <Navigate to="/home" /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
   );

@@ -22,4 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),  # Admin URL
     path('register/', views.RegisterView.as_view(), name='register'),
     path('login/', views.LoginView.as_view(), name='login'),
+    path('change-password/', views.ChangePasswordView.as_view(), name='change-password'),
+    path('delete-account/', views.DeleteAccountView.as_view(), name='delete-account'),
 ]
