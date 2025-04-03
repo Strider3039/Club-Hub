@@ -74,6 +74,7 @@ function RegisterClub() {
         } else {
             setError("An error occurred. Please try again.");
         }
+        console.error("Club registration failed:", err.response?.data || err);
         }
     };
 
