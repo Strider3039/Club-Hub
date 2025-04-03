@@ -18,15 +18,12 @@ def home(request):
 
 class RegisterView(APIView):
     def post(self, request):
-        print("🔵 Incoming Register Data:", request.data)
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            print("✅ Serializer Validated Data:", serializer.validated_data)
             # Save the user if the serializer is valid
             serializer.save()
             return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
         # Return validation errors if invalid
-        print("❌ Serializer Errors:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
