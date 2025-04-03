@@ -68,13 +68,12 @@ function RegisterClub() {
             navigate("/clubHome");
         }
         } catch (err) {
-        // club registration failed
-        if (err.response && err.response.data) {
-            setError(err.response.data.message || "Failed to register club.");
-        } else {
-            setError("An error occurred. Please try again.");
-        }
-        console.error("Club registration failed:", err.response?.data || err);
+            // club registration failed
+            if (err.response && err.response.data) {
+                setError(err.response.data.message || "Failed to register club.");
+            } else {
+                setError("An error occurred. Please try again.");
+            }
         }
     };
 
