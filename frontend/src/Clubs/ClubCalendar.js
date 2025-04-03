@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import Button from "react-bootstrap/Button";
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import { Button } from 'react-bootstrap';
 
 // Calendar component that will handle logic for pulling club events. user can add events
 function ClubCalendar() {

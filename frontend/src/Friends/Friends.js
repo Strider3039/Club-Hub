@@ -3,21 +3,18 @@ import NavBar from "../NavBar/NavBar";
 import "./Friends.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-
+import { Button } from "react-bootstrap";
 
 function Friends() {
     const navigate = useNavigate();
-    const [friendsList, setFriendsList] = useState([]); // List of friends
-    const [error, setError] = useState(""); // Error message
+    const [friendsList, setFriendsList] = useState([]);
+    const [error, setError] = useState("");
 
-    // Fetch the friend list when the page loads
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
         const token = localStorage.getItem("token");
 
         if (user && token) {
-            // Fetch the friend list from the backend
             axios
                 .get("http://localhost:8000/friends", {
                     headers: {
@@ -25,19 +22,16 @@ function Friends() {
                     },
                 })
                 .then((response) => {
-                    setFriendsList(response.data); // Set the friend list from the response
+                    setFriendsList(response.data);
                 })
-                .catch((err) => {
+                .catch(() => {
                     setError("Failed to fetch friends list. Please try again later.");
                 });
-        }
-        else
-        {
+        } else {
             setError("You must be logged in to view your friends.");
         }
     }, []);
 
-    // courtesy of chatgpt
     const handleNewFriend = async () => {
         const user = JSON.parse(localStorage.getItem("user"));
         const token = localStorage.getItem("token");
@@ -48,12 +42,12 @@ function Friends() {
         }
 
         const friendUsername = prompt("Enter the username of the friend you want to add:");
-        if (!friendUsername) return; // Cancel if the user doesn't enter anything
+        if (!friendUsername) return;
 
         try {
             const response = await axios.post(
                 "http://localhost:8000/friends/add",
-                { friendUsername }, // Sending the username as the request body
+                { friendUsername },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -62,7 +56,6 @@ function Friends() {
                 }
             );
 
-            // Assuming the response contains the updated list of friends
             setFriendsList(response.data);
         } catch (err) {
             setError("Failed to add friend. Please try again.");
@@ -70,10 +63,9 @@ function Friends() {
     };
 
     return (
-        // complicate html list code
         <div className="friends-page">
             <NavBar page="Friends" />
-            <Button onClick={(e) => handleNewFriend()} >Add Friend</Button>
+            <Button onClick={handleNewFriend}>Add Friend</Button>
             <div className="friends-container">
                 <h2>My Friends</h2>
                 {error && <p className="error">{error}</p>}

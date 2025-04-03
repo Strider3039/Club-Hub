@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import "./ClubSearch.css";
 import {useNavigate} from "react-router-dom";
-import Button from "react-bootstrap/Button";
+import { Button } from 'react-bootstrap';
 
 
 function ClubSearch() {
