@@ -13,6 +13,7 @@ class CustomUser(AbstractUser):
 
 class Club(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
     members= models.ManyToManyField(CustomUser, related_name='clubs')
     officers = models.ManyToManyField(CustomUser, related_name='club_officers', blank=True)
 
