@@ -24,7 +24,7 @@ class ClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ['id', 'name', 'description', 'members']
+        fields = ['id', 'name', 'description', 'members', 'officers']
 
 
     def create(self, validated_data):
