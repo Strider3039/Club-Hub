@@ -53,7 +53,7 @@ function RegisterClub() {
 
         // make the API listening request to the backend
         try {
-        const response = await axios.post("https://clubhub-backend-gmap.onrender.com/clubs", clubData, {
+        const response = await axios.post("http://localhost:8000/clubs", clubData, {
                 // add the token to the request headers
                 headers: {
                     Authorization: `Bearer ${token}`,

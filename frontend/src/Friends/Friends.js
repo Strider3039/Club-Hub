@@ -19,7 +19,7 @@ function Friends() {
         if (user && token) {
             // Fetch the friend list from the backend
             axios
-                .get("https://clubhub-backend-gmap.onrender.com/friends", {
+                .get("http://localhost:8000/friends", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -52,7 +52,7 @@ function Friends() {
 
         try {
             const response = await axios.post(
-                "https://clubhub-backend-gmap.onrender.com/friends/add",
+                "http://localhost:8000/friends/add",
                 { friendUsername }, // Sending the username as the request body
                 {
                     headers: {
