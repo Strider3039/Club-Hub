@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import make_password
 from .serializers import ClubSerializer
 from .serializers import FriendshipSerializer
 from .models import Friendship
+from .models import Club
 from django.db.models import Q
 
 def home(request):
@@ -98,6 +99,15 @@ class ClubRegistrationView(APIView):
             return Response({"message": "Club created successfully"}, status=status.HTTP_201_CREATED)
         # return validation errors if invalid
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Lists all clubs
+class ClubListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        clubs = Club.objects.all()
+        serializer = ClubSerializer(clubs, many=True)
+        return Response(serializer.data)
 
 # Handles sending and accepting friend requests
 class FriendshipView(APIView):

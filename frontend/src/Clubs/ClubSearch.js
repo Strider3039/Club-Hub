@@ -15,7 +15,7 @@ function ClubSearch() {
         const fetchClubs = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get("http://localhost:8000/clubs/", {
+                const response = await axios.get("http://localhost:8000/clubs/list/", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
