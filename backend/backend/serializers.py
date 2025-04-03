@@ -14,7 +14,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'email', 'date_of_birth', 'username', 'password']
 
     def create(self, validated_data):
+        date_of_birth = validated_data.pop('date_of_birth', None)
         user = User.objects.create_user(**validated_data)
+        if date_of_birth:
+            user.date_of_birth = date_of_birth
+            user.save()
         return user
 
 class ClubSerializer(serializers.ModelSerializer):
