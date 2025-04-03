@@ -35,7 +35,16 @@ class LoginView(APIView):
         if user:
             # Generate refresh and access tokens for valid login
             refresh = RefreshToken.for_user(user)
-            return Response({"refresh": str(refresh), "access": str(refresh.access_token)})
+            
+            # Serialize user info
+            user_data = RegisterSerializer(user).data
+
+            return Response({
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+                "user": user_data 
+            })
+
         # Return error for invalid credentials
         return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 

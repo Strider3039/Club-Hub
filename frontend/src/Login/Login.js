@@ -22,6 +22,8 @@ function Login() {
             if (response.data.access) {
                 // Store the token correctly
                 localStorage.setItem("token", response.data.access);
+                localStorage.setItem("user", JSON.stringify(response.data.user));  // <-- this was missing!
+
 
                 // Redirect to the home page
                 navigate("/home");
