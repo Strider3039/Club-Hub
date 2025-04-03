@@ -17,7 +17,7 @@ function Friends() {
         if (user && token) {
             // Fetch the friend list from the backend
             axios
-                .get("http://localhost:8000/api/friends/", {
+                .get("https://clubhub-backend-gmap.onrender.com/friends", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
