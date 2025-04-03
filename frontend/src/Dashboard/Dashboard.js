@@ -26,7 +26,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://127.0.0.1:8000/change-password/",
+        "https://clubhub-backend-gmap.onrender.com/change-password/",
         {
           current_password: currentPassword,
           new_password: newPassword,
@@ -58,7 +58,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://127.0.0.1:8000/delete-account/",
+        "https://clubhub-backend-gmap.onrender.com/delete-account/",
         {
           password_confirmation: passwordConfirmation,
         },
