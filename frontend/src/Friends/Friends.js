@@ -14,9 +14,12 @@ function Friends() {
         const user = JSON.parse(localStorage.getItem("user"));
         const token = localStorage.getItem("token");
 
+        console.log("User:", user);
+        console.log("Token:", token);
+
         if (user && token) {
             axios
-                .get("http://localhost:8000/friends", {
+                .get("http://localhost:8000/friends/", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -24,7 +27,8 @@ function Friends() {
                 .then((response) => {
                     setFriendsList(response.data);
                 })
-                .catch(() => {
+                .catch((err) => {
+                    console.error("Error fetching friends:", err.response?.data || err.message);
                     setError("Failed to fetch friends list. Please try again later.");
                 });
         } else {
@@ -46,7 +50,7 @@ function Friends() {
 
         try {
             const response = await axios.post(
-                "http://localhost:8000/friends/add",
+                "http://localhost:8000/friend-requests/",
                 { friendUsername },
                 {
                     headers: {
@@ -56,8 +60,9 @@ function Friends() {
                 }
             );
 
-            setFriendsList(response.data);
+            alert(response.data.message || "Friend request sent!");
         } catch (err) {
+            console.error("Error adding friend:", err.response?.data || err.message);
             setError("Failed to add friend. Please try again.");
         }
     };
@@ -73,7 +78,7 @@ function Friends() {
                     {friendsList.length > 0 ? (
                         friendsList.map((friend) => (
                             <li key={friend.id}>
-                                <strong>{friend.name}</strong> -{" "}
+                                <strong>{friend.username}</strong> -{" "}
                                 {friend.clubs.length > 0
                                     ? friend.clubs.join(", ")
                                     : "No clubs"}

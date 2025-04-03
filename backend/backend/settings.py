@@ -68,6 +68,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://club-hub.onrender.com",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
