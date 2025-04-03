@@ -1,54 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import "./Friends.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import React { useState, useEffect} from "react";
 
 function Friends() {
-
-    // friend object
-    const friend = {
-      id: int,
-      name: "",
-      clubs: []
-    }
-
     const navigate = useNavigate();
-    // const [friends, setFriends] = React.useState([]); // this will contain a list of friend objects
+    const [friendsList, setFriendsList] = useState([]); // List of friends
+    const [error, setError] = useState(""); // Error message
 
-    // this function is only called when the page initially loads
+    // Fetch the friend list when the page loads
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
-        if (user){
-            // make sure the user is logged in, then continue fetching friends list
-            const friends = JSON.parse(localStorage.getItem("friends"));
+        const token = localStorage.getItem("token");
 
-
-        }
-        else
-        {
-            setError("you must be logged in to have friends lamo ┏ (゜ω゜)=👉");
+        if (user && token) {
+            // Fetch the friend list from the backend
+            axios
+                .get("http://localhost:8000/api/friends/", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    setFriendsList(response.data); // Set the friend list from the response
+                })
+                .catch((err) => {
+                    setError("Failed to fetch friends list. Please try again later.");
+                });
+        } else {
+            setError("You must be logged in to view your friends.");
         }
     }, []);
 
-
-
-
     return (
-    <div className="friends-page">
-      <NavBar page="Friends" />
-      <div className="friends-container">
-        <h2>My Friends</h2>
-        <ul>
-          {friendsList.map(friend => (
-            <li key={friend.id}>
-              <strong>{friend.name}</strong> - {friend.club}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+        // complicate html list code
+        <div className="friends-page">
+            <NavBar page="Friends" />
+            <div className="friends-container">
+                <h2>My Friends</h2>
+                {error && <p className="error">{error}</p>}
+                <ul>
+                    {friendsList.length > 0 ? (
+                        friendsList.map((friend) => (
+                            <li key={friend.id}>
+                                <strong>{friend.name}</strong> -{" "}
+                                {friend.clubs.length > 0
+                                    ? friend.clubs.join(", ")
+                                    : "No clubs"}
+                            </li>
+                        ))
+                    ) : (
+                        !error && <p>No friends found.</p>
+                    )}
+                </ul>
+            </div>
+        </div>
     );
 }
 

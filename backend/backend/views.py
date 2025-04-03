@@ -142,7 +142,8 @@ class FriendListView(APIView):
             friend = f.to_user if f.from_user == user else f.from_user
             friends.append({
                 'id': friend.id,
-                'username': friend.username
+                'username': friend.username,
+                'clubs': [club.id for club in friend.clubs.all()]  # Assuming a many-to-many relationship
             })
 
         return Response(friends)

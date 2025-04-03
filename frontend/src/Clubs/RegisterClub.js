@@ -4,15 +4,15 @@ import axios from "axios";
 import "./RegisterClub.css";
 
 function RegisterClub() {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const [clubName, setClubName] = useState("");
-  const [description, setDescription] = useState("");
-  const [members, setMembers] = useState([]);
-  const [officers, setOfficers] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState(null);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+    const [clubName, setClubName] = useState("");
+    const [description, setDescription] = useState("");
+    const [members, setMembers] = useState([]);
+    const [officers, setOfficers] = useState([]);
+    const [currentUserId, setCurrentUserId] = useState(null);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
   // On load: get current user and set them as the first club member
     useEffect(() => {
@@ -103,3 +103,4 @@ function RegisterClub() {
 }
 
 export default RegisterClub;
+// import React, { useState } from "react";
