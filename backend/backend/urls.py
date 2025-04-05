@@ -20,6 +20,7 @@ from . import views
 from .views import FriendshipView
 from .views import FriendListView
 from .views import ClubListView
+from .views import PendingFriendRequestsView
 
 
 urlpatterns = [
@@ -33,4 +34,5 @@ urlpatterns = [
     path('friends/<int:friend_id>/', views.FriendshipView.as_view(), name='friendship-detail'),
     path("friend-requests/", FriendshipView.as_view(), name="friend_requests"),
     path('friends/', FriendListView.as_view(), name='friend-list'),
+    path("friend-requests/pending/", PendingFriendRequestsView.as_view(), name="pending-friend-requests"),
 ]   
