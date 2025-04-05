@@ -53,7 +53,7 @@ function RegisterClub() {
 
         // make the API listening request to the backend
         try {
-        const response = await axios.post("${process.env.REACT_API_URL}/clubs/", clubData, {
+        const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/clubs/`, clubData, {
                 // add the token to the request headers
                 headers: {
                     Authorization: `Bearer ${token}`,

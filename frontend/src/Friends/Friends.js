@@ -19,7 +19,7 @@ function Friends() {
 
         if (user && token) {
             axios
-                .get("${process.env.REACT_API_URL}/friends/", {
+                .get(`${process.env.REACT_APP_API_BASE_URL}/friends/`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -50,7 +50,7 @@ function Friends() {
 
         try {
             const response = await axios.post(
-                "${process.env.REACT_API_URL}/friend-requests/",
+                `${process.env.REACT_APP_API_BASE_URL}/friend-requests/`,
                 { friendUsername },
                 {
                     headers: {
