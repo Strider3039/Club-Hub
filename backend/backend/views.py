@@ -111,30 +111,26 @@ class ClubListView(APIView):
 
 # Handles sending and accepting friend requests
 class FriendshipView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     # POST /friend-requests/: Creates a new friend request
     def post(self, request):
-        # Deserialize the incoming data (to_user_id) and inject current user into context
         serializer = FriendshipSerializer(data=request.data, context={'request': request})
 
-        # Validate the data and create a new Friendship if valid
         if serializer.is_valid():
-            serializer.save()  # creates a 'pending' request from request.user to to_user
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        # If the request is invalid, return error details
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # PATCH /friend-requests/<pk>/: Accepts a friend request
     def patch(self, request, pk):
         try:
-            # Find the friendship where the current user is the recipient (to_user)
             friendship = Friendship.objects.get(pk=pk, to_user=request.user)
         except Friendship.DoesNotExist:
-            # Return error if not found or not authorized
             return Response({'error': 'Request not found or unauthorized.'}, status=404)
 
-        # Accept the friend request
         friendship.status = 'accepted'
         friendship.save()
 
@@ -143,6 +139,8 @@ class FriendshipView(APIView):
 
 # Lists all accepted friends for the current user
 class FriendListView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     # GET /friends/
     def get(self, request):

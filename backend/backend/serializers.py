@@ -64,43 +64,39 @@ class UserSummarySerializer(serializers.ModelSerializer):
         fields = ['id', 'username']
 
 class FriendshipSerializer(serializers.ModelSerializer):
-    # Represent the sender and receiver as brief user objects (read-only)
     from_user = UserSummarySerializer(read_only=True)
     to_user = UserSummarySerializer(read_only=True)
 
-    # Client provides only the ID of the recipient when sending request
-    to_user_id = serializers.IntegerField(write_only=True)
+    friendUsername = serializers.CharField(write_only=True)
 
     class Meta:
         model = Friendship
-        # These are the fields exposed in the API
-        fields = ['id', 'from_user', 'to_user', 'to_user_id', 'status', 'created_at']
-        # These fields are controlled by the system, not the user
+        fields = ['id', 'from_user', 'to_user', 'friendUsername', 'status', 'created_at']
         read_only_fields = ['status', 'created_at']
 
     def validate(self, data):
-        # Grab the user sending the request (from token/session context)
         from_user = self.context['request'].user
-        to_user_id = data['to_user_id']
+        friend_username = data.get('friendUsername')
 
-        # Prevent sending a request to someone you already requested
-        if Friendship.objects.filter(from_user=from_user, to_user_id=to_user_id).exists():
-            raise serializers.ValidationError("Friend request already sent.")
+        try:
+            to_user = User.objects.get(username=friend_username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User does not exist.")
 
-        # Prevent sending a request to yourself
-        if from_user.id == to_user_id:
+        if from_user == to_user:
             raise serializers.ValidationError("You cannot add yourself.")
 
+        if Friendship.objects.filter(from_user=from_user, to_user=to_user).exists():
+            raise serializers.ValidationError("Friend request already sent.")
+
+        # Add to_user to validated data for use in create()
+        data['to_user'] = to_user
         return data
 
     def create(self, validated_data):
-        # Sender is inferred from auth context
         from_user = self.context['request'].user
+        to_user = validated_data['to_user']
 
-        # Recipient is looked up by ID
-        to_user = User.objects.get(id=validated_data['to_user_id'])
-
-        # Create a new pending friendship request
         return Friendship.objects.create(
             from_user=from_user,
             to_user=to_user,
