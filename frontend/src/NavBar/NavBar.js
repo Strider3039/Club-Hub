@@ -20,11 +20,6 @@ function NavBar(props) {
 
                 <div className="menu-item">
                     <Link to="/friends">Friends</Link>
-                    <div className="dropdown">
-                        <Link to="/friends/my-friends">My Friends</Link>
-                        <Link to="/friends/requests">Requests</Link>
-                        <Link to="/friends/search">Search</Link>
-                    </div>
                 </div>
 
                 <Link to="/dashboard">Dashboard</Link>

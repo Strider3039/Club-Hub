@@ -133,7 +133,6 @@ class FriendshipView(APIView):
 
         friendship.status = 'accepted'
         friendship.save()
-
         return Response({'message': 'Friend request accepted.'})
 
 
@@ -164,3 +163,28 @@ class FriendListView(APIView):
             })
 
         return Response(friends)
+
+class PendingFriendRequestsView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # GET /friend-requests/pending/
+    def get(self, request):
+        user = request.user
+
+        # Friend requests sent TO this user that are still pending
+        pending_requests = Friendship.objects.filter(to_user=user, status='pending')
+
+        data = [
+            {
+                "id": f.id,
+                "from_user": {
+                    "id": f.from_user.id,
+                    "username": f.from_user.username
+                },
+                "created_at": f.created_at,
+            }
+            for f in pending_requests
+        ]
+
+        return Response(data, status=200)
