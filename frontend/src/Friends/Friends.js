@@ -46,7 +46,7 @@ function Friends() {
 
         try {
             const response = await axios.post(
-                "http://localhost:8000/friends/add",
+                "http://localhost:8000/friends/",
                 { friendUsername },
                 {
                     headers: {

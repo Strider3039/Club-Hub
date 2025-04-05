@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { Button } from 'react-bootstrap';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+
 
 // Calendar component that will handle logic for pulling club events. user can add events
 function ClubCalendar() {
@@ -31,6 +34,15 @@ function ClubCalendar() {
         setShowForm(false);
     };
 
+    // const popover = (
+    //     <Popover id="popover-basic">
+    //         <Popover.Header as="h3">{eventName}</Popover.Header>
+    //         <Popover.Body>
+    //             {eventDate}
+    //         </Popover.Body>
+    //     </Popover>
+    // );
+
     return (
         <div>
             <h3>{date.toDateString()}</h3>
@@ -49,23 +61,36 @@ function ClubCalendar() {
                 onClickDay={(clickedDate) => setEventDate(clickedDate) & setShowForm(true)}
                 value={date}
                 tileContent={({ date, view }) => {
-                    // Format date to YYYY-MM-DD to compare
                     const dateStr = date.toISOString().split("T")[0];
                     const event = events.find(event => event.date.toISOString().split("T")[0] === dateStr);
 
-                    // if event exists, put a red dot on day
-                    return event ? (
-                        <div style={{
-                            backgroundColor: "red",
-                            width: "8px",
-                            height: "8px",
-                            borderRadius: "50%",
-                            margin: "auto"
-                        }}>
-                            {/*{event.name}*/}
-                        </div>
-                    ) : null;
+                    if (event) {
+                        const popover = (
+                            <Popover id={`popover-${dateStr}`}>
+                                <Popover.Header as="h3">{event.name}</Popover.Header>
+                                <Popover.Body>
+                                    {event.date.toDateString()}
+                                </Popover.Body>
+                            </Popover>
+                        );
+
+                        return (
+                            <OverlayTrigger trigger="click" placement="left" overlay={popover} rootClose>
+                                <div style={{
+                                    backgroundColor: "red",
+                                    width: "10px",
+                                    height: "10px",
+                                    borderRadius: "50%",
+                                    margin: "auto",
+                                    cursor: "pointer"
+                                }} />
+                            </OverlayTrigger>
+                        );
+                    }
+
+                    return null;
                 }}
+
             />
 
             { showForm && (
