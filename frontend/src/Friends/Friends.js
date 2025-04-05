@@ -7,7 +7,8 @@ import { Button } from "react-bootstrap";
 function Friends() {
     const [friendsList, setFriendsList] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
-    const [error, setError] = useState("");
+    const [friendsError, setFriendsError] = useState("");
+    const [pendingError, setPendingError] = useState("");
 
     const token = localStorage.getItem("token");
 
@@ -20,7 +21,7 @@ function Friends() {
                 setFriendsList(response.data);
             } catch (err) {
                 console.error("Error fetching friends:", err.response?.data || err.message);
-                setError("Failed to fetch friends list.");
+                setFriendsError("Failed to load friends.");
             }
         };
 
@@ -32,7 +33,7 @@ function Friends() {
                 setPendingRequests(response.data);
             } catch (err) {
                 console.error("Error fetching pending requests:", err.response?.data || err.message);
-                setError("Failed to fetch pending requests.");
+                setPendingError("Failed to load pending requests.");
             }
         };
 
@@ -60,7 +61,7 @@ function Friends() {
             alert("Friend request sent!");
         } catch (err) {
             console.error("Error adding friend:", err.response?.data || err.message);
-            setError("Failed to add friend.");
+            setFriendsError("Failed to add friend.");
         }
     };
 
@@ -71,56 +72,59 @@ function Friends() {
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            // Refresh lists after accepting
             window.location.reload();
         } catch (err) {
             console.error("Error accepting request:", err.response?.data || err.message);
-            setError("Failed to accept friend request.");
+            setPendingError("Failed to accept friend request.");
         }
     };
 
     return (
-        <div className="container friends-page">
+        <div className="friends-page">
             <NavBar page="Friends" />
+            <div className="container-fluid px-5 mt-4">
+                <div className="row gx-4 gy-4">
+                    {/* Left Column */}
+                    <div className="col-lg-3">
+                        <div className="section-card">
+                            <h4>Pending Requests</h4>
+                            {pendingError && <p className="text-danger">{pendingError}</p>}
+                            <ul>
+                                {pendingRequests.length > 0 ? (
+                                    pendingRequests.map((req) => (
+                                        <li key={req.id}>
+                                            <span>{req.from_user.username}</span>
+                                            <Button size="sm" onClick={() => handleAcceptRequest(req.id)}>Accept</Button>
+                                        </li>
+                                    ))
+                                ) : (
+                                    !pendingError && <p className="text-muted">No pending requests.</p>
+                                )}
+                            </ul>
+                        </div>
+                    </div>
 
-            <div className="friends-header">
-                <h2>Friends</h2>
-                <Button className="add-friend-btn" onClick={handleNewFriend}>Add Friend</Button>
-            </div>
-
-            <div className="row friends-layout">
-                {/* Pending Requests */}
-                <div className="col-md-4 section-card">
-                    <h3>Pending Requests</h3>
-                    <ul>
-                        {pendingRequests.length > 0 ? (
-                            pendingRequests.map((req) => (
-                                <li key={req.id}>
-                                    <span>{req.from_user.username}</span>
-                                    <Button size="sm" onClick={() => handleAcceptRequest(req.id)}>Accept</Button>
-                                </li>
-                            ))
-                        ) : (
-                            <p>No pending requests.</p>
-                        )}
-                    </ul>
-                </div>
-
-                {/* Friends List */}
-                <div className="col-md-6 section-card">
-                    <h3>My Friends</h3>
-                    {error && <p className="text-danger">{error}</p>}
-                    <ul>
-                        {friendsList.length > 0 ? (
-                            friendsList.map((friend) => (
-                                <li key={friend.id}>
-                                    <span>{friend.username}</span>
-                                </li>
-                            ))
-                        ) : (
-                            !error && <p>No friends found.</p>
-                        )}
-                    </ul>
+                    {/* Right Column */}
+                    <div className="col-lg-9">
+                        <div className="section-card">
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h3>My Friends</h3>
+                                <Button onClick={handleNewFriend}>Add Friend</Button>
+                            </div>
+                            {friendsError && <p className="text-danger">{friendsError}</p>}
+                            <ul>
+                                {friendsList.length > 0 ? (
+                                    friendsList.map((friend) => (
+                                        <li key={friend.id}>
+                                            <span>{friend.username}</span>
+                                        </li>
+                                    ))
+                                ) : (
+                                    !friendsError && <p className="text-muted">No friends found.</p>
+                                )}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -133,7 +133,6 @@ class FriendshipView(APIView):
 
         friendship.status = 'accepted'
         friendship.save()
-
         return Response({'message': 'Friend request accepted.'})
 
 
