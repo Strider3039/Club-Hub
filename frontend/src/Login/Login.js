@@ -13,7 +13,7 @@ function Login() {
     e.preventDefault();
 
     try {
-        const response =await axios.post("http://localhost:8000/login/", {
+        const response =await axios.post(`${process.env.REACT_APP_API_BASE_URL}/login/`, {
             username,
             password,
         });
@@ -22,7 +22,7 @@ function Login() {
             if (response.data.access) {
                 // Store the token correctly
                 localStorage.setItem("token", response.data.access);
-                localStorage.setItem("user", JSON.stringify(response.data.user));  // <-- this was missing!
+                localStorage.setItem("user", JSON.stringify(response.data.user));
 
 
                 // Redirect to the home page

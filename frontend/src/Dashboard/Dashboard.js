@@ -26,7 +26,7 @@ function Dashboard() {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(
-                "http://localhost:8000/change-password/",
+                `${process.env.REACT_APP_API_BASE_URL}/change-password/`,
                 {
                     current_password: currentPassword,
                     new_password: newPassword,
@@ -58,7 +58,7 @@ function Dashboard() {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(
-                "http://localhost:8000/delete-account/",
+                `${process.env.REACT_APP_API_BASE_URL}/delete-account/`,
                 {
                     password_confirmation: passwordConfirmation,
                 },

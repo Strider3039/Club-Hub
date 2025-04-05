@@ -23,7 +23,7 @@ function Register() {
         }
 
         try {
-            const response = await axios.post("http://localhost:8000/register/", {
+            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/register/`, {
                 first_name: firstName,
                 last_name: lastName,
                 email,
