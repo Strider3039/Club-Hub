@@ -49,11 +49,73 @@
 .clubs-content input {
   width: 100%;
   padding: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 1.2rem;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
 .clubs-list {
   margin-top: 10px;
+}
+
+.clubs-list > p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.club-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style-type: none;
+}
+
+.club-item {
+  background-color: #dbdbdb;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem;                    /* add padding to separate text from border */
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(10, 10, 10, 0.05);
+  color: #b1b1b1;                       
+  opacity: 1;                        
+  transition: background-color 0.2s ease;
+}
+
+.club-item:hover {
+  background-color: #c9c9c9;
+}
+
+.club-item h4 {
+  position: relative;
+  bottom: 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #222;
+  padding-bottom: .4rem;
+  margin-bottom: .2rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.club-item p {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  color: #3a3a3a; /* slightly lighter than title, but still readable */
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.create-button {
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  padding: 0.5rem 1.2rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.create-button:hover {
+  background-color: #004b9b;
 }
