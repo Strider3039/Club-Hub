@@ -57,3 +57,26 @@
 .clubs-list {
   margin-top: 10px;
 }
+
+.club-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style-type: none;
+}
+
+.club-item {
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 1rem;                     /* <-- Add padding inside the box */
+  margin-bottom: 1rem;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(10, 10, 10, 0.05);
+  color: #333;                       /* <-- Darker font color */
+  opacity: 1;                        /* Remove the faded look */
+  transition: background-color 0.2s ease;
+}
+
+.club-item:hover {
+  background-color: #686868;
+}

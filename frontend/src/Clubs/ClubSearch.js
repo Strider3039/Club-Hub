@@ -59,8 +59,8 @@ function ClubSearch() {
                         <ul className="club-results">
                             {filteredClubs.map((club) => (
                                 <li key={club.id} className="club-item">
-                                    <h4>{club.name}</h4>
-                                    <p>{club.description}</p>
+                                    <h4 className="title">{club.name}</h4>
+                                    <p className="description">{club.description}</p>
                                 </li>
                             ))}
                         </ul>
