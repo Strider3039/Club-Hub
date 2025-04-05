@@ -25,16 +25,23 @@ from .views import PendingFriendRequestsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Admin URL
+
+    # Authorization URLs
     path('register/', views.RegisterView.as_view(), name='register'),
     path('login/', views.LoginView.as_view(), name='login'),
     path('change-password/', views.ChangePasswordView.as_view(), name='change-password'),
     path('delete-account/', views.DeleteAccountView.as_view(), name='delete-account'),
+
+    # Club URLs
     path('clubs/', views.ClubRegistrationView.as_view(), name='club-register'),
     path("clubs/list/", ClubListView.as_view()),
-    path('friends/', views.FriendshipView.as_view(), name='friendship'),
+
+    # Friends URLs
+    path('friends/', FriendListView.as_view(), name='friend-list'),
+
+    #Friend Requests URLs
     path('friends/<int:friend_id>/', views.FriendshipView.as_view(), name='friendship-detail'),
     path("friend-requests/", FriendshipView.as_view(), name="friend_requests"),
-    path('friends/', FriendListView.as_view(), name='friend-list'),
     path("friend-requests/pending/", PendingFriendRequestsView.as_view(), name="pending-friend-requests"),
     path("friend-requests/<int:pk>/", FriendshipView.as_view(), name="friend_requests_patch"),
 ]

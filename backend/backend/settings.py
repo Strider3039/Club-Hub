@@ -66,7 +66,6 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://club-hub.onrender.com",
-    "http://localhost:3000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
