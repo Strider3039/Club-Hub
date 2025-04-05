@@ -31,9 +31,10 @@ urlpatterns = [
     path('delete-account/', views.DeleteAccountView.as_view(), name='delete-account'),
     path('clubs/', views.ClubRegistrationView.as_view(), name='club-register'),
     path("clubs/list/", ClubListView.as_view()),
+    path('friends/', views.FriendshipView.as_view(), name='friendship'),
     path('friends/<int:friend_id>/', views.FriendshipView.as_view(), name='friendship-detail'),
     path("friend-requests/", FriendshipView.as_view(), name="friend_requests"),
     path('friends/', FriendListView.as_view(), name='friend-list'),
     path("friend-requests/pending/", PendingFriendRequestsView.as_view(), name="pending-friend-requests"),
     path("friend-requests/<int:pk>/", FriendshipView.as_view(), name="friend_requests_patch"),
-]   
+]
