@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.hashers import make_password
 from .serializers import ClubSerializer
+from .serializers import EventSerializer
 from .serializers import FriendshipSerializer
 from .models import Friendship
 from .models import Club
@@ -108,6 +109,39 @@ class ClubListView(APIView):
         clubs = Club.objects.all()
         serializer = ClubSerializer(clubs, many=True)
         return Response(serializer.data)
+
+# Lists all events from a club
+class ClubEventsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, club_id):
+        try:
+            club = Club.objects.get(pk=club_id)
+        except Club.DoesNotExist:
+            return Response({"error": "Club not found."}, status=404)
+
+        events = club.events.all()
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, club_id): # chatgpt held my hand with this
+        try:
+            club = Club.objects.get(pk=club_id)
+        except Club.DoesNotExist:
+            return Response({"error": "Club not found."}, status=404)
+
+        # passing the incoming data to the event serializer
+        serializer = EventSerializer(data=request.data)
+
+        if serializer.is_valid():
+            event = serializer.save()  # this will call the `create()` method in the serializer
+            club.events.add(event)  # add the event to the club
+
+            # return serialized event data as a response
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        # event data was not valid
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Handles sending and accepting friend requests
 class FriendshipView(APIView):

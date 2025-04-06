@@ -4,44 +4,48 @@ import 'react-calendar/dist/Calendar.css';
 import { Button } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
+import axios from 'axios';
 
-
-// Calendar component that will handle logic for pulling club events. user can add events
 function ClubCalendar() {
     const [date, setDate] = useState(new Date()); // for showing real-time date
     const [events, setEvents] = useState([]); // stores event names & dates
+    const [description, setDescription] = useState("");
     const [showForm, setShowForm] = useState(false); // should we collect user input?
     const [error, setError] = useState(""); // holds error message
     const [eventName, setEventName] = useState(""); // new event name
     const [eventDate, setEventDate] = useState(new Date()); // new event date
 
-    const createNewEvent = (eventName, eventDate) => {
-        // Validate that both event name and date are provided
+    // create a new event
+    const createNewEvent = async (eventName, eventDate) => {
         if (!eventName || !eventDate) {
             setError("Both event name and date are required.");
             return;
         }
 
-        // this line adds events to events list
-        setEvents(prevEvents => [...prevEvents, { name: eventName, date: eventDate }]);
+        const eventData = {
+            title: eventName,
+            description: description,
+            date: eventDate.toISOString()
+        };
 
-        // resets input fields
-        setEventName("");
-        setEventDate(new Date());
-        setError("");
+        try {
+            // this requests the backend to create a new event
+            // returns a thumbs up if it succeeds
+            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/clubs/events/`, eventData);
 
-        // Close the form popup
-        setShowForm(false);
+            // update the locally stored events
+            setEvents(prevEvents => [...prevEvents, response.data]);
+
+            // clear the form data
+            setEventName("");
+            setDescription("");
+            setEventDate(new Date());
+            setError("");
+            setShowForm(false);
+        } catch (error) {
+            setError("Failed to create event. Please try again.");
+        }
     };
-
-    // const popover = (
-    //     <Popover id="popover-basic">
-    //         <Popover.Header as="h3">{eventName}</Popover.Header>
-    //         <Popover.Body>
-    //             {eventDate}
-    //         </Popover.Body>
-    //     </Popover>
-    // );
 
     return (
         <div>
@@ -51,7 +55,6 @@ function ClubCalendar() {
             <Button
                 className={"m-2 mt-0"}
                 onClick={(e) => setShowForm(true)}
-                onClickDay={(e) => setEventDate(e.date) & setShowForm(true)}
             >
                 Add Event
             </Button>
@@ -62,14 +65,14 @@ function ClubCalendar() {
                 value={date}
                 tileContent={({ date, view }) => {
                     const dateStr = date.toISOString().split("T")[0];
-                    const event = events.find(event => event.date.toISOString().split("T")[0] === dateStr);
+                    const event = events.find(event => event.date.split("T")[0] === dateStr);
 
                     if (event) {
                         const popover = (
                             <Popover id={`popover-${dateStr}`}>
-                                <Popover.Header as="h3">{event.name}</Popover.Header>
+                                <Popover.Header as="h3">{event.title}</Popover.Header>
                                 <Popover.Body>
-                                    {event.date.toDateString()}
+                                    {new Date(event.date).toDateString()}
                                 </Popover.Body>
                             </Popover>
                         );
@@ -90,30 +93,39 @@ function ClubCalendar() {
 
                     return null;
                 }}
-
             />
 
-            { showForm && (
+            {showForm && (
                 <div className={"NewEventForm"}>
                     <h3>New Event</h3>
-                    <form onSubmit={(e) => {e.preventDefault(); createNewEvent(eventName, eventDate);
-                    }}>
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            createNewEvent(eventName, eventDate);
+                        }}
+                    >
                         <input
-                            style={{marginRight: "2px", width: "fit-content"}}
+                            style={{ marginRight: "2px", width: "fit-content" }}
                             type="text"
                             placeholder="Event Name"
                             value={eventName}
                             onChange={(e) => setEventName(e.target.value)}
                         />
                         <input
-                            style={{marginLeft: "2px", width: "fit-content"}}
+                            style={{ marginLeft: "2px", width: "fit-content" }}
                             type="date"
                             value={eventDate.toISOString().split("T")[0]}
                             onChange={(e) => setEventDate(new Date(e.target.value))}
                         />
+                        <textarea
+                            className="eventDescription"
+                            placeholder="What's going on!"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
                         <Button
                             className={"m-2 mb-0"}
-                            onClick={(e) => createNewEvent(eventName, eventDate)}
+                            type="submit"
                         >
                             Submit
                         </Button>
