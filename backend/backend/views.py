@@ -149,26 +149,60 @@ class FriendshipView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    # POST /friend-requests/: Creates a new friend request
+    # POST /friend-requests/
     def post(self, request):
         serializer = FriendshipSerializer(data=request.data, context={'request': request})
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # PATCH /friend-requests/<pk>/: Accepts a friend request
+    # PATCH /friend-requests/<pk>/
     def patch(self, request, pk):
         try:
             friendship = Friendship.objects.get(pk=pk, to_user=request.user)
+            friendship.status = 'accepted'
+            friendship.save()
+            return Response({'message': 'Friend request accepted.'})
         except Friendship.DoesNotExist:
             return Response({'error': 'Request not found or unauthorized.'}, status=404)
 
-        friendship.status = 'accepted'
-        friendship.save()
-        return Response({'message': 'Friend request accepted.'})
+    # GET /friends/<friend_id>/
+    def get(self, request, friend_id):
+        user = request.user
+        try:
+            friendship = Friendship.objects.get(
+                Q(from_user=user, to_user_id=friend_id) |
+                Q(from_user_id=friend_id, to_user=user),
+                status='accepted'
+            )
+            friend = friendship.to_user if friendship.from_user == user else friendship.from_user
+            data = {
+                'id': friend.id,
+                'username': friend.username,
+                'first_name': friend.first_name,
+                'last_name': friend.last_name,
+                'email': friend.email,
+                'clubs': [club.name for club in friend.clubs.all()]
+            }
+            return Response(data)
+        except Friendship.DoesNotExist:
+            return Response({'error': 'You are not friends with this user.'}, status=404)
+
+    # DELETE /friends/<friend_id>/
+    def delete(self, request, friend_id):
+        user = request.user
+        try:
+            friendship = Friendship.objects.get(
+                Q(from_user=user, to_user_id=friend_id) |
+                Q(from_user_id=friend_id, to_user=user),
+                status='accepted'
+            )
+            friendship.delete()
+            return Response({'message': 'Friend removed successfully.'}, status=status.HTTP_204_NO_CONTENT)
+        except Friendship.DoesNotExist:
+            return Response({'error': 'Friendship not found.'}, status=404)
+
 
 
 # Lists all accepted friends for the current user

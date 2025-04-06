@@ -2,41 +2,43 @@ import React, { useEffect, useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import "./Friends.css";
 import axios from "axios";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
 function Friends() {
     const [friendsList, setFriendsList] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
+    const [selectedFriend, setSelectedFriend] = useState(null);
+    const [showModal, setShowModal] = useState(false);
     const [friendsError, setFriendsError] = useState("");
     const [pendingError, setPendingError] = useState("");
 
     const token = localStorage.getItem("token");
 
+    const fetchFriends = async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/friends/`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setFriendsList(response.data);
+        } catch (err) {
+            console.error("Error fetching friends:", err.response?.data || err.message);
+            setFriendsError("Failed to load friends.");
+        }
+    };
+
+    const fetchPendingRequests = async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/friend-requests/pending/`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setPendingRequests(response.data);
+        } catch (err) {
+            console.error("Error fetching pending requests:", err.response?.data || err.message);
+            setPendingError("Failed to load pending requests.");
+        }
+    };
+
     useEffect(() => {
-        const fetchFriends = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/friends/`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setFriendsList(response.data);
-            } catch (err) {
-                console.error("Error fetching friends:", err.response?.data || err.message);
-                setFriendsError("Failed to load friends.");
-            }
-        };
-
-        const fetchPendingRequests = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/friend-requests/pending/`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setPendingRequests(response.data);
-            } catch (err) {
-                console.error("Error fetching pending requests:", err.response?.data || err.message);
-                setPendingError("Failed to load pending requests.");
-            }
-        };
-
         if (token) {
             fetchFriends();
             fetchPendingRequests();
@@ -72,10 +74,39 @@ function Friends() {
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            window.location.reload();
+            fetchFriends();
+            fetchPendingRequests();
         } catch (err) {
             console.error("Error accepting request:", err.response?.data || err.message);
             setPendingError("Failed to accept friend request.");
+        }
+    };
+
+    const handleViewFriend = async (friendId) => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/friends/${friendId}/`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setSelectedFriend(response.data);
+            setShowModal(true);
+        } catch (err) {
+            console.error("Error loading friend details:", err.response?.data || err.message);
+        }
+    };
+
+    const handleUnfriend = async (friendId) => {
+        const confirmDelete = window.confirm("Are you sure you want to remove this friend?");
+        if (!confirmDelete) return;
+
+        try {
+            await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/friends/${friendId}/`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            fetchFriends();  // Refresh list
+            setShowModal(false);  // Close modal if open
+        } catch (err) {
+            console.error("Error removing friend:", err.response?.data || err.message);
+            alert("Failed to remove friend.");
         }
     };
 
@@ -84,7 +115,7 @@ function Friends() {
             <NavBar page="Friends" />
             <div className="container-fluid px-5 mt-4">
                 <div className="row gx-4 gy-4">
-                    {/* Left Column */}
+                    {/* Pending Requests */}
                     <div className="col-lg-3">
                         <div className="section-card">
                             <h4>Pending Requests</h4>
@@ -104,7 +135,7 @@ function Friends() {
                         </div>
                     </div>
 
-                    {/* Right Column */}
+                    {/* Friends List */}
                     <div className="col-lg-9">
                         <div className="section-card">
                             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -117,6 +148,10 @@ function Friends() {
                                     friendsList.map((friend) => (
                                         <li key={friend.id}>
                                             <span>{friend.username}</span>
+                                            <div className="d-flex gap-2">
+                                                <Button size="sm" variant="info" onClick={() => handleViewFriend(friend.id)}>View</Button>
+                                                <Button size="sm" variant="danger" onClick={() => handleUnfriend(friend.id)}>Unfriend</Button>
+                                            </div>
                                         </li>
                                     ))
                                 ) : (
@@ -127,6 +162,30 @@ function Friends() {
                     </div>
                 </div>
             </div>
+
+            {/* View Friend Modal */}
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Friend Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedFriend ? (
+                        <div>
+                            <p><strong>Username:</strong> {selectedFriend.username}</p>
+                            <p><strong>First Name:</strong> {selectedFriend.first_name}</p>
+                            <p><strong>Last Name:</strong> {selectedFriend.last_name}</p>
+                            <p><strong>Email:</strong> {selectedFriend.email}</p>
+                            <p><strong>Clubs:</strong> {selectedFriend.clubs.length > 0 ? selectedFriend.clubs.join(", ") : "No clubs"}</p>
+                        </div>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={() => handleUnfriend(selectedFriend.id)}>Unfriend</Button>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }
