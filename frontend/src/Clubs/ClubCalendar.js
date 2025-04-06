@@ -6,7 +6,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import authAxios from "../utils/authAxios"; // ✅ Custom Axios with token auto-refresh
 
-function ClubCalendar() {
+function ClubCalendar({ clubId }) {
     const [date, setDate] = useState(new Date());
     const [events, setEvents] = useState([]);
     const [description, setDescription] = useState("");
@@ -15,6 +15,26 @@ function ClubCalendar() {
     const [eventName, setEventName] = useState("");
     const [eventDate, setEventDate] = useState(new Date());
 
+    // Load events when component mounts
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(
+                    `${process.env.REACT_APP_API_BASE_URL}/clubs/events?club_id=${clubId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    }
+                );
+                setEvents(response.data);
+            } catch (err) {
+                console.error("Error fetching events:", err);
+            }
+        };
+
+    // create a new event
     const createNewEvent = async (eventName, eventDate) => {
         if (!eventName || !eventDate) {
             setError("Both event name and date are required.");
@@ -24,13 +44,19 @@ function ClubCalendar() {
         const eventData = {
             title: eventName,
             description: description,
-            date: eventDate.toISOString()
+            date: eventDate.toISOString(),
+            club: clubId  // ✅ Include club ID
         };
+
+        const token = localStorage.getItem("token");
 
         try {
             const response = await authAxios.post("/clubs/events/", eventData); // ✅ Replaced axios with authAxios
 
+            // update the locally stored events
             setEvents(prevEvents => [...prevEvents, response.data]);
+
+            // clear the form data
             setEventName("");
             setDescription("");
             setEventDate(new Date());
@@ -46,7 +72,7 @@ function ClubCalendar() {
         <div>
             <h3>{date.toDateString()}</h3>
 
-            <Button className="m-2 mt-0" onClick={() => setShowForm(true)}>
+            <Button className={"m-2 mt-0"} onClick={() => setShowForm(true)}>
                 Add Event
             </Button>
 
@@ -118,7 +144,7 @@ function ClubCalendar() {
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
-                        <Button className="m-2 mb-0" type="submit">
+                        <Button className={"m-2 mb-0"} type="submit">
                             Submit
                         </Button>
                     </form>

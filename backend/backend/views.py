@@ -114,38 +114,27 @@ class ClubListView(APIView):
         serializer = ClubSerializer(clubs, many=True)
         return Response(serializer.data)
 
-# Lists all events from a club
 class ClubEventsView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, club_id):
-        try:
-            club = Club.objects.get(pk=club_id)
-        except Club.DoesNotExist:
+    def get(self, request):
+        club_id = request.query_params.get("club_id")
+        if not club_id:
+            return Response({"error": "club_id is required in query parameters."}, status=400)
+
+        club = Club.objects.filter(pk=club_id).first()
+        if not club:
             return Response({"error": "Club not found."}, status=404)
 
         events = club.events.all()
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
-    def post(self, request, club_id): # chatgpt held my hand with this
-        try:
-            club_id = request.data.get("club_id")
-            club = Club.objects.get(pk=club_id)
-        except Club.DoesNotExist:
-            return Response({"error": "Club not found."}, status=404)
-
-        # passing the incoming data to the event serializer
+    def post(self, request):
         serializer = EventSerializer(data=request.data)
-
         if serializer.is_valid():
-            event = serializer.save()  # this will call the `create()` method in the serializer
-            club.events.add(event)  # add the event to the club
-
-            # return serialized event data as a response
+            serializer.save()  # This assumes the EventSerializer includes the `club` field
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        # event data was not valid
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Handles sending and accepting friend requests

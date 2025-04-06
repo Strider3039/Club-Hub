@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=100)),
                 ('description', models.TextField()),
                 ('date', models.DateTimeField()),
-                ('club', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', to='backend.club')),
+                ('club', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='backend.club')),
             ],
         ),
         migrations.CreateModel(
