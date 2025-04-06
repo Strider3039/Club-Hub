@@ -4,6 +4,7 @@ import "./ClubSearch.css"; // Updated CSS
 import { useNavigate } from "react-router-dom";
 import authAxios from "../utils/authAxios";
 import Button from "react-bootstrap/Button";
+import { Container, Row, Col } from "react-bootstrap";
 
 function ClubSearch() {
     const navigate = useNavigate();
@@ -47,38 +48,52 @@ function ClubSearch() {
     };
 
     return (
-        <div className="clubs-page">
+        <>
             <NavBar page="ClubSearch" />
-            <div className="clubs-container">
-                <div className="clubs-content">
-                    <input
-                        type="text"
-                        placeholder="Search clubs..."
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                    />
-                    <div className="clubs-list">
-                        <p>Showing results for "{searchTerm || "All Clubs"}"</p>
-                        <ul className="club-results">
-                            {filteredClubs.map((club) => (
-                                <li
-                                    key={club.id}
-                                    className="club-item"
-                                    onClick={() => handleClubClick(club.id)} // Make it clickable
-                                >
-                                    <h4>{club.name}</h4>
-                                    <p>{club.description}</p>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-                {/* Create Club Button */}
-                <Button className="create-button" onClick={handleRegister}>
-                    Create Club
-                </Button>
-            </div>
-        </div>
+                <Container fluid style={{ backgroundColor: "#fdfcf7" }} className="vh-100 mt-0 p-4 flex-column">
+                    <Row className="align-items-start flex-grow-1 mb-3 text-center">
+                        <Col></Col>
+                        <Col xs={1}>
+                            {/* Create Club Button */}
+                            <Button className="create-button" onClick={handleRegister}>
+                                Create Club
+                            </Button>
+                        </Col>
+                        <Col xs={12} md={6} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
+                            <div className="mb-3">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search clubs..."
+                                    value={searchTerm}
+                                    onChange={handleSearchChange}
+                                />
+                            </div>
+
+                            <div className="clubs-list">
+                                <h5 className="mb-3 text-secondary">
+                                    Showing results for <strong>{searchTerm || "All Clubs"}</strong>
+                                </h5>
+
+                                <ul className="list-group">
+                                    {filteredClubs.map((club) => (
+                                        <li
+                                            key={club.id}
+                                            className="list-group-item list-group-item-action mb-2 rounded"
+                                            style={{cursor: "pointer"}}
+                                            onClick={() => handleClubClick(club.id)}
+                                        >
+                                            <h5 className="mb-1 fw-bold">{club.name}</h5>
+                                            <p className="mb-0 text-muted">{club.description}</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </Col>
+                        <Col></Col>
+                    </Row>
+                </Container>
+        </>
     );
 }
 
