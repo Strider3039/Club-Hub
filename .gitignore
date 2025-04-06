@@ -1,33 +1,28 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# === General ===
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Ignore SQLite database
-backend/db.sqlite3
-
-# Ignore Python cache files
+# === Python ===
 __pycache__/
-*.pyc
-
-# Ignore environment files
+*.py[cod]
 *.env
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Ignore Node.js dependencies
+# Ignore Django migration __pycache__, but keep migration files like 0001_initial.py
+backend/backend/migrations/__pycache__/
+
+# === Node/React ===
 node_modules/
 .pnp
 .pnp.js
-
-# Ignore testing coverage reports
-coverage/
-
-# Ignore build files
 build/
 
-# Misc
-.DS_Store
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-/backend/backend/migrations/0001_initial.py
+# === Coverage / Testing ===
+coverage/
