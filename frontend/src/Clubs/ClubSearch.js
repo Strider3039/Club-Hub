@@ -38,9 +38,9 @@ function ClubSearch() {
 
   // Navigate to a detail page for the selected club
   const handleClubClick = (clubId) => {
-    // Example route: /clubHome/:id
     navigate(`/clubHome/${clubId}`);
   };
+
 
   const handleRegister = () => {
     navigate("/clubRegister");

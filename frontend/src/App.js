@@ -9,7 +9,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // For testing and club pages
 import ClubDashboard from "./Clubs/ClubDashboard";
-import ClubDetail from "./Clubs/ClubDetail"; // New Club Detail page
 import Friends from "./Friends/Friends";
 import Dashboard from "./Dashboard/Dashboard";
 
@@ -46,8 +45,8 @@ function App() {
         <Route path="/dashboard" element={auth ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/clubRegister" element={auth ? <ClubRegister /> : <Navigate to="/login" />} />
 
-        {/* Club Detail Route */}
-        <Route path="/clubHome/:id" element={auth ? <ClubDetail /> : <Navigate to="/login" />} />
+        {/* Club Dashboard Route: use club ID from URL */}
+        <Route path="/clubHome/:id" element={auth ? <ClubDashboard /> : <Navigate to="/login" />} />
 
         {/* Catch-all Route */}
         <Route path="*" element={auth ? <Navigate to="/home" /> : <Navigate to="/login" />} />
