@@ -6,10 +6,13 @@ function NavBar(props) {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        navigate("/login");
-        window.location.reload(); // Optional: force re-render after logout
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      localStorage.removeItem("user");
+      navigate("/login");
+      window.location.reload();
     };
+
 
     return (
         <nav className="navbar">
