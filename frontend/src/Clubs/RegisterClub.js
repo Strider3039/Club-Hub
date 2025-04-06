@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import authAxios from "../utils/authAxios"; // ✅ Use the custom axios
 import "./RegisterClub.css";
+import Button from "react-bootstrap/Button";
 
 function RegisterClub() {
     const navigate = useNavigate();
@@ -36,6 +37,10 @@ function RegisterClub() {
             setError("You must be logged in to register a club.");
         }
     }, []);
+
+    const handleBack = () => {
+        navigate("/clubs");
+    }
 
     // Handle form submission
     const handleRegister = async (e) => {
@@ -89,6 +94,9 @@ function RegisterClub() {
             </form>
             {error && <p className="error">{error}</p>}
             {success && <p className="success">{success}</p>}
+            <Button variant="secondary" className={"bg-secondary"} onClick={handleBack}>
+                Back to Club Search
+            </Button>
         </div>
     );
 }
