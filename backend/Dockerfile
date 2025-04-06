@@ -17,4 +17,4 @@ COPY . /app/
 EXPOSE $PORT
 
 # Step 7: Start the application using Gunicorn
-CMD bash -c "gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT} --log-file -"
+CMD bash -c "gunicorn --pythonpath /app backend.wsgi:application --bind 0.0.0.0:${PORT} --log-file -"
