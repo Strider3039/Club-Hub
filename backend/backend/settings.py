@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url  # Added for parsing DATABASE_URL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -29,7 +29,6 @@ DEBUG = True
 ALLOWED_HOSTS = [
     os.environ.get("RENDER_EXTERNAL_HOSTNAME", "localhost"),
 ]
-
 
 # Application definition
 
@@ -94,16 +93,23 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'clubhub'),
-        'USER': os.environ.get('DB_USER', 'admin'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'admin123'),
-        'HOST': os.environ.get('DB_HOST', 'db'),  # 'db' is the Docker service name
-        'PORT': os.environ.get('DB_PORT', '5432'),
+# Use DATABASE_URL if provided by Render; otherwise, fall back to local settings.
+if os.environ.get('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DB_NAME', 'clubhub'),
+            'USER': os.environ.get('DB_USER', 'admin'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', 'admin123'),
+            # 'db' is the Docker service name; change to 'localhost' if running locally.
+            'HOST': os.environ.get('DB_HOST', 'db'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+        }
+    }
 
 # Custom user model
 AUTH_USER_MODEL = 'backend.CustomUser'
