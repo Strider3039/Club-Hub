@@ -75,19 +75,21 @@ function ClubSearch() {
                                     Showing results for <strong>{searchTerm || "All Clubs"}</strong>
                                 </h5>
 
-                                <ul className="list-group">
-                                    {filteredClubs.map((club) => (
-                                        <li
-                                            key={club.id}
-                                            className="list-group-item list-group-item-action mb-2 rounded"
-                                            style={{cursor: "pointer"}}
-                                            onClick={() => handleClubClick(club.id)}
-                                        >
-                                            <h5 className="mb-1 fw-bold">{club.name}</h5>
-                                            <p className="mb-0 text-muted">{club.description}</p>
-                                        </li>
-                                    ))}
-                                </ul>
+                                <div className="clubs-list" style={{ maxHeight: "80vh", overflowY: "auto" }}>
+                                    <ul className="list-group">
+                                        {filteredClubs.map((club) => (
+                                            <li
+                                                key={club.id}
+                                                className="list-group-item list-group-item-action mb-2 rounded"
+                                                style={{ cursor: "pointer" }}
+                                                onClick={() => handleClubClick(club.id)}
+                                            >
+                                                <h5 className="mb-1 fw-bold">{club.name}</h5>
+                                                <p className="mb-0 text-muted">{club.description}</p>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
                         </Col>
                         <Col></Col>
