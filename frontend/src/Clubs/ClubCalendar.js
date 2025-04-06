@@ -19,14 +19,8 @@ function ClubCalendar({ clubId }) {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const token = localStorage.getItem("token");
-                const response = await axios.get(
-                    `${process.env.REACT_APP_API_BASE_URL}/clubs/events?club_id=${clubId}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        }
-                    }
+                const response = await authAxios.get(
+                    `/clubs/events?club_id=${clubId}` // Use relative URL now
                 );
                 setEvents(response.data);
             } catch (err) {
@@ -34,7 +28,10 @@ function ClubCalendar({ clubId }) {
             }
         };
 
-    // create a new event
+        fetchEvents();
+    }, [clubId]); // Add clubId as dependency to re-fetch if the club changes
+
+    // Create a new event
     const createNewEvent = async (eventName, eventDate) => {
         if (!eventName || !eventDate) {
             setError("Both event name and date are required.");
@@ -45,18 +42,16 @@ function ClubCalendar({ clubId }) {
             title: eventName,
             description: description,
             date: eventDate.toISOString(),
-            club: clubId  // ✅ Include club ID
+            club: clubId // ✅ Include club ID
         };
 
-        const token = localStorage.getItem("token");
-
         try {
-            const response = await authAxios.post("/clubs/events/", eventData); // ✅ Replaced axios with authAxios
+            const response = await authAxios.post("/clubs/events/", eventData); // ✅ Use authAxios
 
-            // update the locally stored events
+            // Update the locally stored events
             setEvents(prevEvents => [...prevEvents, response.data]);
 
-            // clear the form data
+            // Clear the form data
             setEventName("");
             setDescription("");
             setEventDate(new Date());
