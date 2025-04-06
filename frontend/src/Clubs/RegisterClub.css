@@ -49,7 +49,7 @@
 .ClubRegister button {
     width: 90%;
     padding: 10px;
-    margin: 20px 0;
+    margin: 20px 0 0 10px;
     border: none;
     border-radius: 5px;
     background-color: #007bff;

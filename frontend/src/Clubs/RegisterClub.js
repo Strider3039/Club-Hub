@@ -94,7 +94,7 @@ function RegisterClub() {
             </form>
             {error && <p className="error">{error}</p>}
             {success && <p className="success">{success}</p>}
-            <Button variant="secondary" className={"bg-secondary"} onClick={handleBack}>
+            <Button variant="link" className="bg-transparent text-black"  onClick={handleBack}>
                 Back to Club Search
             </Button>
         </div>
