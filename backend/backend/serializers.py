@@ -12,7 +12,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'date_of_birth', 'username', 'password']
+        fields = ['id', 'first_name', 'last_name', 'email', 'date_of_birth', 'username', 'password']
 
     def create(self, validated_data):
         date_of_birth = validated_data.pop('date_of_birth', None)
