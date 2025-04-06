@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import authAxios from "../utils/authAxios"; // ✅ Use the custom axios
 import "./RegisterClub.css";
 
 function RegisterClub() {
@@ -14,15 +14,24 @@ function RegisterClub() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
-  // On load: get current user and set them as the first club member
+    // On load: get current user and set them as the first club member
     useEffect(() => {
+        const storedUser = localStorage.getItem("user");
 
-        // get the current user from local storage
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (user && user.id) {
-            setCurrentUserId(user.id);
-            setMembers([user.id]);
-            setOfficers([user.id]);
+        if (storedUser) {
+            try {
+                const user = JSON.parse(storedUser);
+                if (user && user.id) {
+                    setCurrentUserId(user.id);
+                    setMembers([user.id]);
+                    setOfficers([user.id]);
+                } else {
+                    setError("Invalid user data. Please log in again.");
+                }
+            } catch (err) {
+                console.error("Failed to parse user:", err);
+                setError("Error reading user info.");
+            }
         } else {
             setError("You must be logged in to register a club.");
         }
@@ -30,47 +39,29 @@ function RegisterClub() {
 
     // Handle form submission
     const handleRegister = async (e) => {
-        // prevent default form submission
         e.preventDefault();
         setError("");
         setSuccess("");
 
-    // validate input
-    const token = localStorage.getItem("token");
-        // make sure the user is logged in
-        if (!token) {
-        setError("Missing authentication token. Please log in again.");
-        return;
-        }
-
-        // create the data that will be sent to the backend
         const clubData = {
-        name: clubName,
-        description: description,
-        members: members,
-        officers: officers,
+            name: clubName,
+            description: description,
+            members: members,
+            officers: officers,
         };
 
-        // make the API listening request to the backend
         try {
-        const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/clubs/`, clubData, {
-                // add the token to the request headers
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
+            const response = await authAxios.post("/clubs/", clubData); // ✅ Use authAxios
+
+            if (response.status === 201) {
+                setSuccess("Club registered successfully!");
+                setError("");
+                navigate("/clubHome");
             }
-        );
-        // check that the club was created successfully
-        if (response.status === 201) {
-            setSuccess("Club registered successfully!");
-            setError("");
-            navigate("/clubHome");
-        }
         } catch (err) {
-            // club registration failed
+            console.error("Backend error:", err.response?.data || err.message);
             if (err.response && err.response.data) {
-                setError(err.response.data.message || "Failed to register club.");
+                setError(err.response.data.message || JSON.stringify(err.response.data));
             } else {
                 setError("An error occurred. Please try again.");
             }
@@ -103,4 +94,3 @@ function RegisterClub() {
 }
 
 export default RegisterClub;
-// import React, { useState } from "react";

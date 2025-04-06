@@ -6,10 +6,13 @@ function NavBar(props) {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        navigate("/login");
-        window.location.reload(); // Optional: force re-render after logout
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      localStorage.removeItem("user");
+      navigate("/login");
+      window.location.reload();
     };
+
 
     return (
         <nav className="navbar">
@@ -20,11 +23,6 @@ function NavBar(props) {
 
                 <div className="menu-item">
                     <Link to="/friends">Friends</Link>
-                    <div className="dropdown">
-                        <Link to="/friends/my-friends">My Friends</Link>
-                        <Link to="/friends/requests">Requests</Link>
-                        <Link to="/friends/search">Search</Link>
-                    </div>
                 </div>
 
                 <Link to="/dashboard">Dashboard</Link>

@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import authAxios from "../utils/authAxios"; // ✅ Use the custom axios
 import NavBar from "../NavBar/NavBar";
 import "./Dashboard.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,79 +19,58 @@ function Dashboard() {
     const [newPasswordConfirm, setInput3] = useState("");
 
     const [passwordConfirmation, setInput4] = useState("");
-    const navigate = useNavigate(); // Hook for navigation
-
+    const navigate = useNavigate();
 
     const changePasswordButton = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const response = await axios.post(
-                `${process.env.REACT_APP_API_BASE_URL}/change-password/`,
-                {
-                    current_password: currentPassword,
-                    new_password: newPassword,
-                    confirm_password: newPasswordConfirm,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await authAxios.post("/change-password/", {
+                current_password: currentPassword,
+                new_password: newPassword,
+                confirm_password: newPasswordConfirm,
+            });
 
             console.log(response.data.message);
             alert("Password updated successfully!");
 
-            // Remove the token from localStorage
-            localStorage.removeItem("token");
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            localStorage.removeItem("user");
 
-            // Redirect to login page
             navigate("/login");
             window.location.reload();
         } catch (error) {
-            console.error(error.response.data.error);
-            alert(error.response.data.error || "Failed to update password.");
+            console.error(error.response?.data?.error);
+            alert(error.response?.data?.error || "Failed to update password.");
         }
     };
 
     const deleteButtonClick = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const response = await axios.post(
-                `${process.env.REACT_APP_API_BASE_URL}/delete-account/`,
-                {
-                    password_confirmation: passwordConfirmation,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await authAxios.post("/delete-account/", {
+                password_confirmation: passwordConfirmation,
+            });
 
             console.log(response.data.message);
             alert("Account deleted successfully!");
 
-            // Remove the token from localStorage
-            localStorage.removeItem("token");
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            localStorage.removeItem("user");
 
-            // Redirect to login page
             navigate("/login");
             window.location.reload();
         } catch (error) {
-            console.error(error.response.data.error);
-            alert(error.response.data.error || "Failed to delete account.");
+            console.error(error.response?.data?.error);
+            alert(error.response?.data?.error || "Failed to delete account.");
         }
     };
 
     useEffect(() => {
-        // Retrieve user details from localStorage (if stored after login/registration)
         const storedUser = JSON.parse(localStorage.getItem("user"));
-
         if (storedUser) {
             setUser({
                 ...storedUser,
-                clubs: storedUser.clubs || [], // fallback in case clubs is missing
+                clubs: storedUser.clubs || [],
             });
         } else {
             console.warn("No user data found in localStorage.");
@@ -100,7 +79,7 @@ function Dashboard() {
 
     return (
         <div className="dashboard">
-            <NavBar page={"Dashboard"}/>
+            <NavBar page={"Dashboard"} />
             <div className="dashboard-container">
                 <div className="profile-card">
                     <h2>{user.firstName} {user.lastName}</h2>
@@ -115,7 +94,6 @@ function Dashboard() {
                         ) : (
                             <li>No clubs found</li>
                         )}
-
                     </ul>
                     <p className="bio">{user.bio}</p>
                 </div>
@@ -123,19 +101,19 @@ function Dashboard() {
                 {/* Change Password */}
                 <div className="change-password-box">
                     <input
-                        type="text"
+                        type="password"
                         placeholder="Current Password"
                         value={currentPassword}
                         onChange={(e) => setInput1(e.target.value)}
                     />
                     <input
-                        type="text"
+                        type="password"
                         placeholder="New Password"
                         value={newPassword}
                         onChange={(e) => setInput2(e.target.value)}
                     />
                     <input
-                        type="text"
+                        type="password"
                         placeholder="Confirm New Password"
                         value={newPasswordConfirm}
                         onChange={(e) => setInput3(e.target.value)}
@@ -146,7 +124,7 @@ function Dashboard() {
                 {/* Delete Account */}
                 <div className="delete-account-box">
                     <input
-                        type="text"
+                        type="password"
                         placeholder="Enter Password"
                         value={passwordConfirmation}
                         onChange={(e) => setInput4(e.target.value)}

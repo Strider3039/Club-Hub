@@ -12,7 +12,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'date_of_birth', 'username', 'password']
+        fields = ['id', 'first_name', 'last_name', 'email', 'date_of_birth', 'username', 'password']
 
     def create(self, validated_data):
         date_of_birth = validated_data.pop('date_of_birth', None)
@@ -22,15 +22,26 @@ class RegisterSerializer(serializers.ModelSerializer):
             user.save()
         return user
 
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['id', 'title', 'description', 'date', 'club']
+
+    def create(self, validated_data):
+        # create a new club
+        event = Event.objects.create(**validated_data)
+        return event
+
 class ClubSerializer(serializers.ModelSerializer):
     # get the members of the club using the primary key
     members = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all())
     # get the officers of the club using the primary key
     officers = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
+    events = EventSerializer(many=True, read_only=True)  # Use nested serializer to show full event details
 
     class Meta:
         model = Club
-        fields = ['id', 'name', 'description', 'members', 'officers']
+        fields = ['id', 'name', 'description', 'members', 'officers', 'events']
 
 
     def create(self, validated_data):
@@ -42,6 +53,7 @@ class ClubSerializer(serializers.ModelSerializer):
         # pop the members and officers from the validated data
         members = validated_data.pop('members', [])
         officers = validated_data.pop('officers', [])
+        events = validated_data.pop('events', [])
 
         # create the club with the validated data
         club = Club.objects.create(**validated_data)

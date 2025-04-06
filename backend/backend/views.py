@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.hashers import make_password
 from .serializers import ClubSerializer
+from .serializers import EventSerializer
 from .serializers import FriendshipSerializer
 from .models import Friendship
 from .models import Club
@@ -83,22 +84,26 @@ class DeleteAccountView(APIView):
         user.delete()
         return Response({"message": "Account deleted successfully"}, status=status.HTTP_200_OK)
     
-
+# Handles club registration
 class ClubRegistrationView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # get the user from the request
-        serializer = ClubSerializer(data=request.data, context={'request': request})
+        creator = request.user
 
+        # ✅ Check if user already created a club
+        if Club.objects.filter(officers=creator).exists():
+            return Response({"message": "You have already registered a club."}, status=400)
+
+        # Proceed with registration
+        serializer = ClubSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            # save the club 
             serializer.save()
-            # return success message
             return Response({"message": "Club created successfully"}, status=status.HTTP_201_CREATED)
-        # return validation errors if invalid
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Lists all clubs
 class ClubListView(APIView):
@@ -109,32 +114,88 @@ class ClubListView(APIView):
         serializer = ClubSerializer(clubs, many=True)
         return Response(serializer.data)
 
+class ClubEventsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        club_id = request.query_params.get("club_id")
+        if not club_id:
+            return Response({"error": "club_id is required in query parameters."}, status=400)
+
+        club = Club.objects.filter(pk=club_id).first()
+        if not club:
+            return Response({"error": "Club not found."}, status=404)
+
+        events = club.events.all()
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = EventSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()  # This assumes the EventSerializer includes the `club` field
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 # Handles sending and accepting friend requests
 class FriendshipView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    # POST /friend-requests/: Creates a new friend request
+    # POST /friend-requests/
     def post(self, request):
         serializer = FriendshipSerializer(data=request.data, context={'request': request})
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # PATCH /friend-requests/<pk>/: Accepts a friend request
+    # PATCH /friend-requests/<pk>/
     def patch(self, request, pk):
         try:
             friendship = Friendship.objects.get(pk=pk, to_user=request.user)
+            friendship.status = 'accepted'
+            friendship.save()
+            return Response({'message': 'Friend request accepted.'})
         except Friendship.DoesNotExist:
             return Response({'error': 'Request not found or unauthorized.'}, status=404)
 
-        friendship.status = 'accepted'
-        friendship.save()
+    # GET /friends/<friend_id>/
+    def get(self, request, friend_id):
+        user = request.user
+        try:
+            friendship = Friendship.objects.get(
+                Q(from_user=user, to_user_id=friend_id) |
+                Q(from_user_id=friend_id, to_user=user),
+                status='accepted'
+            )
+            friend = friendship.to_user if friendship.from_user == user else friendship.from_user
+            data = {
+                'id': friend.id,
+                'username': friend.username,
+                'first_name': friend.first_name,
+                'last_name': friend.last_name,
+                'email': friend.email,
+                'clubs': [club.name for club in friend.clubs.all()]
+            }
+            return Response(data)
+        except Friendship.DoesNotExist:
+            return Response({'error': 'You are not friends with this user.'}, status=404)
 
-        return Response({'message': 'Friend request accepted.'})
+    # DELETE /friends/<friend_id>/
+    def delete(self, request, friend_id):
+        user = request.user
+        try:
+            friendship = Friendship.objects.get(
+                Q(from_user=user, to_user_id=friend_id) |
+                Q(from_user_id=friend_id, to_user=user),
+                status='accepted'
+            )
+            friendship.delete()
+            return Response({'message': 'Friend removed successfully.'}, status=status.HTTP_204_NO_CONTENT)
+        except Friendship.DoesNotExist:
+            return Response({'error': 'Friendship not found.'}, status=404)
+
 
 
 # Lists all accepted friends for the current user
@@ -164,3 +225,28 @@ class FriendListView(APIView):
             })
 
         return Response(friends)
+
+class PendingFriendRequestsView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # GET /friend-requests/pending/
+    def get(self, request):
+        user = request.user
+
+        # Friend requests sent TO this user that are still pending
+        pending_requests = Friendship.objects.filter(to_user=user, status='pending')
+
+        data = [
+            {
+                "id": f.id,
+                "from_user": {
+                    "id": f.from_user.id,
+                    "username": f.from_user.username
+                },
+                "created_at": f.created_at,
+            }
+            for f in pending_requests
+        ]
+
+        return Response(data, status=200)

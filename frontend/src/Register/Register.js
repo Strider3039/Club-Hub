@@ -32,8 +32,17 @@ function Register() {
                 password,
             });
 
-            localStorage.setItem("token", response.data.access);
+            // Auto-login after registration
+            const loginResponse = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/login/`, {
+                username,
+                password,
+            });
+
+            // Save user info and token
+            localStorage.setItem("token", loginResponse.data.access);
+            localStorage.setItem("user", JSON.stringify(loginResponse.data.user));
             navigate("/home");
+
         } catch (error) {
             if (error.response && error.response.data) {
                 if (error.response.data.email) {

@@ -14,21 +14,23 @@ class CustomUser(AbstractUser):
 class Club(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
-    members= models.ManyToManyField(CustomUser, related_name='clubs')
+    members = models.ManyToManyField(CustomUser, related_name='clubs')
     officers = models.ManyToManyField(CustomUser, related_name='club_officers', blank=True)
 
     def __str__(self):
         return self.name
-    
+
+
 class Event(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     date = models.DateTimeField()
-    club = models.ForeignKey(Club, related_name='events', on_delete=models.CASCADE)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.title} - {self.club.name}"
-
+    
+    
 class Friendship(models.Model):
     from_user = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='sent_friend_requests', on_delete=models.CASCADE
