@@ -126,6 +126,7 @@ class ClubEventsView(APIView):
 
     def post(self, request, club_id): # chatgpt held my hand with this
         try:
+            club_id = request.data.get("club_id")
             club = Club.objects.get(pk=club_id)
         except Club.DoesNotExist:
             return Response({"error": "Club not found."}, status=404)

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { Button } from 'react-bootstrap';
@@ -28,10 +28,21 @@ function ClubCalendar() {
             date: eventDate.toISOString()
         };
 
+        const token = localStorage.getItem("token");
+
+
         try {
             // this requests the backend to create a new event
             // returns a thumbs up if it succeeds
-            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/clubs/events/`, eventData);
+            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/clubs/events/`,
+                eventData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    }
+            },
+            );
 
             // update the locally stored events
             setEvents(prevEvents => [...prevEvents, response.data]);
@@ -118,6 +129,7 @@ function ClubCalendar() {
                             onChange={(e) => setEventDate(new Date(e.target.value))}
                         />
                         <textarea
+                            style={{ marginLeft: "2px", width: "fit-content" }}
                             className="eventDescription"
                             placeholder="What's going on!"
                             value={description}
