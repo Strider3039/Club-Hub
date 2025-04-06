@@ -84,7 +84,6 @@ class DeleteAccountView(APIView):
         user.delete()
         return Response({"message": "Account deleted successfully"}, status=status.HTTP_200_OK)
     
-# Handles club registration
 class ClubRegistrationView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -92,14 +91,13 @@ class ClubRegistrationView(APIView):
     def post(self, request):
         creator = request.user
 
-        # ✅ Check if user already created a club
-        if Club.objects.filter(officers=creator).exists():
+        # check if the user already created a club
+        if hasattr(creator, 'created_club'):
             return Response({"message": "You have already registered a club."}, status=400)
 
-        # Proceed with registration
         serializer = ClubSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(creator=creator)
             return Response({"message": "Club created successfully"}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -136,6 +134,25 @@ class ClubEventsView(APIView):
             serializer.save()  # This assumes the EventSerializer includes the `club` field
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ClubJoinView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            # get the club_id from the request data
+            club_id = request.data.get("club_id")
+            if not club_id:
+                return Response({"error": "club_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # get the club object using the club_id
+            club = Club.objects.get(pk=club_id)
+
+            # add the current user to the club's members
+            club.members.add(request.user)
+            return Response({"message": "Successfully joined the club!"}, status=status.HTTP_200_OK)
+        except Club.DoesNotExist:
+            return Response({"error": "Club not found."}, status=status.HTTP_404_NOT_FOUND)
 
 # Handles sending and accepting friend requests
 class FriendshipView(APIView):
