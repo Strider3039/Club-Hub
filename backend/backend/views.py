@@ -84,22 +84,26 @@ class DeleteAccountView(APIView):
         user.delete()
         return Response({"message": "Account deleted successfully"}, status=status.HTTP_200_OK)
     
-
+# Handles club registration
 class ClubRegistrationView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # get the user from the request
-        serializer = ClubSerializer(data=request.data, context={'request': request})
+        creator = request.user
 
+        # ✅ Check if user already created a club
+        if Club.objects.filter(officers=creator).exists():
+            return Response({"message": "You have already registered a club."}, status=400)
+
+        # Proceed with registration
+        serializer = ClubSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            # save the club 
             serializer.save()
-            # return success message
             return Response({"message": "Club created successfully"}, status=status.HTTP_201_CREATED)
-        # return validation errors if invalid
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Lists all clubs
 class ClubListView(APIView):

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../NavBar/NavBar";
 import "./ClubSearch.css";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import authAxios from "../utils/authAxios";
 import Button from "react-bootstrap/Button";
 
 function ClubSearch() {
@@ -14,15 +14,10 @@ function ClubSearch() {
     useEffect(() => {
         const fetchClubs = async () => {
             try {
-                const token = localStorage.getItem("token");
-                const response = await axios.get("http://localhost:8000/clubs/list/", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await authAxios.get("/clubs/list/"); // ✅ no need to set headers
                 setClubs(response.data);
             } catch (error) {
-                console.error("Failed to fetch clubs:", error);
+                console.error("Failed to fetch clubs:", error.response?.data || error.message);
             }
         };
 

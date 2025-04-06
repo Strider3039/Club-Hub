@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import "./Friends.css";
-import axios from "axios";
+import authAxios from "../utils/authAxios"; // ✅ Custom axios with token refresh
 import { Button, Modal } from "react-bootstrap";
 
 function Friends() {
@@ -12,13 +12,9 @@ function Friends() {
     const [friendsError, setFriendsError] = useState("");
     const [pendingError, setPendingError] = useState("");
 
-    const token = localStorage.getItem("token");
-
     const fetchFriends = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/friends/`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await authAxios.get("/friends/");
             setFriendsList(response.data);
         } catch (err) {
             console.error("Error fetching friends:", err.response?.data || err.message);
@@ -28,9 +24,7 @@ function Friends() {
 
     const fetchPendingRequests = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/friend-requests/pending/`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await authAxios.get("/friend-requests/pending/");
             setPendingRequests(response.data);
         } catch (err) {
             console.error("Error fetching pending requests:", err.response?.data || err.message);
@@ -39,27 +33,16 @@ function Friends() {
     };
 
     useEffect(() => {
-        if (token) {
-            fetchFriends();
-            fetchPendingRequests();
-        }
-    }, [token]);
+        fetchFriends();
+        fetchPendingRequests();
+    }, []);
 
     const handleNewFriend = async () => {
         const friendUsername = prompt("Enter the username of the friend you want to add:");
         if (!friendUsername) return;
 
         try {
-            await axios.post(
-                `${process.env.REACT_APP_API_BASE_URL}/friend-requests/`,
-                { friendUsername },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
+            await authAxios.post("/friend-requests/", { friendUsername });
             alert("Friend request sent!");
         } catch (err) {
             console.error("Error adding friend:", err.response?.data || err.message);
@@ -69,11 +52,7 @@ function Friends() {
 
     const handleAcceptRequest = async (requestId) => {
         try {
-            await axios.patch(
-                `${process.env.REACT_APP_API_BASE_URL}/friend-requests/${requestId}/`,
-                {},
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await authAxios.patch(`/friend-requests/${requestId}/`, {});
             fetchFriends();
             fetchPendingRequests();
         } catch (err) {
@@ -84,9 +63,7 @@ function Friends() {
 
     const handleViewFriend = async (friendId) => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/friends/${friendId}/`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await authAxios.get(`/friends/${friendId}/`);
             setSelectedFriend(response.data);
             setShowModal(true);
         } catch (err) {
@@ -99,11 +76,9 @@ function Friends() {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/friends/${friendId}/`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            fetchFriends();  // Refresh list
-            setShowModal(false);  // Close modal if open
+            await authAxios.delete(`/friends/${friendId}/`);
+            fetchFriends();
+            setShowModal(false);
         } catch (err) {
             console.error("Error removing friend:", err.response?.data || err.message);
             alert("Failed to remove friend.");

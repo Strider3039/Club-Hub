@@ -10,33 +10,30 @@ function Login() {
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+      e.preventDefault();
 
-    try {
-        const response =await axios.post(`${process.env.REACT_APP_API_BASE_URL}/login/`, {
-            username,
-            password,
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/login/`, {
+          username,
+          password,
         });
 
-            // Ensure that you have a valid token in response.data.access
-            if (response.data.access) {
-                // Store the token correctly
-                localStorage.setItem("token", response.data.access);
-                localStorage.setItem("user", JSON.stringify(response.data.user));
+        if (response.data.access && response.data.refresh) {
+          localStorage.setItem("access", response.data.access);
+          localStorage.setItem("refresh", response.data.refresh);
+          localStorage.setItem("user", JSON.stringify(response.data.user));
 
-
-                // Redirect to the home page
-                navigate("/home");
-                window.location.reload();
-            } else {
-                setError("Invalid response from server.");
-            }
-        } catch (error) {
-            console.error("Error logging in", error);
-            setError("Login failed. Please check your credentials.");
+          navigate("/home");
+        } else {
+          setError("Invalid response from server.");
         }
+      } catch (error) {
+        console.error("Login error:", error.response?.data || error.message);
+        setError("Login failed. Please check your credentials.");
+      }
+    };
 
-};
+
 
   return (
     <div className="Login">

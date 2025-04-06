@@ -4,18 +4,17 @@ import 'react-calendar/dist/Calendar.css';
 import { Button } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import axios from 'axios';
+import authAxios from "../utils/authAxios"; // ✅ Custom Axios with token auto-refresh
 
 function ClubCalendar() {
-    const [date, setDate] = useState(new Date()); // for showing real-time date
-    const [events, setEvents] = useState([]); // stores event names & dates
+    const [date, setDate] = useState(new Date());
+    const [events, setEvents] = useState([]);
     const [description, setDescription] = useState("");
-    const [showForm, setShowForm] = useState(false); // should we collect user input?
-    const [error, setError] = useState(""); // holds error message
-    const [eventName, setEventName] = useState(""); // new event name
-    const [eventDate, setEventDate] = useState(new Date()); // new event date
+    const [showForm, setShowForm] = useState(false);
+    const [error, setError] = useState("");
+    const [eventName, setEventName] = useState("");
+    const [eventDate, setEventDate] = useState(new Date());
 
-    // create a new event
     const createNewEvent = async (eventName, eventDate) => {
         if (!eventName || !eventDate) {
             setError("Both event name and date are required.");
@@ -28,32 +27,17 @@ function ClubCalendar() {
             date: eventDate.toISOString()
         };
 
-        const token = localStorage.getItem("token");
-
-
         try {
-            // this requests the backend to create a new event
-            // returns a thumbs up if it succeeds
-            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/clubs/events/`,
-                eventData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    }
-            },
-            );
+            const response = await authAxios.post("/clubs/events/", eventData); // ✅ Replaced axios with authAxios
 
-            // update the locally stored events
             setEvents(prevEvents => [...prevEvents, response.data]);
-
-            // clear the form data
             setEventName("");
             setDescription("");
             setEventDate(new Date());
             setError("");
             setShowForm(false);
         } catch (error) {
+            console.error("Event creation failed:", error.response?.data || error.message);
             setError("Failed to create event. Please try again.");
         }
     };
@@ -62,19 +46,18 @@ function ClubCalendar() {
         <div>
             <h3>{date.toDateString()}</h3>
 
-            {/* button to trigger adding a new event */}
-            <Button
-                className={"m-2 mt-0"}
-                onClick={(e) => setShowForm(true)}
-            >
+            <Button className="m-2 mt-0" onClick={() => setShowForm(true)}>
                 Add Event
             </Button>
 
             <Calendar
                 onChange={setDate}
-                onClickDay={(clickedDate) => setEventDate(clickedDate) & setShowForm(true)}
+                onClickDay={(clickedDate) => {
+                    setEventDate(clickedDate);
+                    setShowForm(true);
+                }}
                 value={date}
-                tileContent={({ date, view }) => {
+                tileContent={({ date }) => {
                     const dateStr = date.toISOString().split("T")[0];
                     const event = events.find(event => event.date.split("T")[0] === dateStr);
 
@@ -107,7 +90,7 @@ function ClubCalendar() {
             />
 
             {showForm && (
-                <div className={"NewEventForm"}>
+                <div className="NewEventForm">
                     <h3>New Event</h3>
                     <form
                         onSubmit={(e) => {
@@ -135,10 +118,7 @@ function ClubCalendar() {
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
-                        <Button
-                            className={"m-2 mb-0"}
-                            type="submit"
-                        >
+                        <Button className="m-2 mb-0" type="submit">
                             Submit
                         </Button>
                     </form>
