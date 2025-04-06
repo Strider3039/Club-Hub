@@ -14,45 +14,45 @@ import Dashboard from "./Dashboard/Dashboard";
 
 // Check authentication by looking for the access token in localStorage
 const isAuthenticated = () => {
-  const token = localStorage.getItem("access");
-  console.log("Token check:", token);
-  return token !== null;
+    const token = localStorage.getItem("access");
+    console.log("Token check:", token);
+    return token !== null;
 };
 
 function App() {
-  // auth state will force re-render when the login status changes
-  const [auth, setAuth] = useState(isAuthenticated());
+    // auth state will force re-render when the login status changes
+    const [auth, setAuth] = useState(isAuthenticated());
 
-  // Periodically check localStorage for changes (e.g., after login or logout)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAuth(isAuthenticated());
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
+    // Periodically check localStorage for changes (e.g., after login or logout)
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setAuth(isAuthenticated());
+        }, 500);
+        return () => clearInterval(interval);
+    }, []);
 
-  return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={!auth ? <Login /> : <Navigate to="/home" />} />
-        <Route path="/register" element={<Register />} />
+    return (
+        <Router>
+            <Routes>
+                {/* Public Routes */}
+                <Route path="/login" element={!auth ? <Login /> : <Navigate to="/home" />} />
+                <Route path="/register" element={<Register />} />
 
-        {/* Protected Routes */}
-        <Route path="/home" element={auth ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/clubs" element={auth ? <ClubSearch /> : <Navigate to="/login" />} />
-        <Route path="/friends" element={auth ? <Friends /> : <Navigate to="/login" />} />
-        <Route path="/dashboard" element={auth ? <Dashboard /> : <Navigate to="/login" />} />
-        <Route path="/clubRegister" element={auth ? <ClubRegister /> : <Navigate to="/login" />} />
+                {/* Protected Routes */}
+                <Route path="/home" element={auth ? <Home /> : <Navigate to="/login" />} />
+                <Route path="/clubs" element={auth ? <ClubSearch /> : <Navigate to="/login" />} />
+                <Route path="/friends" element={auth ? <Friends /> : <Navigate to="/login" />} />
+                <Route path="/dashboard" element={auth ? <Dashboard /> : <Navigate to="/login" />} />
+                <Route path="/clubRegister" element={auth ? <ClubRegister /> : <Navigate to="/login" />} />
 
-        {/* Club Dashboard Route: use club ID from URL */}
-        <Route path="/clubHome/:id" element={auth ? <ClubDashboard /> : <Navigate to="/login" />} />
+                {/* Club Dashboard Route: use club ID from URL */}
+                <Route path="/clubHome/:id" element={auth ? <ClubDashboard /> : <Navigate to="/login" />} />
 
-        {/* Catch-all Route */}
-        <Route path="*" element={auth ? <Navigate to="/home" /> : <Navigate to="/login" />} />
-      </Routes>
-    </Router>
-  );
+                {/* Catch-all Route */}
+                <Route path="*" element={auth ? <Navigate to="/home" /> : <Navigate to="/login" />} />
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
