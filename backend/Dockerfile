@@ -5,7 +5,7 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Step 3: Copy requirements.txt
-COPY requirements.txt /app/
+COPY backend/requirements.txt /app/
 
 # Step 4: Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
