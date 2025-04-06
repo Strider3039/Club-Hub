@@ -40,12 +40,18 @@ class ClubSerializer(serializers.ModelSerializer):
     # get the officers of the club using the primary key
     officers = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
     events = EventSerializer(many=True, read_only=True)  # Use nested serializer to show full event details
-
+    # check if the user is a member of the club
+    is_member = serializers.SerializerMethodField()
 
     class Meta:
         model = Club
-        fields = ['id', 'name', 'description', 'creator', 'members', 'officers', 'events']
+        fields = ['id', 'name', 'description', 'creator', 'members', 'is_member', 'officers', 'events']
 
+    def get_is_member(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return request.user in obj.members.all()
+        return False
 
     def create(self, validated_data):
         # get the request from context

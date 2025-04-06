@@ -22,6 +22,7 @@ from .views import FriendListView
 from .views import ClubListView
 from .views import PendingFriendRequestsView
 from .views import ClubEventsView
+from .views import ClubJoinView
 
 
 urlpatterns = [
@@ -37,6 +38,7 @@ urlpatterns = [
     path('clubs/', views.ClubRegistrationView.as_view(), name='club-register'),
     path("clubs/list/", ClubListView.as_view()),
     path('clubs/events/', ClubEventsView.as_view(), name='club-events'),
+    path('clubs/join/<int:club_id>/', ClubJoinView.as_view(), name='club-join'),
 
     # Friends URLs
     path('friends/', FriendListView.as_view(), name='friend-list'),
