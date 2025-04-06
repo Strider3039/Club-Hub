@@ -6,16 +6,37 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import axios from 'axios';
 
-function ClubCalendar() {
-    const [date, setDate] = useState(new Date()); // for showing real-time date
-    const [events, setEvents] = useState([]); // stores event names & dates
+function ClubCalendar({ clubId }) {
+    const [date, setDate] = useState(new Date());
+    const [events, setEvents] = useState([]);
     const [description, setDescription] = useState("");
-    const [showForm, setShowForm] = useState(false); // should we collect user input?
-    const [error, setError] = useState(""); // holds error message
-    const [eventName, setEventName] = useState(""); // new event name
-    const [eventDate, setEventDate] = useState(new Date()); // new event date
+    const [showForm, setShowForm] = useState(false);
+    const [error, setError] = useState("");
+    const [eventName, setEventName] = useState("");
+    const [eventDate, setEventDate] = useState(new Date());
 
-    // create a new event
+    // Load events when component mounts
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(
+                    `${process.env.REACT_APP_API_BASE_URL}/clubs/events?club_id=${clubId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    }
+                );
+                setEvents(response.data);
+            } catch (err) {
+                console.error("Error fetching events:", err);
+            }
+        };
+
+        if (clubId) fetchEvents();
+    }, [clubId]);
+
     const createNewEvent = async (eventName, eventDate) => {
         if (!eventName || !eventDate) {
             setError("Both event name and date are required.");
@@ -25,29 +46,25 @@ function ClubCalendar() {
         const eventData = {
             title: eventName,
             description: description,
-            date: eventDate.toISOString()
+            date: eventDate.toISOString(),
+            club: clubId  // ✅ Include club ID
         };
 
         const token = localStorage.getItem("token");
 
-
         try {
-            // this requests the backend to create a new event
-            // returns a thumbs up if it succeeds
-            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/clubs/events/`,
+            const response = await axios.post(
+                `${process.env.REACT_APP_API_BASE_URL}/clubs/events/`,
                 eventData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     }
-            },
+                }
             );
 
-            // update the locally stored events
             setEvents(prevEvents => [...prevEvents, response.data]);
-
-            // clear the form data
             setEventName("");
             setDescription("");
             setEventDate(new Date());
@@ -62,19 +79,18 @@ function ClubCalendar() {
         <div>
             <h3>{date.toDateString()}</h3>
 
-            {/* button to trigger adding a new event */}
-            <Button
-                className={"m-2 mt-0"}
-                onClick={(e) => setShowForm(true)}
-            >
+            <Button className={"m-2 mt-0"} onClick={() => setShowForm(true)}>
                 Add Event
             </Button>
 
             <Calendar
                 onChange={setDate}
-                onClickDay={(clickedDate) => setEventDate(clickedDate) & setShowForm(true)}
+                onClickDay={(clickedDate) => {
+                    setEventDate(clickedDate);
+                    setShowForm(true);
+                }}
                 value={date}
-                tileContent={({ date, view }) => {
+                tileContent={({ date }) => {
                     const dateStr = date.toISOString().split("T")[0];
                     const event = events.find(event => event.date.split("T")[0] === dateStr);
 
@@ -116,29 +132,23 @@ function ClubCalendar() {
                         }}
                     >
                         <input
-                            style={{ marginRight: "2px", width: "fit-content" }}
                             type="text"
                             placeholder="Event Name"
                             value={eventName}
                             onChange={(e) => setEventName(e.target.value)}
                         />
                         <input
-                            style={{ marginLeft: "2px", width: "fit-content" }}
                             type="date"
                             value={eventDate.toISOString().split("T")[0]}
                             onChange={(e) => setEventDate(new Date(e.target.value))}
                         />
                         <textarea
-                            style={{ marginLeft: "2px", width: "fit-content" }}
                             className="eventDescription"
                             placeholder="What's going on!"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
-                        <Button
-                            className={"m-2 mb-0"}
-                            type="submit"
-                        >
+                        <Button className={"m-2 mb-0"} type="submit">
                             Submit
                         </Button>
                     </form>

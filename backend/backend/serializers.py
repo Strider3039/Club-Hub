@@ -25,7 +25,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ['id', 'title', 'description', 'date']
+        fields = ['id', 'title', 'description', 'date', 'club']
 
     def create(self, validated_data):
         # create a new club
