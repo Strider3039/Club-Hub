@@ -109,7 +109,7 @@ class ClubListView(APIView):
 
     def get(self, request):
         clubs = Club.objects.all()
-        serializer = ClubSerializer(clubs, many=True)
+        serializer = ClubSerializer(clubs, many=True, context={'request': request})
         return Response(serializer.data)
 
 class ClubEventsView(APIView):
@@ -138,17 +138,14 @@ class ClubEventsView(APIView):
 class ClubJoinView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        try:
-            # get the club_id from the request data
-            club_id = request.data.get("club_id")
-            if not club_id:
-                return Response({"error": "club_id is required."}, status=status.HTTP_400_BAD_REQUEST)
-            
-            # get the club object using the club_id
-            club = Club.objects.get(pk=club_id)
+    def post(self, request, *args, **kwargs):
+        club_id = kwargs.get("club_id")  # ✅ get from URL
 
-            # add the current user to the club's members
+        if not club_id:
+            return Response({"error": "club_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            club = Club.objects.get(pk=club_id)
             club.members.add(request.user)
             return Response({"message": "Successfully joined the club!"}, status=status.HTTP_200_OK)
         except Club.DoesNotExist:
