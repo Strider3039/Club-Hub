@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import authAxios from "../utils/authAxios"; // ✅ Use the custom axios
-import NavBar from "../NavBar/NavBar";
+import authAxios from "../utils/authAxios";
 import "./Dashboard.css";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -17,8 +16,8 @@ function Dashboard() {
     const [currentPassword, setInput1] = useState("");
     const [newPassword, setInput2] = useState("");
     const [newPasswordConfirm, setInput3] = useState("");
-
     const [passwordConfirmation, setInput4] = useState("");
+
     const navigate = useNavigate();
 
     const changePasswordButton = async () => {
@@ -79,7 +78,6 @@ function Dashboard() {
 
     return (
         <div className="dashboard">
-            <NavBar page={"Dashboard"} />
             <div className="dashboard-container">
                 <div className="profile-card">
                     <h2>{user.firstName} {user.lastName}</h2>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../NavBar/NavBar";
 import "./Friends.css";
-import authAxios from "../utils/authAxios"; // ✅ Custom axios with token refresh
+import authAxios from "../utils/authAxios";
 import { Button, Modal } from "react-bootstrap";
 
 function Friends() {
@@ -87,7 +86,6 @@ function Friends() {
 
     return (
         <div className="friends-page">
-            <NavBar page="Friends" />
             <div className="container-fluid px-5 mt-4">
                 <div className="row gx-4 gy-4">
                     {/* Pending Requests */}
