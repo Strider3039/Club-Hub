@@ -24,7 +24,6 @@ function NavBar({ toggleTheme }) {
           height="40"
           className="me-2"
         />
-        <span className="fw-bold">ClubHub</span>
       </Link>
 
       <div className="collapse navbar-collapse">
