@@ -27,25 +27,20 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ['id', 'title', 'description', 'date', 'club']
 
-    def create(self, validated_data):
-        # create a new club
-        event = Event.objects.create(**validated_data)
-        return event
 
 class ClubSerializer(serializers.ModelSerializer):
     # get the creator of the club using the primary key
     creator = serializers.PrimaryKeyRelatedField(read_only=True)
-    # get the members of the club using the primary key
-    members = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all())
-    # get the officers of the club using the primary key
-    officers = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
+    # get memberships using the primary key
+
+    # get the events of the club using the event serializer
     events = EventSerializer(many=True, read_only=True)  # Use nested serializer to show full event details
     # check if the user is a member of the club
     is_member = serializers.SerializerMethodField()
 
     class Meta:
         model = Club
-        fields = ['id', 'name', 'description', 'creator', 'members', 'is_member', 'officers', 'events']
+        fields = ['id', 'name', 'description', 'creator', 'is_member', 'events']
 
     def get_is_member(self, obj):
         request = self.context.get('request')

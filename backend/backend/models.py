@@ -15,12 +15,30 @@ class Club(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
     creator = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='created_club', null=True)
-    members = models.ManyToManyField(CustomUser, related_name='clubs')
-    officers = models.ManyToManyField(CustomUser, related_name='club_officers', blank=True)
 
     def __str__(self):
         return self.name
 
+# create a membership model to link users to clubs
+class Membership(models.Model):
+    POSITION_CHOICES = [
+        ('member', 'Member'),
+        ('officer', 'Officer'),
+        ('President', 'President'),
+        ('Vice President', 'Vice President')
+    ]
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    position = models.CharField(max_length=20, choices=POSITION_CHOICES, default='member')
+
+    # add a unique constraint to prevent duplicate memberships
+    class Meta:
+        unique_together = ('user', 'club')
+
+    # add a string representation for the membership
+    def __str__(self):
+        return f"{self.user.username} - {self.club.name} ({self.position})"
 
 class Event(models.Model):
     title = models.CharField(max_length=100)
