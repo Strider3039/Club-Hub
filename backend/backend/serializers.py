@@ -39,13 +39,8 @@ class MembershipSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'club', 'position']
 
 class ClubSerializer(serializers.ModelSerializer):
-    # get the creator of the club using the primary key
     creator = serializers.PrimaryKeyRelatedField(read_only=True)
-    # get memberships using the primary key
-
-    # get the events of the club using the event serializer
-    events = EventSerializer(many=True, read_only=True)  # Use nested serializer to show full event details
-    # check if the user is a member of the club
+    events = EventSerializer(many=True, read_only=True)
     is_member = serializers.SerializerMethodField()
 
     class Meta:
@@ -55,32 +50,22 @@ class ClubSerializer(serializers.ModelSerializer):
     def get_is_member(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            return request.user in obj.members.all()
+            return Membership.objects.filter(user=request.user, club=obj).exists()
         return False
 
     def create(self, validated_data):
-        # get the request from context
         request = self.context.get('request')
-        # set creator to the user making the request
         creator = request.user if request else None
 
-        # pop the members and officers from the validated data
-        members = validated_data.pop('members', [])
-        officers = validated_data.pop('officers', [])
-        events = validated_data.pop('events', [])
+        club = Club.objects.create(creator=creator, **validated_data)
 
-        # create the club with the validated data
-        club = Club.objects.create(**validated_data)
-
-        # Ensure creator is in both lists
-        if creator and creator not in members:
-            members.append(creator)
-        if creator and creator not in officers:
-            officers.append(creator)
-
-        # set the members and officers of the club
-        club.members.set(members)
-        club.officers.set(officers)
+        if creator:
+            # assign the creator as president via Membership model
+            Membership.objects.create(
+                user=creator,
+                club=club,
+                position='President'
+            )
 
         return club
     
