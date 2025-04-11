@@ -20,6 +20,7 @@ def home(request):
 
 class RegisterView(APIView):
     def post(self, request):
+        # get the data from the request
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             # Save the user if the serializer is valid

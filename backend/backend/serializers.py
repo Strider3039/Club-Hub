@@ -4,6 +4,7 @@ from django.contrib.auth.password_validation import validate_password
 from .models import Club, Event
 from .models import Friendship
 from .models import CustomUser
+from .models import Membership
 
 User = get_user_model()
 
@@ -27,6 +28,15 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ['id', 'title', 'description', 'date', 'club']
 
+class MembershipSerializer(serializers.ModelSerializer):
+    # get the user using the primary key
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    # get the club using the primary key
+    club = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Membership
+        fields = ['id', 'user', 'club', 'position']
 
 class ClubSerializer(serializers.ModelSerializer):
     # get the creator of the club using the primary key
