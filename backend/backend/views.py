@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .serializers import RegisterSerializer
 from django.http import HttpResponse
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.hashers import make_password
 from .serializers import ClubSerializer
@@ -19,6 +19,7 @@ def home(request):
     return HttpResponse("Welcome to the ClubHub!")
 
 class RegisterView(APIView):
+    permission_classes = [AllowAny] # allow any user to register
     def post(self, request):
         # get the data from the request
         serializer = RegisterSerializer(data=request.data)
@@ -30,6 +31,8 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
+    permission_classes = [AllowAny]
+    
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
@@ -52,9 +55,7 @@ class LoginView(APIView):
         return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 class ChangePasswordView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+    
     def post(self, request):
         user = request.user
         current_password = request.data.get("current_password")
@@ -72,9 +73,7 @@ class ChangePasswordView(APIView):
         return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
     
 class DeleteAccountView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+    
     def post(self, request):
         user = request.user
         password_confirmation = request.data.get("password_confirmation")
@@ -86,9 +85,7 @@ class DeleteAccountView(APIView):
         return Response({"message": "Account deleted successfully"}, status=status.HTTP_200_OK)
     
 class ClubRegistrationView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+    
     def post(self, request):
         creator = request.user
 
@@ -106,7 +103,6 @@ class ClubRegistrationView(APIView):
 
 # Lists all clubs
 class ClubListView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         clubs = Club.objects.all()
@@ -114,7 +110,6 @@ class ClubListView(APIView):
         return Response(serializer.data)
 
 class ClubEventsView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         club_id = request.query_params.get("club_id")
@@ -137,7 +132,6 @@ class ClubEventsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class ClubJoinView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         club_id = kwargs.get("club_id")  # ✅ get from URL
@@ -154,8 +148,6 @@ class ClubJoinView(APIView):
 
 # Handles sending and accepting friend requests
 class FriendshipView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
 
     # POST /friend-requests/
     def post(self, request):
@@ -215,9 +207,7 @@ class FriendshipView(APIView):
 
 # Lists all accepted friends for the current user
 class FriendListView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+    
     # GET /friends/
     def get(self, request):
         user = request.user  # Current authenticated user
@@ -242,8 +232,8 @@ class FriendListView(APIView):
         return Response(friends)
 
 class PendingFriendRequestsView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    
+    
 
     # GET /friend-requests/pending/
     def get(self, request):
