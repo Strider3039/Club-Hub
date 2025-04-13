@@ -13,6 +13,8 @@ from .serializers import EventSerializer
 from .serializers import FriendshipSerializer
 from .models import Friendship
 from .models import Club
+from .models import Event
+from .models import Membership
 from django.db.models import Q
 
 def home(request):
@@ -32,7 +34,7 @@ class RegisterView(APIView):
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
-    
+
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
@@ -134,17 +136,25 @@ class ClubEventsView(APIView):
 class ClubJoinView(APIView):
 
     def post(self, request, *args, **kwargs):
-        club_id = kwargs.get("club_id")  # ✅ get from URL
+        club_id = kwargs.get("club_id")  # get from URL
 
         if not club_id:
-            return Response({"error": "club_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "club_id is required."}, status=400)
 
         try:
             club = Club.objects.get(pk=club_id)
-            club.members.add(request.user)
-            return Response({"message": "Successfully joined the club!"}, status=status.HTTP_200_OK)
         except Club.DoesNotExist:
-            return Response({"error": "Club not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Club not found."}, status=404)
+        
+        # Check if the user is already a member of the club
+        if Membership.objects.filter(user=request.user, club=club).exists():
+            return Response({"error": "You are already a member of this club."}, status=400)
+        
+        # Create a new membership
+        Membership.objects.create(user=request.user, club=club, position='member')
+        return Response({"message": "You have successfully joined the club."}, status=201)
+
+        
 
 # Handles sending and accepting friend requests
 class FriendshipView(APIView):
