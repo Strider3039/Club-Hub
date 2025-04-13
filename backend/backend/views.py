@@ -136,7 +136,7 @@ class ClubEventsView(APIView):
 class ClubJoinView(APIView):
 
     def post(self, request, *args, **kwargs):
-        club_id = kwargs.get("club_id")  # get from URL
+        club_id = kwargs.get("club_id") # get from URL
 
         if not club_id:
             return Response({"error": "club_id is required."}, status=400)
@@ -155,7 +155,6 @@ class ClubJoinView(APIView):
         return Response({"message": "You have successfully joined the club."}, status=201)
 
         
-
 # Handles sending and accepting friend requests
 class FriendshipView(APIView):
 
