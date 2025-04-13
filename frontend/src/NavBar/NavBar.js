@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Dropdown, Button } from "react-bootstrap";
+import { Dropdown, Button, Form } from "react-bootstrap";
 import LightLogo from "../assets/Logo_Club_Hub.png";
 import DarkLogo from "../assets/Logo_Dark_Mode.png";
 
@@ -55,6 +55,8 @@ function NavBar({ toggleTheme }) {
             <Link className="nav-link text-white" to="/friends">Friends</Link>
           </li>
         </ul>
+
+        <Form.Control size="sm" type="text" className="mx-2 search-box width-30vh" placeholder="Search..."  style={{ width: '30%' }}/>
 
         <div className="d-flex align-items-center gap-3">
           <Button variant="outline-light" onClick={toggleTheme}>

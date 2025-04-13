@@ -1,0 +1,23 @@
+.sideBarButton {
+    width: 250px;
+    height: 40px;
+    margin: 0;
+    padding: 5px;
+    border: none;
+    text-align: center;
+    background-color: transparent;
+    border-radius: 5px;
+}
+
+.sideBarButton:hover {
+    background-color: #e0e0e0;
+}
+
+.popover {
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.popover-trigger-wrapper {
+    position: relative;
+}
