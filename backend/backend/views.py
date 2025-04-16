@@ -16,6 +16,8 @@ from .models import Club
 from .models import Event
 from .models import Membership
 from django.db.models import Q
+from .permissions import can_manage_members
+from django.shortcuts import get_object_or_404
 
 def home(request):
     return HttpResponse("Welcome to the ClubHub!")
@@ -153,6 +155,63 @@ class ClubJoinView(APIView):
         # Create a new membership
         Membership.objects.create(user=request.user, club=club, position='member')
         return Response({"message": "You have successfully joined the club."}, status=201)
+    
+class MembershipListView(APIView):
+    def get(self, request, club_id):
+        club = get_object_or_404(Club, pk=club_id)
+        membership = Membership.objects.filter(user=request.user, club=club).first()
+
+        if not membership or not can_manage_members(membership.position):
+            return Response({"error": "Permission denied."}, status=403)
+
+        members = Membership.objects.filter(club=club).select_related('user')
+        data = [
+            {
+                "user_id": m.user.id,
+                "username": m.user.username,
+                "position": m.position,
+            }
+            for m in members
+        ]
+        return Response(data)
+
+
+class MembershipUpdateView(APIView):
+
+    def patch(self, request, club_id, user_id):
+        club = get_object_or_404(Club, pk=club_id)
+        actor = Membership.objects.filter(user=request.user, club=club).first()
+
+        if not actor or not can_manage_members(actor.position):
+            return Response({"error": "Permission denied."}, status=403)
+
+        target = Membership.objects.filter(user__id=user_id, club=club).first()
+        if not target:
+            return Response({"error": "Target member not found."}, status=404)
+
+        new_position = request.data.get("position")
+        if new_position:
+            target.position = new_position
+            target.save()
+            return Response({"message": "Position updated successfully."})
+        return Response({"error": "No position provided."}, status=400)
+
+
+class MembershipRemoveView(APIView):
+
+    def delete(self, request, club_id, user_id):
+        club = get_object_or_404(Club, pk=club_id)
+        actor = Membership.objects.filter(user=request.user, club=club).first()
+
+        if not actor or not can_manage_members(actor.position):
+            return Response({"error": "Permission denied."}, status=403)
+
+        target = Membership.objects.filter(user__id=user_id, club=club).first()
+        if not target:
+            return Response({"error": "Member not found."}, status=404)
+
+        target.delete()
+        return Response({"message": "Member removed successfully."}, status=204)
 
         
 # Handles sending and accepting friend requests
