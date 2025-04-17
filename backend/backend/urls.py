@@ -39,6 +39,8 @@ urlpatterns = [
     path("clubs/list/", ClubListView.as_view()),
     path('clubs/events/', ClubEventsView.as_view(), name='club-events'),
     path('clubs/join/<int:club_id>/', ClubJoinView.as_view(), name='club-join'),
+    path('clubs/delete/', views.ClubDeleteView.as_view(), name='club-delete'),
+    path('clubs/update/', views.ClubUpdateView.as_view(), name='club-update'),
 
     # Friends URLs
     path('friends/', FriendListView.as_view(), name='friend-list'),

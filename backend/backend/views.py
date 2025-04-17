@@ -17,6 +17,8 @@ from .models import Event
 from .models import Membership
 from django.db.models import Q
 from .permissions import can_manage_members
+from .permissions import can_remove_club
+from .permissions import can_edit_club_info
 from django.shortcuts import get_object_or_404
 
 def home(request):
@@ -104,6 +106,42 @@ class ClubRegistrationView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class ClubUpdateView(APIView):
+    def patch(self, request, club_id):
+        club = get_object_or_404(Club, pk=club_id)
+        member = Membership.objects.filter(user=request.user, club=club).first()
+        
+        #The json needs to send the name as 'name' and description as 'description'
+        #Thses variables can be deleted if not needed for manual check
+        #new_name = request.data.get("name")
+        #new_description = request.data.get("description")
+
+        if member is not None or not can_edit_club_info(member.position):
+            return Response({"error": "You don't have permission to edit the club."}, status=status.HTTP_403_FORBIDDEN)
+
+        #Probably is not needed
+        #if (new_name is not None and new_name == club.name) and (new_description is not None and new_description == club.description):
+        #    return Response({"message": "There were no changes."}, status=status.HTTP_400_BAD_REQUEST)
+
+        update_serializer = ClubSerializer(club, data=request.data, partial=True)
+        if update_serializer.is_valid():
+            update_serializer.save()
+            return Response({"message": "Club updated successfully."}, status=status.HTTP_200_OK)
+
+        return Response({"error": "There was an issue with saving the changes."}, status=status.HTTP_400_BAD_REQUEST)
+
+class ClubDeleteView(APIView):
+    
+    def delete(self, request, club_id):
+        club = get_object_or_404(Club, pk=club_id)
+        member = Membership.objects.filter(user=request.user, club=club).first()
+
+        if  member is not None or not can_remove_club(member.position):
+            return Response({"error": "Only the creator of the club can delete it."}, status=status.HTTP_403_FORBIDDEN)
+        #status=status.HTTP_400_BAD_REQUEST
+
+        club.delete()
+        return Response({"message": "Club deleted successfully."}, status=status.HTTP_200_OK)
 
 # Lists all clubs
 class ClubListView(APIView):
