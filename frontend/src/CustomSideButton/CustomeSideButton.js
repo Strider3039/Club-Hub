@@ -41,7 +41,7 @@ function CustomSideButton(props) {
                             border: "1px solid #ccc",
                             borderRadius: "5px",
                             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
-                            marginLeft: "3px",
+                            marginLeft: "1px",
                         }}
                     >
                         {props.buttons?.map((btn, index) => (

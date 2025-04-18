@@ -44,7 +44,7 @@ const ProfilePanel = () => (
 const App = () => (
     <Container fluid className="p-0">
         <Row noGutters>
-            <Col xs={2} className="min-vh-100">
+            <Col xs={2} className="min-vh-100 bg-light">
                 <Sidebar />
             </Col>
             <Col xs={7} className="min-vh-100">
