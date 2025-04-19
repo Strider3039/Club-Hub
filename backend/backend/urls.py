@@ -44,6 +44,11 @@ urlpatterns = [
 
     # Friends URLs
     path('friends/', FriendListView.as_view(), name='friend-list'),
+    
+    # Membership URLs
+    path('membershipList/', views.MembershipListView.as_view(), name='membership-list'),
+    path('membershipUpdate/<int:pk>/', views.MembershipUpdateView.as_view(), name='membership-update'),
+    path('membershipDelete/<int:pk>/', views.MembershipDeleteView.as_view(), name='membership-delete'),
 
     #Friend Requests URLs
     path('friends/<int:friend_id>/', views.FriendshipView.as_view(), name='friendship-detail'),
