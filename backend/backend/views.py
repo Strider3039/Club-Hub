@@ -289,7 +289,7 @@ class FriendshipView(APIView):
                 'first_name': friend.first_name,
                 'last_name': friend.last_name,
                 'email': friend.email,
-                'clubs': [club.name for club in friend.clubs.all()]
+                'clubs': [membership.club.name for membership in friend.memberships.all()]
             }
             return Response(data)
         except Friendship.DoesNotExist:
@@ -332,7 +332,7 @@ class FriendListView(APIView):
             friends.append({
                 'id': friend.id,
                 'username': friend.username,
-                'clubs': [club.id for club in friend.clubs.all()]  # Assuming a many-to-many relationship
+                'clubs': [membership.club.id for membership in friend.memberships.all()]  # Assuming a many-to-many relationship
             })
 
         return Response(friends)

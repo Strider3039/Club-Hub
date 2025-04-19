@@ -28,7 +28,7 @@ class Membership(models.Model):
         ('Vice President', 'Vice President')
     ]
 
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='memberships')
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     position = models.CharField(max_length=20, choices=POSITION_CHOICES, default='member')
 

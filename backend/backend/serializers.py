@@ -57,6 +57,8 @@ class ClubSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         creator = request.user if request else None
 
+        validated_data.pop('creator', None)  # Remove creator from validated_data
+
         club = Club.objects.create(creator=creator, **validated_data)
 
         if creator:
