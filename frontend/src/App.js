@@ -10,6 +10,7 @@ import ClubDashboard from "./Clubs/ClubDashboard";
 import Friends from "./Friends/Friends";
 import ProfileDashboard from "./Profile/ProfilePage";
 import NavBar from "./NavBar/NavBar";
+import Sidebar from "./NavBar/Sidebar";
 
 // Check authentication by looking for the access token in localStorage
 const isAuthenticated = () => {
@@ -40,7 +41,7 @@ function App() {
     return (
         <div className={`app ${theme}`}>
             <Router>
-                {auth && <NavBar toggleTheme={toggleTheme} />}
+                {/*{auth && <NavBar toggleTheme={toggleTheme} />}*/}
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/login" element={!auth ? <Login /> : <Navigate to="/home" />} />

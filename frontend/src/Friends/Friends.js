@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Friends.css";
 import authAxios from "../utils/authAxios";
 import { Button, Modal } from "react-bootstrap";
+import GenLayout from "../Layout/GeneralLayout"
 
 function Friends() {
     const [friendsList, setFriendsList] = useState([]);
@@ -85,81 +86,83 @@ function Friends() {
     };
 
     return (
-        <div className="friends-page">
-            <div className="container-fluid px-5 mt-4">
-                <div className="row gx-4 gy-4">
-                    {/* Pending Requests */}
-                    <div className="col-lg-3">
-                        <div className="section-card">
-                            <h4>Pending Requests</h4>
-                            {pendingError && <p className="text-danger">{pendingError}</p>}
-                            <ul>
-                                {pendingRequests.length > 0 ? (
-                                    pendingRequests.map((req) => (
-                                        <li key={req.id}>
-                                            <span>{req.from_user.username}</span>
-                                            <Button size="sm" onClick={() => handleAcceptRequest(req.id)}>Accept</Button>
-                                        </li>
-                                    ))
-                                ) : (
-                                    !pendingError && <p className="text-muted">No pending requests.</p>
-                                )}
-                            </ul>
-                        </div>
-                    </div>
-
-                    {/* Friends List */}
-                    <div className="col-lg-9">
-                        <div className="section-card">
-                            <div className="d-flex justify-content-between align-items-center mb-3">
-                                <h3>My Friends</h3>
-                                <Button onClick={handleNewFriend}>Add Friend</Button>
+        <GenLayout pageTitle={"Friends"}>
+            <div className="friends-page">
+                <div className="container-fluid px-5 mt-4">
+                    <div className="row gx-4 gy-4">
+                        {/* Pending Requests */}
+                        <div className="col-lg-3">
+                            <div className="section-card">
+                                <h4>Pending Requests</h4>
+                                {pendingError && <p className="text-danger">{pendingError}</p>}
+                                <ul>
+                                    {pendingRequests.length > 0 ? (
+                                        pendingRequests.map((req) => (
+                                            <li key={req.id}>
+                                                <span>{req.from_user.username}</span>
+                                                <Button size="sm" onClick={() => handleAcceptRequest(req.id)}>Accept</Button>
+                                            </li>
+                                        ))
+                                    ) : (
+                                        !pendingError && <p className="text-muted">No pending requests.</p>
+                                    )}
+                                </ul>
                             </div>
-                            {friendsError && <p className="text-danger">{friendsError}</p>}
-                            <ul>
-                                {friendsList.length > 0 ? (
-                                    friendsList.map((friend) => (
-                                        <li key={friend.id}>
-                                            <span>{friend.username}</span>
-                                            <div className="d-flex gap-2">
-                                                <Button size="sm" variant="info" onClick={() => handleViewFriend(friend.id)}>View</Button>
-                                                <Button size="sm" variant="danger" onClick={() => handleUnfriend(friend.id)}>Unfriend</Button>
-                                            </div>
-                                        </li>
-                                    ))
-                                ) : (
-                                    !friendsError && <p className="text-muted">No friends found.</p>
-                                )}
-                            </ul>
+                        </div>
+
+                        {/* Friends List */}
+                        <div className="col-lg-9">
+                            <div className="section-card">
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h3>My Friends</h3>
+                                    <Button onClick={handleNewFriend}>Add Friend</Button>
+                                </div>
+                                {friendsError && <p className="text-danger">{friendsError}</p>}
+                                <ul>
+                                    {friendsList.length > 0 ? (
+                                        friendsList.map((friend) => (
+                                            <li key={friend.id}>
+                                                <span>{friend.username}</span>
+                                                <div className="d-flex gap-2">
+                                                    <Button size="sm" variant="info" onClick={() => handleViewFriend(friend.id)}>View</Button>
+                                                    <Button size="sm" variant="danger" onClick={() => handleUnfriend(friend.id)}>Unfriend</Button>
+                                                </div>
+                                            </li>
+                                        ))
+                                    ) : (
+                                        !friendsError && <p className="text-muted">No friends found.</p>
+                                    )}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* View Friend Modal */}
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Friend Details</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {selectedFriend ? (
-                        <div>
-                            <p><strong>Username:</strong> {selectedFriend.username}</p>
-                            <p><strong>First Name:</strong> {selectedFriend.first_name}</p>
-                            <p><strong>Last Name:</strong> {selectedFriend.last_name}</p>
-                            <p><strong>Email:</strong> {selectedFriend.email}</p>
-                            <p><strong>Clubs:</strong> {selectedFriend.clubs.length > 0 ? selectedFriend.clubs.join(", ") : "No clubs"}</p>
-                        </div>
-                    ) : (
-                        <p>Loading...</p>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={() => handleUnfriend(selectedFriend.id)}>Unfriend</Button>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
-                </Modal.Footer>
-            </Modal>
-        </div>
+                {/* View Friend Modal */}
+                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Friend Details</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {selectedFriend ? (
+                            <div>
+                                <p><strong>Username:</strong> {selectedFriend.username}</p>
+                                <p><strong>First Name:</strong> {selectedFriend.first_name}</p>
+                                <p><strong>Last Name:</strong> {selectedFriend.last_name}</p>
+                                <p><strong>Email:</strong> {selectedFriend.email}</p>
+                                <p><strong>Clubs:</strong> {selectedFriend.clubs.length > 0 ? selectedFriend.clubs.join(", ") : "No clubs"}</p>
+                            </div>
+                        ) : (
+                            <p>Loading...</p>
+                        )}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={() => handleUnfriend(selectedFriend.id)}>Unfriend</Button>
+                        <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
+        </GenLayout>
     );
 }
 

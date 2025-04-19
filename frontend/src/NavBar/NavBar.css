@@ -7,12 +7,14 @@
     background-color: #A60F2D;/*#d32f2f; !* Red *!*/
     color: white;
     flex-wrap: nowrap;
-    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: auto;
     z-index: 1000;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 5px;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 .custom-navbar + * {

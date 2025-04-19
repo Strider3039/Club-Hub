@@ -27,7 +27,7 @@ const Sidebar = () => (
 );
 
 const ProfilePanel = () => (
-    <div className="bg-light p-4 text-center">
+    <div className="p-4 text-center">
         <img src='../assets/noProfilePhoto.jpg' className="rounded-circle" style={{ width: '100px', height: '100px', marginTop: '20px'}}></img>
         <div className="mt-3">
             <Button variant="light" className="mb-2">edit photo</Button>
@@ -45,12 +45,12 @@ const App = () => (
     <Container fluid className="p-0">
         <Row noGutters>
             <Col xs={2} className="min-vh-100 bg-light">
-                <Sidebar />
+                {/*<Sidebar />*/}
             </Col>
             <Col xs={7} className="min-vh-100">
                 {/* Middle Content Placeholder */}
             </Col>
-            <Col xs={3} className="min-vh-100">
+            <Col xs={3} className="min-vh-100 bg-light">
                 <ProfilePanel />
             </Col>
         </Row>
