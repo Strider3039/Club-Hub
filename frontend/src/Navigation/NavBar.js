@@ -80,7 +80,7 @@ function NavBar({ toggleTheme, pageTitle}) {
                                 Profile
                             </Dropdown.Toggle>
 
-                            <Dropdown.Menu align="end">
+                            <Dropdown.Menu align="end" style={{zIndex: 9999}}>
                                 <Dropdown.Item as={Link} to="/settings">Settings</Dropdown.Item>
                                 <Dropdown.Item as={Link} to="/dashboard">Dashboard</Dropdown.Item>
                                 <Dropdown.Divider />

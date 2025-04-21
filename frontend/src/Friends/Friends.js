@@ -3,6 +3,7 @@ import "./Friends.css";
 import authAxios from "../utils/authAxios";
 import { Button, Modal } from "react-bootstrap";
 import GenLayout from "../Layout/GeneralLayout"
+import Form from "react-bootstrap/Form";
 
 function Friends() {
     const [friendsList, setFriendsList] = useState([]);
@@ -11,6 +12,8 @@ function Friends() {
     const [showModal, setShowModal] = useState(false);
     const [friendsError, setFriendsError] = useState("");
     const [pendingError, setPendingError] = useState("");
+    const [showForm, setShowForm] = React.useState(false);
+    const [friendUsername, setFriendUsername] = useState("");
 
     const fetchFriends = async () => {
         try {
@@ -38,7 +41,6 @@ function Friends() {
     }, []);
 
     const handleNewFriend = async () => {
-        const friendUsername = prompt("Enter the username of the friend you want to add:");
         if (!friendUsername) return;
 
         try {
@@ -115,7 +117,7 @@ function Friends() {
                             <div className="section-card">
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                     <h3>My Friends</h3>
-                                    <Button onClick={handleNewFriend}>Add Friend</Button>
+                                    <Button onClick={() => setShowForm(!showForm)}>Add Friend</Button>
                                 </div>
                                 {friendsError && <p className="text-danger">{friendsError}</p>}
                                 <ul>
@@ -162,6 +164,24 @@ function Friends() {
                     </Modal.Footer>
                 </Modal>
             </div>
+            <Modal show={showForm} onHide={() => setShowForm(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Add a Friend</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                            <Form.Control
+                                type="text"
+                                placeholder="Username"
+                                value={friendUsername}
+                                onChange={(e) => setFriendUsername(e.target.value)}
+                                onSubmit={handleNewFriend}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+            </Modal>
         </GenLayout>
     );
 }
