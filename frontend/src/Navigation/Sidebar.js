@@ -31,8 +31,8 @@
             <>
                 <div className="sidebar d-flex flex-column align-items-center py-4 ">
                     {/* need custom button */}
-                    <Row noGutters>
-                        <Col noGutters>
+                    <Row>
+                        <Col>
                             <Link className="navbar-brand d-flex align-items-center" to="/home">
                                 <img
                                     src={LightLogo}
@@ -47,7 +47,7 @@
                     </Row>
                     <Row>
                         <Col className="ml-auto d-flex flex-column gap-2">
-                            <SideButton text={"Clubs"}/>
+                            <SideButton text={"Clubs"} onClick={() => navigate("/clubs")} />
                             <SideButton text={"Events"}/>
                             <SideButton
                                 text={"Friends"}

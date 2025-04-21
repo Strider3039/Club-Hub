@@ -64,7 +64,7 @@ function NavBar({ toggleTheme, pageTitle}) {
                         {/*</li>*/}
                     </ul>
 
-            <Form.Control size="sm" type="text" className="mx-2 search-box width-30vh" placeholder="Search..."  style={{ width: '30%' }}/>
+            <Form.Control size="sm" type="text" className="mx-2 search-box" placeholder="Search..."  style={{ width: '30%' }}/>
 
             <div className="d-flex align-items-center gap-3">
               <Button variant="outline-light" onClick={toggleTheme}>

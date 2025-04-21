@@ -18,18 +18,18 @@ function GeneralLayout({children, pageTitle}) {
 
     return (
         <div style={{zIndex: 9999}}>
-            <Container fluid className="p-0 m-0 h-auto">
-                <Row noGutters>
-                    <Col noGutters xs={"auto"} style={{padding: "0px"}} className="h-auto bg-light">
+            <Container fluid className="p-0 m-0 h-auto w-100">
+                <Row className="w-100 mr-0" >
+                    <Col xs={"auto"} style={{padding: "0px"}} className="h-auto bg-light">
                         <Sidebar/>
                     </Col>
                     <Col className="bg-white">
-                        <Row noGutters>
+                        <Row >
                             <Col className="w-100" style={{marginBottom: "7px"}}>
                                 <NavBar toggleTheme={toggleTheme} pageTitle={pageTitle} />
                             </Col>
                         </Row>
-                        <Row noGutters>
+                        <Row >
                             <Col className="min-vh-100 w-100">
                                 {children}
                             </Col>

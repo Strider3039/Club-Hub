@@ -62,7 +62,7 @@ function ClubSearch() {
 
     return (
         <GenLayout pageTitle={"ClubSearch"}>
-            <Container fluid style={{ backgroundColor: "#fdfcf7" }} className="vh-100 mt-0 p-4 flex-column">
+            <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
                 <Row className="align-items-start flex-grow-1 mb-3 text-center">
                     <Col></Col>
                     <Col xs={1}>

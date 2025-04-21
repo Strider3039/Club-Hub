@@ -4,9 +4,9 @@ import 'react-calendar/dist/Calendar.css';
 import { Button } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import authAxios from "../utils/authAxios"; // ✅ Custom Axios with token auto-refresh
+import authAxios from "../utils/authAxios";
 
-function ClubCalendar({ clubId }) {
+function ClubCalendar({userId}) {
     const [date, setDate] = useState(new Date());
     const [events, setEvents] = useState([]);
     const [description, setDescription] = useState("");
