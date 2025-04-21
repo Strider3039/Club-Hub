@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
-import './NavBar/NavBar.css';
+import './Navigation/NavBar.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';

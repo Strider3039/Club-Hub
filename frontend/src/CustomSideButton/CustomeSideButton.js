@@ -62,7 +62,11 @@ function CustomSideButton(props) {
     else
     {
         return (
-            <button className="sideBarButton">{props.text}</button>
+            <button className="sideBarButton"
+                    onClick={props.onClick}
+            >
+                {props.text}
+            </button>
         );
     }
 }

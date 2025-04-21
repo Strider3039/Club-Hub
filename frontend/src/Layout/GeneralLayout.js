@@ -1,6 +1,6 @@
 import {Col, Container, Row} from "react-bootstrap";
-import NavBar from "../NavBar/NavBar";
-import Sidebar from "../NavBar/Sidebar";
+import NavBar from "../Navigation/NavBar";
+import Sidebar from "../Navigation/Sidebar";
 import React, {useState} from "react";
 
 
