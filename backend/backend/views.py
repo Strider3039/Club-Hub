@@ -105,13 +105,14 @@ class ClubRegistrationView(APIView):
             return Response({"message": "Club created successfully"}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class ClubUpdateView(APIView):
-
+    
+class ClubDetailView(APIView):
     def get(self, request, club_id):
         club = get_object_or_404(Club, pk=club_id)
         serializer = ClubSerializer(club, context={'request': request})
         return Response(serializer.data)
+
+class ClubUpdateView(APIView):
 
     def patch(self, request, club_id):
         club = get_object_or_404(Club, pk=club_id)
