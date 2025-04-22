@@ -42,13 +42,13 @@ function ClubDashboard() {
     return (
         <GenLayout
             buttons={
-                hasPermission ? (
+                !hasPermission ? (
                     <SideButton
                         text={"Manage Members"}
                         style={"popover"}
                         placement={"right-start"}
                         buttons={[
-                            {text: "Remove", onClick: () => console.log("Remove Member")},
+                            {text: "Remove", onClick: () => setShowRemoveMemberModal(!showRemoveMemberModal)},
                             {text: "Permissions", onClick: () => console.log("Permissions")},
                         ]}
                     />
