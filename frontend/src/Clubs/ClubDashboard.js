@@ -25,17 +25,6 @@ function ClubDashboard() {
         getClubInfo();
     },[])
 
-    // get the current club name and the club description
-    const getClubInfo = async () => {
-        try
-        {
-            const response = await axios.get(``)
-        }
-        catch(error) {
-            console.log("Error in getClubInfo: ", error);
-        }
-    }
-
     const getMembers = async () => {
         try
         {
@@ -47,6 +36,18 @@ function ClubDashboard() {
             console.error("Error fetching Member list: ", error);
         }
     }
+
+    const getClubInfo = async () => {
+        try 
+        {
+            const response = await authAxios.get(`/clubs/${id}/`);
+            setClubDescription(response.data.description);
+            setClubName(response.data.name);
+            console.log("Club info", response);
+        }
+        catch (error) {
+            console.error("Error fetching club info: ", error);
+        }
 
     const handleEditClub = async (clubName, clubDescription) => {
         try {
