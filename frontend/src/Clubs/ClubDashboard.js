@@ -70,12 +70,16 @@ function ClubDashboard() {
         }
     };
 
-    const handleRemoveMember = async (userId) => {
+    const handleRemoveMember = async (userName) => {
         if (!window.confirm("Remove this member?")) return;
         try {
-            await authAxios.delete(`/membershipDelete/${id}/${userId}/`);
-            alert("Member removed.");
-            getMembers();
+            const member = members.find(m => m.username === userName);
+            if (member) {
+                const userId = member.id;
+                await authAxios.delete(`/membershipDelete/${id}/${userId}/`);
+                alert("Member removed.");
+                getMembers();
+            }
         } catch (error) {
             console.error("Error removing member: ", error);
             alert("Failed to remove member.");
@@ -105,6 +109,7 @@ function ClubDashboard() {
                         placement={"right-start"}
                         buttons={[
                             {text: "Edit Bio", onClick: () => console.log("edit bio")},
+                            {}
                         ]}
                     ></SideButton>
                 ) : null
@@ -143,7 +148,7 @@ function ClubDashboard() {
                                     placeholder="Username"
                                     value={usernameToRemove}
                                     onChange={(e) => setUsernameToRemove(e.target.value)}
-                                    onSubmit={() => removeMember(usernameToRemove)}
+                                    onSubmit={() => handleRemoveMember(usernameToRemove)}
                                 />
                             </Form.Group>
                         </Form>
