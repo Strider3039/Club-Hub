@@ -4,7 +4,7 @@ import Sidebar from "../Navigation/Sidebar";
 import React, {useState} from "react";
 
 
-function GeneralLayout({children, pageTitle}) {
+function GeneralLayout({children, pageTitle, buttons}) {
 
     // 🌗 Theme state
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -13,15 +13,17 @@ function GeneralLayout({children, pageTitle}) {
         const newTheme = theme === "light" ? "dark" : "light";
         setTheme(newTheme);
         localStorage.setItem("theme", newTheme);
+        window.location.reload();
     };
-
 
     return (
         <div style={{zIndex: 9999}}>
             <Container fluid className="p-0 m-0 h-auto w-100">
                 <Row className="w-100 mr-0" >
                     <Col xs={"auto"} style={{padding: "0px"}} className="h-auto bg-light">
-                        <Sidebar/>
+                        <Sidebar>
+                            {buttons}
+                        </Sidebar>
                     </Col>
                     <Col className="bg-white">
                         <Row >

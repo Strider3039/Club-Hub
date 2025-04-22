@@ -5,6 +5,7 @@ import { Container, Row, Col, Button, Form, Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ProfilePage.css';
 import SideButton from '../CustomSideButton/CustomeSideButton';
+import GenLayout from '../Layout/GeneralLayout'
 
 const Sidebar = () => (
     <div className="sidebar d-flex flex-column align-items-center py-4">
@@ -42,19 +43,18 @@ const ProfilePanel = () => (
 );
 
 const App = () => (
-    <Container fluid className="p-0">
-        <Row noGutters>
-            <Col xs={2} className="min-vh-100 bg-light">
-                {/*<Sidebar />*/}
-            </Col>
-            <Col xs={7} className="min-vh-100">
-                {/* Middle Content Placeholder */}
-            </Col>
-            <Col xs={3} className="min-vh-100 bg-light">
-                <ProfilePanel />
-            </Col>
-        </Row>
-    </Container>
+    <GenLayout pageTitle={"Profile"}>
+        <Container fluid className="p-0">
+            <Row>
+                <Col xs={9} className="min-vh-100">
+                    {/* Middle Content Placeholder */}
+                </Col>
+                <Col xs={3} className="min-vh-100 bg-light">
+                    <ProfilePanel />
+                </Col>
+            </Row>
+        </Container>
+    </GenLayout>
 );
 
 export default App;

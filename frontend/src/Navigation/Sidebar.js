@@ -2,14 +2,13 @@
     import SideButton from "../CustomSideButton/CustomeSideButton";
     import React, {useEffect, useState} from "react";
     import {Link, useNavigate} from "react-router-dom";
-    import Home from "../Home";
     import LightLogo from "../assets/Logo_Club_Hub.png";
     import { Modal } from "react-bootstrap";
     import Form from "react-bootstrap/Form";
     import authAxios from "../utils/authAxios";
 
 
-    function Sidebar() {
+    function Sidebar({children}) {
         const [showAddForm, setShowAddForm] = React.useState(false);
         const [friendUsername, setFriendUsername] = React.useState("");
         const navigate = useNavigate();
@@ -59,6 +58,7 @@
                                     {text: "View friends", onClick: () => navigate("/friends")},
                                 ]}
                             />
+                            {children}
                         </Col>
                     </Row>
                 </div>

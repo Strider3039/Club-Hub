@@ -3,13 +3,22 @@ import { Container, Row, Col } from "react-bootstrap";
 import Calendar from "./ClubCalendar";
 import { useParams } from "react-router-dom";
 import GenLayout from "../Layout/GeneralLayout"
+import SideButton from "../CustomSideButton/CustomeSideButton"
 
 function ClubDashboard() {
     // Get the club ID from the URL parameter
     const { id } = useParams();
 
     return (
-        <GenLayout>
+        <GenLayout
+            buttons={
+                <SideButton
+                    text={"Test button"}
+                >
+                </SideButton>
+            }
+        >
+
             <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
                 <Row className="align-items-start flex-grow-1 mb-3 text-center">
                     <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">

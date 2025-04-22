@@ -7,6 +7,7 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
     date_of_birth = models.DateField(null=True, blank=True)
+    clubs = models.ForeignKey(Club, related_name='user_clubs')
 
     def __str__(self):
         return self.username
@@ -21,7 +22,6 @@ class Club(models.Model):
     def __str__(self):
         return self.name
 
-
 class Event(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -30,7 +30,7 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.club.name}"
-    
+
     
 class Friendship(models.Model):
     from_user = models.ForeignKey(
