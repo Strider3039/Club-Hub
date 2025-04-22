@@ -1,14 +1,17 @@
 import React, {useEffect} from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import {Container, Row, Col, Modal} from "react-bootstrap";
 import Calendar from "./ClubCalendar";
 import { useParams } from "react-router-dom";
 import GenLayout from "../Layout/GeneralLayout"
 import SideButton from "../CustomSideButton/CustomeSideButton"
 import authAxios from "../utils/authAxios";
+import Form from "react-bootstrap/Form";
 
 function ClubDashboard() {
     const [members, setMembers] = React.useState([]); // list of club members
     const [hasPermission, setHasPermission] = React.useState(false);
+    const [showRemoveMemberModal, setShowRemoveMemberModal] = React.useState(false);
+    const [usernameToRemove, setUsernameToRemove] = React.useState("");
     // Get the club ID from the URL parameter
     const { id } = useParams();
 
@@ -28,6 +31,9 @@ function ClubDashboard() {
         }
     }
 
+    const removeMember = async (member) => {
+        // ethan do your shit here
+    }
 
 
 
@@ -70,6 +76,24 @@ function ClubDashboard() {
                         </ul>
                     </Col>
                 </Row>
+                <Modal show={showRemoveMemberModal} onHide={() => setShowRemoveMemberModal(false)} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Member to Remove</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Username"
+                                    value={usernameToRemove}
+                                    onChange={(e) => setUsernameToRemove(e.target.value)}
+                                    onSubmit={() => removeMember(usernameToRemove)}
+                                />
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
             </Container>
         </GenLayout>
     );
