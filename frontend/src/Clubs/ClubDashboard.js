@@ -48,6 +48,7 @@ function ClubDashboard() {
         catch (error) {
             console.error("Error fetching club info: ", error);
         }
+    }
 
     const handleEditClub = async (clubName, clubDescription) => {
         try {
