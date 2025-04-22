@@ -9,6 +9,7 @@ import Form from "react-bootstrap/Form";
 
 function ClubDashboard() {
     const [members, setMembers] = React.useState([]); // list of club members
+    const [myRole, setMyRole] = React.useState(""); // my role in the club
     const [hasPermission, setHasPermission] = React.useState(false);
     const [showRemoveMemberModal, setShowRemoveMemberModal] = React.useState(false);
     const [usernameToRemove, setUsernameToRemove] = React.useState("");
@@ -31,13 +32,59 @@ function ClubDashboard() {
         }
     }
 
-    const removeMember = async (member) => {
-        // ethan do your shit here
-    }
+    const handleEditClub = async () => {
+        try {
+            await authAxios.patch(`/clubs/update/?club_id=${id}`, {
+                name: clubName,
+                description: clubDescription,
+            });
+            alert("Club updated successfully.");
+        } catch (error) {
+            console.error("Error updating club: ", error);
+            alert("Failed to update club.");
+        }
+    };
 
+    const handleDeleteClub = async () => {
+        if (!window.confirm("Are you sure you want to delete this club?")) return;
+        try {
+            await authAxios.delete(`/clubs/delete/?club_id=${id}`);
+            alert("Club deleted successfully.");
+            // Redirect or refresh UI
+        } catch (error) {
+            console.error("Error deleting club: ", error);
+            alert("Failed to delete club.");
+        }
+    };
 
+    const handleUpdateRole = async (userId, newRole) => {
+        try {
+            await authAxios.patch(`/membershipUpdate/${id}/${userId}/`, {
+                position: newRole,
+            });
+            alert("Role updated.");
+            getMembers();
+        } catch (error) {
+            console.error("Error updating role: ", error);
+            alert("Failed to update role.");
+        }
+    };
 
+    const handleRemoveMember = async (userId) => {
+        if (!window.confirm("Remove this member?")) return;
+        try {
+            await authAxios.delete(`/membershipDelete/${id}/${userId}/`);
+            alert("Member removed.");
+            getMembers();
+        } catch (error) {
+            console.error("Error removing member: ", error);
+            alert("Failed to remove member.");
+        }
+    };
 
+    const canPost = ["president", "vice_president", "officer"].includes(myRole);
+    const canManage = ["president", "vice_president"].includes(myRole);
+    const isPresident = myRole === "president";
 
     return (
         <GenLayout
