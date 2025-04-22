@@ -35,16 +35,20 @@ function ClubDashboard() {
 
     return (
         <GenLayout
-
             buttons={
-                <SideButton
-                    text={"Members"}
-                    // onClick={}
-                >
-                </SideButton>
+                hasPermission ? (
+                    <SideButton
+                        text={"Manage Members"}
+                        style={"popover"}
+                        placement={"right-start"}
+                        buttons={[
+                            {text: "Remove", onClick: () => console.log("Remove Member")},
+                            {text: "Permissions", onClick: () => console.log("Permissions")},
+                        ]}
+                    />
+                ) : null
             }
         >
-
             <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
                 <Row className="align-items-start flex-grow-1 mb-3 text-center">
                     <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
