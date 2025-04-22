@@ -1,18 +1,31 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import Calendar from "./ClubCalendar";
 import { useParams } from "react-router-dom";
 import GenLayout from "../Layout/GeneralLayout"
 import SideButton from "../CustomSideButton/CustomeSideButton"
+import authAxios from "../utils/authAxios";
 
 function ClubDashboard() {
     const [members, setMembers] = React.useState([]); // list of club members
     // Get the club ID from the URL parameter
     const { id } = useParams();
 
-    const getMembers = async () => {
+    useEffect(() => {
+        getMembers();
+    })
 
+    const getMembers = async () => {
+        try
+        {
+            const response = await authAxios.get(`membershipList/`);
+            setMembers(response.data); // data includes user_id, username, position
+        }
+        catch (error) {
+            console.error("Error fetching Member list: ", error);
+        }
     }
+
 
 
 
@@ -40,6 +53,14 @@ function ClubDashboard() {
                     </Col>
 
                     <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
+                        {/*members are listed here*/}
+                        <ul className="list-unstyled">
+                            {members.map((member, index) => (
+                                <li key={index} className="mb-2">
+                                    <strong>{member.username}</strong> — {member.position}
+                                </li>
+                            ))}
+                        </ul>
                     </Col>
                 </Row>
             </Container>
