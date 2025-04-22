@@ -6,6 +6,7 @@ import GenLayout from "../Layout/GeneralLayout"
 import SideButton from "../CustomSideButton/CustomeSideButton"
 import authAxios from "../utils/authAxios";
 import Form from "react-bootstrap/Form";
+import axios from "axios";
 
 function ClubDashboard() {
     const [members, setMembers] = React.useState([]); // list of club members
@@ -13,12 +14,27 @@ function ClubDashboard() {
     const [hasPermission, setHasPermission] = React.useState(false);
     const [showRemoveMemberModal, setShowRemoveMemberModal] = React.useState(false);
     const [usernameToRemove, setUsernameToRemove] = React.useState("");
+    const [showEditClubModal, setShowEditClubModal] = React.useState(false);
+    const [clubDescription, setClubDescription] = React.useState("");
+    const [clubName, setClubName] = React.useState("");
     // Get the club ID from the URL parameter
     const { id } = useParams();
 
     useEffect(() => {
         getMembers();
+        getClubInfo();
     },[])
+
+    // get the current club name and the club description
+    const getClubInfo = async () => {
+        try
+        {
+            const response = await axios.get(``)
+        }
+        catch(error) {
+            console.log("Error in getClubInfo: ", error);
+        }
+    }
 
     const getMembers = async () => {
         try
@@ -32,7 +48,7 @@ function ClubDashboard() {
         }
     }
 
-    const handleEditClub = async () => {
+    const handleEditClub = async (clubName, clubDescription) => {
         try {
             await authAxios.patch(`/clubs/update/?club_id=${id}`, {
                 name: clubName,
@@ -108,8 +124,8 @@ function ClubDashboard() {
                         style={"popover"}
                         placement={"right-start"}
                         buttons={[
-                            {text: "Edit Bio", onClick: () => console.log("edit bio")},
-                            {}
+                            {text: "Edit Bio", onClick: () => handleEditClub()},
+                            {text: "Edit Club Name", onClick: handleEditClub},
                         ]}
                     ></SideButton>
                 ) : null
@@ -149,6 +165,31 @@ function ClubDashboard() {
                                     value={usernameToRemove}
                                     onChange={(e) => setUsernameToRemove(e.target.value)}
                                     onSubmit={() => handleRemoveMember(usernameToRemove)}
+                                />
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
+                <Modal show={showEditClubModal} onHide={() => setShowEditClubModal(false)} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Edit Club</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Club Name"
+                                    value={usernameToRemove}
+                                    onChange={(e) => setClubName(e.target.value)}
+                                    onSubmit={() => handleEditClub(clubName, clubDescription)}
+                                />
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Club Description"
+                                    value={usernameToRemove}
+                                    onChange={(e) => setClubDescription(e.target.value)}
+                                    onSubmit={() => handleEditClub(clubName, clubDescription)}
                                 />
                             </Form.Group>
                         </Form>
