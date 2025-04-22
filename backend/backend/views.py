@@ -107,6 +107,12 @@ class ClubRegistrationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ClubUpdateView(APIView):
+
+    def get(self, request, club_id):
+        club = get_object_or_404(Club, pk=club_id)
+        serializer = ClubSerializer(club, context={'request': request})
+        return Response(serializer.data)
+
     def patch(self, request, club_id):
         club = get_object_or_404(Club, pk=club_id)
         member = Membership.objects.filter(user=request.user, club=club).first()
