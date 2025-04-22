@@ -7,7 +7,6 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
     date_of_birth = models.DateField(null=True, blank=True)
-    clubs = models.ForeignKey(Club, related_name='user_clubs')
 
     def __str__(self):
         return self.username

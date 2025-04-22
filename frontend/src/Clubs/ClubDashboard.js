@@ -6,14 +6,24 @@ import GenLayout from "../Layout/GeneralLayout"
 import SideButton from "../CustomSideButton/CustomeSideButton"
 
 function ClubDashboard() {
+    const [members, setMembers] = React.useState([]); // list of club members
     // Get the club ID from the URL parameter
     const { id } = useParams();
+
+    const getMembers = async () => {
+
+    }
+
+
+
+
 
     return (
         <GenLayout
             buttons={
                 <SideButton
-                    text={"Test button"}
+                    text={"Members"}
+                    // onClick={}
                 >
                 </SideButton>
             }
@@ -22,14 +32,7 @@ function ClubDashboard() {
             <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
                 <Row className="align-items-start flex-grow-1 mb-3 text-center">
                     <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                        <p>
-                            Club ID: {id} <br />
-                            __________________<br />
-                            |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br />
-                            |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br />
-                            |________________|<br /><br />
-                            Cursor parking lot!
-                        </p>
+                        <Calendar clubId={id} />
                     </Col>
 
                     <Col xs={6} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
@@ -37,7 +40,6 @@ function ClubDashboard() {
                     </Col>
 
                     <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                        <Calendar clubId={id} />
                     </Col>
                 </Row>
             </Container>

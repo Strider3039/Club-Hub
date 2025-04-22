@@ -8,6 +8,7 @@ function CustomSideButton(props) {
     // style
     // buttons
     // placement
+    // onclick
     //
 
     const [isHover, setHover] = useState(false);
