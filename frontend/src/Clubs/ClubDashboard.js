@@ -2,34 +2,48 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import Calendar from "./ClubCalendar";
 import { useParams } from "react-router-dom";
+import GenLayout from "../Layout/GeneralLayout"
+import SideButton from "../CustomSideButton/CustomeSideButton"
 
 function ClubDashboard() {
+    const [members, setMembers] = React.useState([]); // list of club members
     // Get the club ID from the URL parameter
     const { id } = useParams();
 
+    const getMembers = async () => {
+
+    }
+
+
+
+
+
     return (
-        <Container fluid style={{ backgroundColor: "#fdfcf7" }} className="vh-100 mt-0 p-4 flex-column">
-            <Row className="align-items-start flex-grow-1 mb-3 text-center">
-                <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                    <p>
-                        Club ID: {id} <br />
-                        __________________<br />
-                        |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br />
-                        |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br />
-                        |________________|<br /><br />
-                        Cursor parking lot!
-                    </p>
-                </Col>
+        <GenLayout
+            buttons={
+                <SideButton
+                    text={"Members"}
+                    // onClick={}
+                >
+                </SideButton>
+            }
+        >
 
-                <Col xs={6} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                    This column is wider. It will contain the club description, announcements, etc.
-                </Col>
+            <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
+                <Row className="align-items-start flex-grow-1 mb-3 text-center">
+                    <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
+                        <Calendar clubId={id} />
+                    </Col>
 
-                <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                    <Calendar clubId={id} />
-                </Col>
-            </Row>
-        </Container>
+                    <Col xs={6} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
+                        This column is wider. It will contain the club description, announcements, etc.
+                    </Col>
+
+                    <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
+                    </Col>
+                </Row>
+            </Container>
+        </GenLayout>
     );
 }
 

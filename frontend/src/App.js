@@ -6,11 +6,11 @@ import Register from "./Register/Register";
 import ClubSearch from "./Clubs/ClubSearch";
 import ClubRegister from "./Clubs/RegisterClub";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import ClubDashboard from "./Clubs/ClubDashboard";
 import Friends from "./Friends/Friends";
-import Dashboard from "./Dashboard/Dashboard";
-import NavBar from "./NavBar/NavBar";
+import ProfileDashboard from "./Profile/ProfilePage";
+import NavBar from "./Navigation/NavBar";
+import Sidebar from "./Navigation/Sidebar";
 
 // Check authentication by looking for the access token in localStorage
 const isAuthenticated = () => {
@@ -41,7 +41,7 @@ function App() {
     return (
         <div className={`app ${theme}`}>
             <Router>
-                {auth && <NavBar toggleTheme={toggleTheme} />}
+                {/*{auth && <Navigation toggleTheme={toggleTheme} />}*/}
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/login" element={!auth ? <Login /> : <Navigate to="/home" />} />
@@ -51,7 +51,7 @@ function App() {
                     <Route path="/home" element={auth ? <Home /> : <Navigate to="/login" />} />
                     <Route path="/clubs" element={auth ? <ClubSearch /> : <Navigate to="/login" />} />
                     <Route path="/friends" element={auth ? <Friends /> : <Navigate to="/login" />} />
-                    <Route path="/dashboard" element={auth ? <Dashboard /> : <Navigate to="/login" />} />
+                    <Route path="/dashboard" element={auth ? <ProfileDashboard /> : <Navigate to="/login" />} />
                     <Route path="/clubRegister" element={auth ? <ClubRegister /> : <Navigate to="/login" />} />
                     <Route path="/clubHome/:id" element={auth ? <ClubDashboard /> : <Navigate to="/login" />} />
 

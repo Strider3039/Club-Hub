@@ -1,5 +1,6 @@
 import React from "react";
 import Layout from "./Layout/Layout";
+import GenLayout from "./Layout/GeneralLayout";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
@@ -7,16 +8,16 @@ function Home() {
 
     return (
         <div>
-            <Layout
-                leftContentHeader={"Left Content"}
-                leftContentBody={<p>left test</p>}
-
-                middleContentHeader={"Middle Content"}
-                middleContentBody={<p>middle test</p>}
-
-                rightContentHeader={"Right Content"}
-                rightContentBody={<p>right test</p>}
-            />
+            <GenLayout pageTitle={"Home"}>
+                <Layout
+                    leftContentHeader={"Left Content"}
+                    leftContentBody={<p>left test</p>}
+                    middleContentHeader={"Middle Content"}
+                    middleContentBody={<p>middle test</p>}
+                    rightContentHeader={"Right Content"}
+                    rightContentBody={<p>right test</p>}
+                />
+            </GenLayout>
         </div>
     );
 }
