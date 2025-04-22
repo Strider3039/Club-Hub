@@ -8,18 +8,20 @@ import authAxios from "../utils/authAxios";
 
 function ClubDashboard() {
     const [members, setMembers] = React.useState([]); // list of club members
+    const [hasPermission, setHasPermission] = React.useState(false);
     // Get the club ID from the URL parameter
     const { id } = useParams();
 
     useEffect(() => {
         getMembers();
-    })
+    },[])
 
     const getMembers = async () => {
         try
         {
-            const response = await authAxios.get(`membershipList/`);
+            const response = await authAxios.get(`membershipList/${id}/`);
             setMembers(response.data); // data includes user_id, username, position
+            console.log("Membership list", response);
         }
         catch (error) {
             console.error("Error fetching Member list: ", error);
@@ -33,6 +35,7 @@ function ClubDashboard() {
 
     return (
         <GenLayout
+
             buttons={
                 <SideButton
                     text={"Members"}

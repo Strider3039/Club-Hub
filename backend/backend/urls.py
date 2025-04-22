@@ -46,7 +46,7 @@ urlpatterns = [
     path('friends/', FriendListView.as_view(), name='friend-list'),
     
     # Membership URLs
-    path('membershipList/', views.MembershipListView.as_view(), name='membership-list'),
+    path('membershipList/<int:club_id>/', views.MembershipListView.as_view(), name='membership-list'),
     path('membershipUpdate/<int:pk>/', views.MembershipUpdateView.as_view(), name='membership-update'),
     path('membershipDelete/<int:pk>/', views.MembershipRemoveView.as_view(), name='membership-delete'),
 
