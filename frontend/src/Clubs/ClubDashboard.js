@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Modal, Button } from "react-bootstrap";
 import Calendar from "./ClubCalendar";
 import { useParams } from "react-router-dom";
@@ -9,6 +10,7 @@ import Form from "react-bootstrap/Form";
 import axios from "axios";
 
 function ClubDashboard() {
+    const navigate = useNavigate();
     const [members, setMembers] = React.useState([]);
     const [myRole, setMyRole] = React.useState("");
     const [showRemoveMemberModal, setShowRemoveMemberModal] = React.useState(false);
@@ -63,6 +65,7 @@ function ClubDashboard() {
         try {
             await authAxios.delete(`/clubs/delete/${id}/`);
             alert("Club deleted successfully.");
+            navigate("/clubs");
         } catch (error) {
             console.error("Error deleting club: ", error);
             alert("Failed to delete club.");
