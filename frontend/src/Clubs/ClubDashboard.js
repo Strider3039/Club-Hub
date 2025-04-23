@@ -61,7 +61,7 @@ function ClubDashboard() {
     const handleDeleteClub = async () => {
         if (!window.confirm("Are you sure you want to delete this club?")) return;
         try {
-            await authAxios.delete(`/clubs/delete/?club_id=${id}`);
+            await authAxios.delete(`/clubs/delete/${id}/`);
             alert("Club deleted successfully.");
         } catch (error) {
             console.error("Error deleting club: ", error);
@@ -98,14 +98,14 @@ function ClubDashboard() {
         }
     };
 
-    const canPost = ["president", "vice_president", "officer"].includes(myRole);
-    const canManage = ["president", "vice_president"].includes(myRole);
-    const isPresident = myRole === "president";
+    const canPost = ["President", "Vice_president", "officer"].includes(myRole);
+    const canManage = ["President", "Vice_president"].includes(myRole);
+    const isPresident = myRole === "President";
 
     return (
         <GenLayout
             buttons={
-                
+                canManage ? (
                     <>
                         <SideButton
                             text={"Members"}
@@ -126,7 +126,7 @@ function ClubDashboard() {
                             ]}
                         />
                     </>
-                
+                ) : null
             }
         >
             <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
