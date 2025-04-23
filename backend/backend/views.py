@@ -123,7 +123,7 @@ class ClubUpdateView(APIView):
         #new_name = request.data.get("name")
         #new_description = request.data.get("description")
 
-        if member is not None or not can_edit_club_info(member.position):
+        if member is None or not can_edit_club_info(member.position):
             return Response({"error": "You don't have permission to edit the club."}, status=status.HTTP_403_FORBIDDEN)
 
         #Probably is not needed
@@ -143,7 +143,7 @@ class ClubDeleteView(APIView):
         club = get_object_or_404(Club, pk=club_id)
         member = Membership.objects.filter(user=request.user, club=club).first()
 
-        if  member is not None or not can_remove_club(member.position):
+        if  member is None or not can_remove_club(member.position):
             return Response({"error": "Only the creator of the club can delete it."}, status=status.HTTP_403_FORBIDDEN)
         #status=status.HTTP_400_BAD_REQUEST
 

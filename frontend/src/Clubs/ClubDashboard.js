@@ -47,7 +47,7 @@ function ClubDashboard() {
 
     const handleEditClub = async (clubName, clubDescription) => {
         try {
-            await authAxios.patch(`/clubs/update/?club_id=${id}`, {
+            await authAxios.patch(`/clubs/update/${id}/`, {
                 name: clubName,
                 description: clubDescription,
             });
@@ -105,7 +105,7 @@ function ClubDashboard() {
     return (
         <GenLayout
             buttons={
-                canManage ? (
+                
                     <>
                         <SideButton
                             text={"Members"}
@@ -126,7 +126,7 @@ function ClubDashboard() {
                             ]}
                         />
                     </>
-                ) : null
+                
             }
         >
             <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
