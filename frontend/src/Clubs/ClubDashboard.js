@@ -100,7 +100,7 @@ function ClubDashboard() {
         }
     };
 
-    const canManage = ["President", "Vice_president"].includes(myRole);
+    const canManage = ["President", "Vice President"].includes(myRole);
     const isPresident = myRole === "President";
 
     return (
@@ -155,9 +155,9 @@ function ClubDashboard() {
                                             onChange={(e) => handleUpdateRole(member.user_id, e.target.value)}
                                         >
                                             <option value="member">Member</option>
-                                            <option value="officer">Officer</option>
-                                            <option value="vice_president">Vice President</option>
-                                            <option value="president">President</option>
+                                            <option value="Officer">Officer</option>
+                                            <option value="Vice President">Vice President</option>
+                                            <option value="President">President</option>
                                         </Form.Select>
                                     )}
                                 </li>
