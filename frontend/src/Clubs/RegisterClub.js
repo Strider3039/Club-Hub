@@ -59,9 +59,10 @@ function RegisterClub() {
             const response = await authAxios.post("/clubs/", clubData); // ✅ Use authAxios
 
             if (response.status === 201) {
+                const newClubId = response.data.club_id;
                 setSuccess("Club registered successfully!");
                 setError("");
-                navigate("/clubHome");
+                navigate(`/clubs/${newClubId}/`);
             }
         } catch (err) {
             console.error("Backend error:", err.response?.data || err.message);
