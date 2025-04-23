@@ -1,54 +1,49 @@
-import React, {useEffect} from "react";
-import {Container, Row, Col, Modal} from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Container, Row, Col, Modal, Button } from "react-bootstrap";
 import Calendar from "./ClubCalendar";
 import { useParams } from "react-router-dom";
-import GenLayout from "../Layout/GeneralLayout"
-import SideButton from "../CustomSideButton/CustomeSideButton"
+import GenLayout from "../Layout/GeneralLayout";
+import SideButton from "../CustomSideButton/CustomeSideButton";
 import authAxios from "../utils/authAxios";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 
 function ClubDashboard() {
-    const [members, setMembers] = React.useState([]); // list of club members
-    const [myRole, setMyRole] = React.useState(""); // my role in the club
-    const [hasPermission, setHasPermission] = React.useState(false);
+    const [members, setMembers] = React.useState([]);
+    const [myRole, setMyRole] = React.useState("");
     const [showRemoveMemberModal, setShowRemoveMemberModal] = React.useState(false);
     const [usernameToRemove, setUsernameToRemove] = React.useState("");
     const [showEditClubModal, setShowEditClubModal] = React.useState(false);
     const [clubDescription, setClubDescription] = React.useState("");
     const [clubName, setClubName] = React.useState("");
-    // Get the club ID from the URL parameter
     const { id } = useParams();
 
     useEffect(() => {
         getMembers();
         getClubInfo();
-    },[])
+    }, []);
 
+    
     const getMembers = async () => {
-        try
-        {
+        try {
             const response = await authAxios.get(`membershipList/${id}/`);
-            setMembers(response.data); // data includes user_id, username, position
-            console.log("Membership list", response);
-        }
-        catch (error) {
+            setMembers(response.data);
+            const myEntry = response.data.find(m => m.username === localStorage.getItem("username"));
+            if (myEntry) setMyRole(myEntry.position);
+        } catch (error) {
             console.error("Error fetching Member list: ", error);
         }
-    }
+    };
 
     const getClubInfo = async () => {
-        try 
-        {
+        try {
             const response = await authAxios.get(`/clubs/${id}/`);
             setClubDescription(response.data.description);
             setClubName(response.data.name);
-            console.log("Club info", response);
-        }
-        catch (error) {
+        } catch (error) {
             console.error("Error fetching club info: ", error);
         }
-    }
+    };
 
     const handleEditClub = async (clubName, clubDescription) => {
         try {
@@ -68,7 +63,6 @@ function ClubDashboard() {
         try {
             await authAxios.delete(`/clubs/delete/?club_id=${id}`);
             alert("Club deleted successfully.");
-            // Redirect or refresh UI
         } catch (error) {
             console.error("Error deleting club: ", error);
             alert("Failed to delete club.");
@@ -111,48 +105,82 @@ function ClubDashboard() {
     return (
         <GenLayout
             buttons={
-                hasPermission ? (
-                    <SideButton
-                        text={"Members"}
-                        style={"popover"}
-                        placement={"right-start"}
-                        buttons={[
-                            {text: "Remove", onClick: () => setShowRemoveMemberModal(!showRemoveMemberModal)},
-                            {text: "Permissions", onClick: () => console.log("Permissions")},
-                        ]}
-                    ></SideButton>,
-                    <SideButton
-                        text={"Club"}
-                        style={"popover"}
-                        placement={"right-start"}
-                        buttons={[
-                            {text: "Edit Bio", onClick: () => handleEditClub()},
-                            {text: "Edit Club Name", onClick: handleEditClub},
-                        ]}
-                    ></SideButton>
+                canManage ? (
+                    <>
+                        <SideButton
+                            text={"Members"}
+                            style={"popover"}
+                            placement={"right-start"}
+                            buttons={[
+                                { text: "Remove", onClick: () => setShowRemoveMemberModal(!showRemoveMemberModal) },
+                                { text: "Permissions", onClick: () => console.log("Permissions") },
+                            ]}
+                        />
+                        <SideButton
+                            text={"Club"}
+                            style={"popover"}
+                            placement={"right-start"}
+                            buttons={[
+                                { text: "Edit Bio", onClick: () => setShowEditClubModal(true) },
+                                { text: "Edit Club Name", onClick: () => setShowEditClubModal(true) },
+                            ]}
+                        />
+                    </>
                 ) : null
             }
         >
             <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
                 <Row className="align-items-start flex-grow-1 mb-3 text-center">
                     <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
+                        <h5>Club Calendar</h5>
                         <Calendar clubId={id} />
                     </Col>
 
                     <Col xs={6} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                        This column is wider. It will contain the club description, announcements, etc.
+                        <h5 className="mb-4">About the Club</h5>
+                        <div className="text-start px-4">
+                            <p className="fw-semibold mb-2">
+                                <span className="text-muted">Name:</span> <span className="fs-5">{clubName}</span>
+                            </p>
+                            <p className="fw-semibold">
+                                <span className="text-muted">Description:</span> <span>{clubDescription}</span>
+                            </p>
+                        </div>
                     </Col>
 
                     <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                        {/*members are listed here*/}
+                        <h5>Members</h5>
                         <ul className="list-unstyled">
                             {members.map((member, index) => (
-                                <li key={index} className="mb-2">
-                                    <strong>{member.username}</strong> — {member.position}
+                                <li key={index} className="mb-3 d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <strong>{member.username}</strong> — {member.position}
+                                    </span>
+                                    {canManage && member.username !== localStorage.getItem("username") && (
+                                        <Form.Select
+                                            size="sm"
+                                            defaultValue={member.position}
+                                            style={{ width: "150px" }}
+                                            onChange={(e) => handleUpdateRole(member.user_id, e.target.value)}
+                                        >
+                                            <option value="member">Member</option>
+                                            <option value="officer">Officer</option>
+                                            <option value="vice_president">Vice President</option>
+                                            <option value="president">President</option>
+                                        </Form.Select>
+                                    )}
                                 </li>
                             ))}
                         </ul>
                     </Col>
+
+                    {isPresident && (
+                        <div className="text-center mt-3">
+                            <Button variant="danger" onClick={handleDeleteClub}>
+                                Delete Club
+                            </Button>
+                        </div>
+                    )}
                 </Row>
                 <Modal show={showRemoveMemberModal} onHide={() => setShowRemoveMemberModal(false)} centered>
                     <Modal.Header closeButton>
@@ -160,14 +188,14 @@ function ClubDashboard() {
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
-                            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                            <Form.Group className="mb-3">
                                 <Form.Control
                                     type="text"
                                     placeholder="Username"
                                     value={usernameToRemove}
                                     onChange={(e) => setUsernameToRemove(e.target.value)}
-                                    onSubmit={() => handleRemoveMember(usernameToRemove)}
                                 />
+                                <Button onClick={() => handleRemoveMember(usernameToRemove)}>Remove</Button>
                             </Form.Group>
                         </Form>
                     </Modal.Body>
@@ -178,21 +206,20 @@ function ClubDashboard() {
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
-                            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                            <Form.Group className="mb-3">
                                 <Form.Control
                                     type="text"
                                     placeholder="Club Name"
-                                    value={usernameToRemove}
+                                    value={clubName}
                                     onChange={(e) => setClubName(e.target.value)}
-                                    onSubmit={() => handleEditClub(clubName, clubDescription)}
                                 />
                                 <Form.Control
                                     type="text"
                                     placeholder="Club Description"
-                                    value={usernameToRemove}
+                                    value={clubDescription}
                                     onChange={(e) => setClubDescription(e.target.value)}
-                                    onSubmit={() => handleEditClub(clubName, clubDescription)}
                                 />
+                                <Button onClick={() => handleEditClub(clubName, clubDescription)}>Save</Button>
                             </Form.Group>
                         </Form>
                     </Modal.Body>
