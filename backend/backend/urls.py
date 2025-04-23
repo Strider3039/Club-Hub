@@ -48,8 +48,8 @@ urlpatterns = [
     
     # Membership URLs
     path('membershipList/<int:club_id>/', views.MembershipListView.as_view(), name='membership-list'),
-    path('membershipUpdate/<int:pk>/', views.MembershipUpdateView.as_view(), name='membership-update'),
-    path('membershipDelete/<int:pk>/', views.MembershipRemoveView.as_view(), name='membership-delete'),
+    path('membershipUpdate/<int:club_id>/<int:user_id>/', views.MembershipUpdateView.as_view(), name='membership-update'),
+    path('membershipDelete/<int:club_id>/<int:user_id>/', views.MembershipRemoveView.as_view(), name='membership-delete'),
 
     #Friend Requests URLs
     path('friends/<int:friend_id>/', views.FriendshipView.as_view(), name='friendship-detail'),
