@@ -90,7 +90,7 @@ function ClubDashboard() {
         try {
             const member = members.find(m => m.username === userName);
             if (member) {
-                const userId = member.id;
+                const userId = member.user_id;
                 await authAxios.delete(`/membershipDelete/${id}/${userId}/`);
                 alert("Member removed.");
                 getMembers();
