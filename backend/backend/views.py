@@ -234,9 +234,6 @@ class MembershipListView(APIView):
         club = get_object_or_404(Club, pk=club_id)
         membership = Membership.objects.filter(user=request.user, club=club).first()
 
-        if not membership or not can_manage_members(membership.position):
-            return Response({"error": "Permission denied."}, status=403)
-
         members = Membership.objects.filter(club=club).select_related('user')
         data = [
             {
