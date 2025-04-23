@@ -5,6 +5,7 @@ from .models import Club, Event
 from .models import Friendship
 from .models import CustomUser
 from .models import Membership
+from .models import Announcement
 
 User = get_user_model()
 
@@ -27,6 +28,12 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ['id', 'title', 'description', 'date', 'club']
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Announcement
+        fields = ['id', 'title', 'description', 'date', 'club']
+
 
 class MembershipSerializer(serializers.ModelSerializer):
     # get the user using the primary key

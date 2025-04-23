@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import make_password
 from .serializers import ClubSerializer
 from .serializers import EventSerializer
 from .serializers import FriendshipSerializer
+from .serializers import AnnouncementSerializer
 from .models import Friendship
 from .models import Club
 from .models import Event
@@ -19,6 +20,7 @@ from django.db.models import Q
 from .permissions import can_manage_members
 from .permissions import can_remove_club
 from .permissions import can_edit_club_info
+from .permissions import can_post_events
 from django.shortcuts import get_object_or_404
 
 def home(request):
@@ -179,6 +181,32 @@ class ClubEventsView(APIView):
             serializer.save()  # This assumes the EventSerializer includes the `club` field
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ClubAnnouncementView(APIView):
+    def post(self, request, club_id):
+        club = get_object_or_404(Club, pk=club_id)
+        member = Membership.objects.filter(user=request.user, club=club).first()
+
+        if member is None or not can_post_events(member.position):
+            return Response({"error": "You don't have permission to post an announcement."}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = AnnouncementSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(club=club)
+            return Response({"message": "Announcement posted successfully."}, status=status.HTTP_200_OK)
+
+        return Response({"error": "There was an error when creating the annoucement."}, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, club_id):
+        club = get_object_or_404(Club, pk=club_id)
+        member = Membership.objects.filter(user=request.user, club=club).first()
+
+        if member is None:
+            return Response({"error": "Only members can view announcements."}, status=status.HTTP_403_FORBIDDEN)
+
+        announcements = club.annoucement.all()
+        serializer = AnnouncementSerializer(announcements, many=True)
+        return Response(serializer.data)
     
 class ClubJoinView(APIView):
 

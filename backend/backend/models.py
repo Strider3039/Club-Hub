@@ -49,6 +49,14 @@ class Event(models.Model):
     def __str__(self):
         return f"{self.title} - {self.club.name}"
     
+class Announcement(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    date = models.DateTimeField()
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
+
+    def str(self):
+        return f"{self.title} - {self.club.name if self.club else 'Null Club'}"
     
 class Friendship(models.Model):
     from_user = models.ForeignKey(
