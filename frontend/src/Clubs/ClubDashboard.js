@@ -1,31 +1,28 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Container, Row, Col, Modal, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Container, Row, Col, Modal, Button, Form } from "react-bootstrap";
 import Calendar from "./ClubCalendar";
-import { useParams } from "react-router-dom";
 import GenLayout from "../Layout/GeneralLayout";
 import SideButton from "../CustomSideButton/CustomeSideButton";
 import authAxios from "../utils/authAxios";
-import Form from "react-bootstrap/Form";
-import axios from "axios";
 
 function ClubDashboard() {
     const navigate = useNavigate();
-    const [members, setMembers] = React.useState([]);
-    const [myRole, setMyRole] = React.useState("");
-    const [showRemoveMemberModal, setShowRemoveMemberModal] = React.useState(false);
-    const [usernameToRemove, setUsernameToRemove] = React.useState("");
-    const [showEditClubModal, setShowEditClubModal] = React.useState(false);
-    const [clubDescription, setClubDescription] = React.useState("");
-    const [clubName, setClubName] = React.useState("");
     const { id } = useParams();
+
+    const [members, setMembers] = useState([]);
+    const [myRole, setMyRole] = useState("");
+    const [showRemoveMemberModal, setShowRemoveMemberModal] = useState(false);
+    const [usernameToRemove, setUsernameToRemove] = useState("");
+    const [showEditClubModal, setShowEditClubModal] = useState(false);
+    const [clubDescription, setClubDescription] = useState("");
+    const [clubName, setClubName] = useState("");
 
     useEffect(() => {
         getMembers();
         getClubInfo();
     }, []);
 
-    
     const getMembers = async () => {
         try {
             const response = await authAxios.get(`membershipList/${id}/`);
@@ -47,13 +44,15 @@ function ClubDashboard() {
         }
     };
 
-    const handleEditClub = async (clubName, clubDescription) => {
+    const handleEditClub = async () => {
         try {
             await authAxios.patch(`/clubs/update/${id}/`, {
                 name: clubName,
                 description: clubDescription,
             });
             alert("Club updated successfully.");
+            // close modal after editing
+            setShowEditClubModal(false);
         } catch (error) {
             console.error("Error updating club: ", error);
             alert("Failed to update club.");
@@ -101,35 +100,23 @@ function ClubDashboard() {
         }
     };
 
-    const canPost = ["President", "Vice_president", "officer"].includes(myRole);
     const canManage = ["President", "Vice_president"].includes(myRole);
     const isPresident = myRole === "President";
 
     return (
         <GenLayout
             buttons={
-                canManage ? (
-                    <>
-                        <SideButton
-                            text={"Members"}
-                            style={"popover"}
-                            placement={"right-start"}
-                            buttons={[
-                                { text: "Remove", onClick: () => setShowRemoveMemberModal(!showRemoveMemberModal) },
-                                { text: "Permissions", onClick: () => console.log("Permissions") },
-                            ]}
-                        />
-                        <SideButton
-                            text={"Club"}
-                            style={"popover"}
-                            placement={"right-start"}
-                            buttons={[
-                                { text: "Edit Bio", onClick: () => setShowEditClubModal(true) },
-                                { text: "Edit Club Name", onClick: () => setShowEditClubModal(true) },
-                            ]}
-                        />
-                    </>
-                ) : null
+                canManage && (
+                    <SideButton
+                        text={"Manage Club"}
+                        style={"popover"}
+                        placement={"right-start"}
+                        buttons={[
+                            { text: "Remove Member", onClick: () => setShowRemoveMemberModal(true) },
+                            { text: "Edit Club Info", onClick: () => setShowEditClubModal(true) }
+                        ]}
+                    />
+                )
             }
         >
             <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
@@ -185,6 +172,8 @@ function ClubDashboard() {
                         </div>
                     )}
                 </Row>
+
+                {/* Remove Member Modal */}
                 <Modal show={showRemoveMemberModal} onHide={() => setShowRemoveMemberModal(false)} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Member to Remove</Modal.Title>
@@ -203,26 +192,31 @@ function ClubDashboard() {
                         </Form>
                     </Modal.Body>
                 </Modal>
+
+                {/* Edit Club Info Modal */}
                 <Modal show={showEditClubModal} onHide={() => setShowEditClubModal(false)} centered>
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit Club</Modal.Title>
+                        <Modal.Title>Edit Club Info</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
                             <Form.Group className="mb-3">
+                                <h6>Club Name</h6>
                                 <Form.Control
                                     type="text"
                                     placeholder="Club Name"
                                     value={clubName}
                                     onChange={(e) => setClubName(e.target.value)}
                                 />
+                                <h6>Club Description</h6>
                                 <Form.Control
-                                    type="text"
+                                    as="textarea"
+                                    rows={3}
                                     placeholder="Club Description"
                                     value={clubDescription}
                                     onChange={(e) => setClubDescription(e.target.value)}
                                 />
-                                <Button onClick={() => handleEditClub(clubName, clubDescription)}>Save</Button>
+                                <Button onClick={handleEditClub}>Save</Button>
                             </Form.Group>
                         </Form>
                     </Modal.Body>
