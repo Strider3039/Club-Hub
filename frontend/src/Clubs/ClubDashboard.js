@@ -105,6 +105,7 @@ function ClubDashboard() {
 
     return (
         <GenLayout
+            pageTitle={`${clubName} Dashboard`}
             buttons={
                 canManage && (
                     <SideButton
