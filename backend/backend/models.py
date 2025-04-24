@@ -19,7 +19,6 @@ class Club(models.Model):
     def __str__(self):
         return self.name
 
-# create a membership model to link users to clubs
 class Membership(models.Model):
     POSITION_CHOICES = [
         ('member', 'Member'),
@@ -32,11 +31,9 @@ class Membership(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     position = models.CharField(max_length=20, choices=POSITION_CHOICES, default='member')
 
-    # add a unique constraint to prevent duplicate memberships
     class Meta:
         unique_together = ('user', 'club')
 
-    # add a string representation for the membership
     def __str__(self):
         return f"{self.user.username} - {self.club.name} ({self.position})"
 
@@ -48,16 +45,37 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.club.name}"
-    
-class Announcement(models.Model):
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    date = models.DateTimeField()
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
 
-    def str(self):
-        return f"{self.title} - {self.club.name if self.club else 'Null Club'}"
-    
+class Announcement(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='announcements')
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.club.name})"
+
+class Comment(models.Model):
+    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class Reply(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class Like(models.Model):
+    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('announcement', 'user')
+
 class Friendship(models.Model):
     from_user = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='sent_friend_requests', on_delete=models.CASCADE
@@ -71,5 +89,5 @@ class Friendship(models.Model):
     class Meta:
         unique_together = ('from_user', 'to_user')
 
-    def str(self):
+    def __str__(self):
         return f"{self.from_user} -> {self.to_user} ({self.status})"

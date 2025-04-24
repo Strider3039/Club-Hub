@@ -1,11 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from .models import Club, Event
-from .models import Friendship
-from .models import CustomUser
-from .models import Membership
-from .models import Announcement
+from .models import Club, Event, Friendship, CustomUser, Membership, Announcement, Comment, Reply, Like
 
 User = get_user_model()
 
@@ -29,16 +25,8 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ['id', 'title', 'description', 'date', 'club']
 
-class AnnouncementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Announcement
-        fields = ['id', 'title', 'description', 'date', 'club']
-
-
 class MembershipSerializer(serializers.ModelSerializer):
-    # get the user using the primary key
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    # get the club using the primary key
     club = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
@@ -64,20 +52,14 @@ class ClubSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         creator = request.user if request else None
 
-        validated_data.pop('creator', None)  # Remove creator from validated_data
-
+        validated_data.pop('creator', None)
         club = Club.objects.create(creator=creator, **validated_data)
 
         if creator:
-            # assign the creator as president via Membership model
-            Membership.objects.create(
-                user=creator,
-                club=club,
-                position='President'
-            )
+            Membership.objects.create(user=creator, club=club, position='President')
 
         return club
-    
+
 class UserSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -86,7 +68,6 @@ class UserSummarySerializer(serializers.ModelSerializer):
 class FriendshipSerializer(serializers.ModelSerializer):
     from_user = UserSummarySerializer(read_only=True)
     to_user = UserSummarySerializer(read_only=True)
-
     friendUsername = serializers.CharField(write_only=True)
 
     class Meta:
@@ -109,16 +90,46 @@ class FriendshipSerializer(serializers.ModelSerializer):
         if Friendship.objects.filter(from_user=from_user, to_user=to_user).exists():
             raise serializers.ValidationError("Friend request already sent.")
 
-        # Add to_user to validated data for use in create()
         data['to_user'] = to_user
         return data
 
     def create(self, validated_data):
         from_user = self.context['request'].user
         to_user = validated_data['to_user']
+        return Friendship.objects.create(from_user=from_user, to_user=to_user, status='pending')
 
-        return Friendship.objects.create(
-            from_user=from_user,
-            to_user=to_user,
-            status='pending'
-        )
+class LikeSerializer(serializers.ModelSerializer):
+    user = UserSummarySerializer(read_only=True)
+
+    class Meta:
+        model = Like
+        fields = ['id', 'user']
+
+class ReplySerializer(serializers.ModelSerializer):
+    user = UserSummarySerializer(read_only=True)
+
+    class Meta:
+        model = Reply
+        fields = ['id', 'user', 'content', 'created_at']
+
+class CommentSerializer(serializers.ModelSerializer):
+    user = UserSummarySerializer(read_only=True)
+    replies = ReplySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'user', 'content', 'created_at', 'replies']
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    author = UserSummarySerializer(read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
+    likes = LikeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Announcement
+        fields = ['id', 'title', 'content', 'club', 'author', 'created_at', 'updated_at', 'comments', 'likes']
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        validated_data['author'] = request.user
+        return Announcement.objects.create(**validated_data)

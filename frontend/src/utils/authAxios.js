@@ -52,4 +52,25 @@ authAxios.interceptors.response.use(
     }
 );
 
+export const fetchAnnouncements = (clubId) =>
+    authAxios.get(`/clubs/${clubId}/announcements/`);
+
+export const createAnnouncement = (clubId, data) =>
+    authAxios.post(`/clubs/${clubId}/announcements/`, data);
+
+export const editAnnouncement = (id, data) =>
+    authAxios.patch(`/announcements/${id}/`, data);
+
+export const deleteAnnouncement = (id) =>
+    authAxios.delete(`/announcements/${id}/`);
+
+export const postComment = (announcementId, data) =>
+    authAxios.post(`/announcements/${announcementId}/comments/`, data);
+
+export const postReply = (commentId, data) =>
+    authAxios.post(`/comments/${commentId}/replies/`, data);
+
+export const toggleLike = (announcementId) =>
+    authAxios.post(`/announcements/${announcementId}/like/`);
+
 export default authAxios;

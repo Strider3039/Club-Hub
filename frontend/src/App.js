@@ -12,6 +12,10 @@ import ProfileDashboard from "./Profile/ProfilePage";
 import NavBar from "./Navigation/NavBar";
 import Sidebar from "./Navigation/Sidebar";
 
+import Announcements from "./Announcements/Announcements";
+import CreateAnnouncement from "./Announcements/CreateAnnouncement";
+import AnnouncementDetail from "./Announcements/AnnouncementDetail";
+
 // Check authentication by looking for the access token in localStorage
 const isAuthenticated = () => {
     const token = localStorage.getItem("access");
@@ -21,8 +25,6 @@ const isAuthenticated = () => {
 
 function App() {
     const [auth, setAuth] = useState(isAuthenticated());
-
-    // 🌗 Theme state
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
     const toggleTheme = () => {
@@ -41,7 +43,6 @@ function App() {
     return (
         <div className={`app ${theme}`}>
             <Router>
-                {/*{auth && <Navigation toggleTheme={toggleTheme} />}*/}
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/login" element={!auth ? <Login /> : <Navigate to="/home" />} />
@@ -54,6 +55,11 @@ function App() {
                     <Route path="/dashboard" element={auth ? <ProfileDashboard /> : <Navigate to="/login" />} />
                     <Route path="/clubRegister" element={auth ? <ClubRegister /> : <Navigate to="/login" />} />
                     <Route path="/clubHome/:id" element={auth ? <ClubDashboard /> : <Navigate to="/login" />} />
+
+                    {/* Announcement Routes */}
+                    <Route path="/clubs/:clubId/announcements" element={auth ? <Announcements /> : <Navigate to="/login" />} />
+                    <Route path="/clubs/:clubId/announcements/new" element={auth ? <CreateAnnouncement /> : <Navigate to="/login" />} />
+                    <Route path="/clubs/:clubId/announcements/:announcementId" element={auth ? <AnnouncementDetail /> : <Navigate to="/login" />} />
 
                     {/* Catch-all */}
                     <Route path="*" element={auth ? <Navigate to="/home" /> : <Navigate to="/login" />} />

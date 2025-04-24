@@ -22,6 +22,10 @@ from .permissions import can_remove_club
 from .permissions import can_edit_club_info
 from .permissions import can_post_events
 from django.shortcuts import get_object_or_404
+from .models import Announcement, Comment, Reply, Like
+from .serializers import AnnouncementSerializer, CommentSerializer, ReplySerializer, LikeSerializer
+from .permissions import can_post_events
+from django.shortcuts import get_object_or_404
 
 def home(request):
     return HttpResponse("Welcome to the ClubHub!")
@@ -183,6 +187,8 @@ class ClubEventsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class ClubAnnouncementView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, club_id):
         club = get_object_or_404(Club, pk=club_id)
         member = Membership.objects.filter(user=request.user, club=club).first()
@@ -190,12 +196,12 @@ class ClubAnnouncementView(APIView):
         if member is None or not can_post_events(member.position):
             return Response({"error": "You don't have permission to post an announcement."}, status=status.HTTP_403_FORBIDDEN)
 
-        serializer = AnnouncementSerializer(data=request.data)
+        serializer = AnnouncementSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save(club=club)
-            return Response({"message": "Announcement posted successfully."}, status=status.HTTP_200_OK)
+            serializer.save(club=club, author=request.user)
+            return Response({"message": "Announcement posted successfully."}, status=status.HTTP_201_CREATED)
 
-        return Response({"error": "There was an error when creating the annoucement."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, club_id):
         club = get_object_or_404(Club, pk=club_id)
@@ -204,8 +210,8 @@ class ClubAnnouncementView(APIView):
         if member is None:
             return Response({"error": "Only members can view announcements."}, status=status.HTTP_403_FORBIDDEN)
 
-        announcements = club.annoucement.all()
-        serializer = AnnouncementSerializer(announcements, many=True)
+        announcements = Announcement.objects.filter(club=club).order_by('-created_at')
+        serializer = AnnouncementSerializer(announcements, many=True, context={'request': request})
         return Response(serializer.data)
     
 class ClubJoinView(APIView):
@@ -393,3 +399,76 @@ class PendingFriendRequestsView(APIView):
         ]
 
         return Response(data, status=200)
+
+
+class AnnouncementView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, club_id):
+        announcements = Announcement.objects.filter(club__id=club_id).order_by('-created_at')
+        serializer = AnnouncementSerializer(announcements, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request, club_id):
+        membership = Membership.objects.filter(user=request.user, club__id=club_id).first()
+        if not membership or not can_post_events(membership.position):
+            return Response({'error': 'Permission denied'}, status=403)
+        data = request.data.copy()
+        data['club'] = club_id
+        serializer = AnnouncementSerializer(data=data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def patch(self, request, pk):
+        announcement = get_object_or_404(Announcement, pk=pk)
+        if announcement.author != request.user:
+            return Response({'error': 'Only the author can edit this.'}, status=403)
+        serializer = AnnouncementSerializer(announcement, data=request.data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request, pk):
+        announcement = get_object_or_404(Announcement, pk=pk)
+        if announcement.author != request.user:
+            return Response({'error': 'Only the author can delete this.'}, status=403)
+        announcement.delete()
+        return Response({'message': 'Deleted successfully.'}, status=204)
+
+class CommentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, announcement_id):
+        data = request.data.copy()
+        data['announcement'] = announcement_id
+        serializer = CommentSerializer(data=data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+class ReplyView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, comment_id):
+        data = request.data.copy()
+        data['comment'] = comment_id
+        serializer = ReplySerializer(data=data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+class LikeToggleView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, announcement_id):
+        announcement = get_object_or_404(Announcement, pk=announcement_id)
+        like, created = Like.objects.get_or_create(user=request.user, announcement=announcement)
+        if not created:
+            like.delete()
+            return Response({'message': 'Like removed'}, status=200)
+        return Response({'message': 'Liked'}, status=201)
