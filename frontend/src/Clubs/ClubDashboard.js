@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import GenLayout from "../Layout/GeneralLayout";
 import Calendar from "./ClubCalendar";
 import { fetchAnnouncements, postComment, postReply, toggleLike } from "../utils/authAxios";
+import authAxios from "../utils/authAxios";
 
 function ClubDashboard() {
     const { id } = useParams();
     const [announcements, setAnnouncements] = useState([]);
     const [commentInputs, setCommentInputs] = useState({});
     const [replyInputs, setReplyInputs] = useState({});
+    const [role, setRole] = useState("");
 
     const loadAnnouncements = async () => {
         try {
@@ -20,8 +22,19 @@ function ClubDashboard() {
         }
     };
 
+    const loadMembership = async () => {
+        try {
+            const res = await authAxios.get(`/membershipList/${id}/`);
+            const myEntry = res.data.find(m => m.username === localStorage.getItem("username"));
+            if (myEntry) setRole(myEntry.position);
+        } catch (err) {
+            console.error("Error loading membership:", err);
+        }
+    };
+
     useEffect(() => {
         loadAnnouncements();
+        loadMembership();
     }, [id]);
 
     const handleComment = async (announcementId) => {
@@ -45,6 +58,8 @@ function ClubDashboard() {
         loadAnnouncements();
     };
 
+    const isOfficer = ["President", "Vice President", "officer"].includes(role);
+
     return (
         <GenLayout pageTitle="Club Dashboard">
             <Container fluid className="p-4">
@@ -52,6 +67,13 @@ function ClubDashboard() {
                     <Col md={4} className="bg-light border rounded p-3">
                         <h5>Club Calendar</h5>
                         <Calendar clubId={id} />
+                        {isOfficer && (
+                            <div className="mt-3">
+                                <Link to={`/clubs/${id}/announcements/new`}>
+                                    <Button variant="primary" size="sm">➕ Create Announcement</Button>
+                                </Link>
+                            </div>
+                        )}
                     </Col>
                     <Col md={8} className="bg-light border rounded p-3">
                         <h5>Announcements</h5>
@@ -75,7 +97,6 @@ function ClubDashboard() {
                                             ❤️ {ann.likes.length}
                                         </Button>
 
-                                        {/* Comments */}
                                         <div className="mt-3">
                                             <Form onSubmit={e => { e.preventDefault(); handleComment(ann.id); }}>
                                                 <Form.Control
