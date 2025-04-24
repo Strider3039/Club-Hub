@@ -100,6 +100,7 @@ function ClubDashboard() {
         }
     };
 
+    
     const canManage = ["President", "Vice President"].includes(myRole);
     const isPresident = myRole === "President";
 
