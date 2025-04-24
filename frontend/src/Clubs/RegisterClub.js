@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import authAxios from "../utils/authAxios"; // ✅ Use the custom axios
+import authAxios from "../utils/authAxios";
 import "./RegisterClub.css";
 import Button from "react-bootstrap/Button";
 
@@ -9,40 +9,13 @@ function RegisterClub() {
 
     const [clubName, setClubName] = useState("");
     const [description, setDescription] = useState("");
-    const [members, setMembers] = useState([]);
-    const [officers, setOfficers] = useState([]);
-    const [currentUserId, setCurrentUserId] = useState(null);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
-    // On load: get current user and set them as the first club member
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-
-        if (storedUser) {
-            try {
-                const user = JSON.parse(storedUser);
-                if (user && user.id) {
-                    setCurrentUserId(user.id);
-                    setMembers([user.id]);
-                    setOfficers([user.id]);
-                } else {
-                    setError("Invalid user data. Please log in again.");
-                }
-            } catch (err) {
-                console.error("Failed to parse user:", err);
-                setError("Error reading user info.");
-            }
-        } else {
-            setError("You must be logged in to register a club.");
-        }
-    }, []);
-
     const handleBack = () => {
         navigate("/clubs");
-    }
+    };
 
-    // Handle form submission
     const handleRegister = async (e) => {
         e.preventDefault();
         setError("");
@@ -51,18 +24,15 @@ function RegisterClub() {
         const clubData = {
             name: clubName,
             description: description,
-            members: members,
-            officers: officers,
         };
 
         try {
-            const response = await authAxios.post("/clubs/", clubData); // ✅ Use authAxios
+            const response = await authAxios.post("/clubs/", clubData);
 
             if (response.status === 201) {
-                const newClubId = response.data.club_id;
                 setSuccess("Club registered successfully!");
                 setError("");
-                navigate(`/clubs/${newClubId}/`);
+                navigate("/clubs");
             }
         } catch (err) {
             console.error("Backend error:", err.response?.data || err.message);
@@ -95,7 +65,7 @@ function RegisterClub() {
             </form>
             {error && <p className="error">{error}</p>}
             {success && <p className="success">{success}</p>}
-            <Button variant="link" className="bg-transparent text-black"  onClick={handleBack}>
+            <Button variant="link" className="bg-transparent text-black" onClick={handleBack}>
                 Back to Club Search
             </Button>
         </div>

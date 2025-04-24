@@ -2,7 +2,9 @@
   "dependencies": {
     "@types/react-big-calendar": "^1.16.1",
     "bootstrap": "^5.3.4",
+    "react": "^19.1.0",
     "react-bootstrap": "^2.10.9",
-    "react-calendar": "^5.1.0"
+    "react-calendar": "^5.1.0",
+    "react-router-dom": "^7.5.2"
   }
 }
