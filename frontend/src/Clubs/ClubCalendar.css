@@ -1,0 +1,23 @@
+.calendarEventDot {
+    background-color: red;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: auto;
+    cursor: pointer;
+}
+
+.newEventInput {
+    margin-right: 2px;
+    margin-left: 2px;
+    width: fit-content;
+}
+
+.newEventTextarea {
+    margin-left: 2px;
+    width: fit-content;
+}
+
+.newEventError {
+    color: red;
+}

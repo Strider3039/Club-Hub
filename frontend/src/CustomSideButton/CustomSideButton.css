@@ -9,6 +9,19 @@
     border-radius: 5px;
 }
 
+.popover {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    z-index: 1000;
+    background: white;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-left: 1px;
+}
+
 .sideBarButton:hover {
     background-color: #e0e0e0;
 }

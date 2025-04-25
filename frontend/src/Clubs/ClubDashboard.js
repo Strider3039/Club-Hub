@@ -5,6 +5,7 @@ import Calendar from "./ClubCalendar";
 import GenLayout from "../Layout/GeneralLayout";
 import SideButton from "../CustomSideButton/CustomeSideButton";
 import authAxios, { fetchAnnouncements, postComment, postReply, toggleLike } from "../utils/authAxios";
+import "./ClubDashboard.css";
 import destructImage from "../assets/Self-Destruct.png";
 
 function ClubDashboard() {
@@ -165,13 +166,13 @@ function ClubDashboard() {
                 )
             }
         >
-            <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
+            <Container fluid className="dashboard-container">
                 <Row className="align-items-start flex-grow-1 mb-3 text-center">
-                    <Col md={3} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
+                    <Col md={3} className="dashboard-sidebar">
                         <h5>Club Calendar</h5>
                         <Calendar clubId={id} />
-                        <h6 className="mt-4">Members <Badge bg="secondary">{members.length}</Badge></h6>
-                        <div style={{ maxHeight: "200px", overflowY: "auto" }}>
+                        <h6 className="mt-4">Members</h6>
+                        <div className="member-list">
                             <ul className="list-unstyled">
                                 {members.map((member, index) => (
                                     <li key={index} className="mb-3 d-flex justify-content-between align-items-center">
@@ -195,7 +196,7 @@ function ClubDashboard() {
                         </div>
                     </Col>
 
-                    <Col md={8} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
+                    <Col md={8} className="dashboard-main">
                         <div className="d-flex justify-content-between align-items-center mb-3">
                             <h5>About the Club</h5>
                             {isOfficer && (
@@ -205,7 +206,7 @@ function ClubDashboard() {
                             )}
                         </div>
 
-                        <div className="text-start px-4">
+                        <div className="club-info">
                             <p className="fw-semibold mb-2">
                                 <span className="text-muted">Name:</span> <span className="fs-5">{clubName}</span>
                             </p>
