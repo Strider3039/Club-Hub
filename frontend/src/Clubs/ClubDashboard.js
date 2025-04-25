@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { Container, Row, Col, Modal, Button, Form, Card } from "react-bootstrap";
+import { Container, Row, Col, Modal, Button, Form, Card, Badge, Image } from "react-bootstrap";
 import Calendar from "./ClubCalendar";
 import GenLayout from "../Layout/GeneralLayout";
 import SideButton from "../CustomSideButton/CustomeSideButton";
 import authAxios, { fetchAnnouncements, postComment, postReply, toggleLike } from "../utils/authAxios";
+import destructImage from "../assets/Self-Destruct.png";
 
 function ClubDashboard() {
     const navigate = useNavigate();
@@ -12,7 +13,9 @@ function ClubDashboard() {
 
     const [members, setMembers] = useState([]);
     const [myRole, setMyRole] = useState("");
+    const [myId, setMyId] = useState(null);
     const [showRemoveMemberModal, setShowRemoveMemberModal] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [usernameToRemove, setUsernameToRemove] = useState("");
     const [showEditClubModal, setShowEditClubModal] = useState(false);
     const [clubDescription, setClubDescription] = useState("");
@@ -31,6 +34,8 @@ function ClubDashboard() {
         try {
             const response = await authAxios.get(`membershipList/${id}/`);
             setMembers(response.data);
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (user) setMyId(user.id);
             const myEntry = response.data.find(m => m.username === localStorage.getItem("username"));
             if (myEntry) setMyRole(myEntry.position);
         } catch (error) {
@@ -78,6 +83,66 @@ function ClubDashboard() {
         loadAnnouncements();
     };
 
+    const handleRoleChange = async (userId, newRole) => {
+        const targetMember = members.find(m => m.user_id === userId);
+        if (!targetMember) return;
+
+        if (myRole === "Vice President" && targetMember.position === "President") return;
+
+        if (newRole === "President") {
+            const confirmed = window.confirm("Are you sure you want to promote this user to President? You will be demoted to Member.");
+            if (!confirmed) return;
+        }
+
+        if (["President", "Vice President"].includes(newRole)) {
+            const exists = members.some(m => m.position === newRole);
+            if (exists && !members.find(m => m.user_id === userId && m.position === newRole)) {
+                alert(`There is already a ${newRole} in this club.`);
+                return;
+            }
+        }
+
+        try {
+            if (newRole === "President") {
+                await authAxios.patch(`/membershipUpdate/${id}/${userId}/`, { position: "President" });
+                await authAxios.patch(`/membershipUpdate/${id}/${myId}/`, { position: "member" });
+                alert("Transfer of Presidency successful.");
+                window.location.reload();
+            } else {
+                await authAxios.patch(`/membershipUpdate/${id}/${userId}/`, { position: newRole });
+                alert("Role updated successfully.");
+                getMembers();
+            }
+        } catch (error) {
+            console.error("Error updating role:", error);
+            alert("Failed to update role.");
+        }
+    };
+
+    const handleDeleteClub = async () => {
+        try {
+            await authAxios.delete(`/clubs/delete/${id}/`);
+            alert("Club deleted.");
+            navigate("/clubs");
+        } catch (err) {
+            alert("Failed to delete club. You may not have permission.");
+        }
+    };
+
+    const handleEditClub = async () => {
+        try {
+            await authAxios.patch(`/clubs/update/${id}/`, {
+                name: clubName,
+                description: clubDescription,
+            });
+            alert("Club updated successfully.");
+            setShowEditClubModal(false);
+        } catch (error) {
+            console.error("Error updating club: ", error);
+            alert("Failed to update club.");
+        }
+    };
+
     const canManage = ["President", "Vice President"].includes(myRole);
     const isPresident = myRole === "President";
     const isOfficer = ["President", "Vice President", "officer"].includes(myRole);
@@ -93,7 +158,8 @@ function ClubDashboard() {
                         placement={"right-start"}
                         buttons={[
                             { text: "Remove Member", onClick: () => setShowRemoveMemberModal(true) },
-                            { text: "Edit Club Info", onClick: () => setShowEditClubModal(true) }
+                            { text: "Edit Club Info", onClick: () => setShowEditClubModal(true) },
+                            { text: "Delete Club", onClick: () => setShowDeleteConfirm(true) }
                         ]}
                     />
                 )
@@ -104,12 +170,25 @@ function ClubDashboard() {
                     <Col md={3} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
                         <h5>Club Calendar</h5>
                         <Calendar clubId={id} />
-                        <h6 className="mt-4">Members</h6>
+                        <h6 className="mt-4">Members <Badge bg="secondary">{members.length}</Badge></h6>
                         <div style={{ maxHeight: "200px", overflowY: "auto" }}>
                             <ul className="list-unstyled">
                                 {members.map((member, index) => (
-                                    <li key={index} className="mb-3">
-                                        <strong>{member.username}</strong> — {member.position}
+                                    <li key={index} className="mb-3 d-flex justify-content-between align-items-center">
+                                        <span><strong>{member.username}</strong> — {member.position}</span>
+                                        {canManage && (myId === member.user_id || (myRole === "President" && member.position !== "President")) && (
+                                            <Form.Select
+                                                size="sm"
+                                                defaultValue={member.position}
+                                                style={{ width: "140px" }}
+                                                onChange={(e) => handleRoleChange(member.user_id, e.target.value)}
+                                            >
+                                                <option value="member">Member</option>
+                                                <option value="officer">Officer</option>
+                                                <option value="Vice President">Vice President</option>
+                                                {isPresident && <option value="President">President</option>}
+                                            </Form.Select>
+                                        )}
                                     </li>
                                 ))}
                             </ul>
@@ -206,6 +285,49 @@ function ClubDashboard() {
                         )}
                     </Col>
                 </Row>
+
+                {/* Self-Destruct Modal */}
+                <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Are you sure?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className="text-center">
+                        <Image src={destructImage} alt="Self Destruct" fluid />
+                        <Button variant="danger" className="mt-3" onClick={handleDeleteClub}>Self-Destruct</Button>
+                        <div>
+                            <Button variant="secondary" className="mt-2" onClick={() => setShowDeleteConfirm(false)}>Cancel</Button>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+
+                {/* Edit Club Info Modal */}
+                <Modal show={showEditClubModal} onHide={() => setShowEditClubModal(false)} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Edit Club Info</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Club Name</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter new club name"
+                                    value={clubName}
+                                    onChange={(e) => setClubName(e.target.value)}
+                                />
+                                <Form.Label className="mt-3">Club Description</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    placeholder="Enter new club description"
+                                    value={clubDescription}
+                                    onChange={(e) => setClubDescription(e.target.value)}
+                                />
+                                <Button variant="primary" className="mt-3" onClick={handleEditClub}>Save Changes</Button>
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
             </Container>
         </GenLayout>
     );
