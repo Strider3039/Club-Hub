@@ -4,7 +4,8 @@ import 'react-calendar/dist/Calendar.css';
 import { Button } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import authAxios from "../utils/authAxios"; // ✅ Custom Axios with token auto-refresh
+import authAxios from "../utils/authAxios";
+import './ClubCalendar.css';
 
 function ClubCalendar({ clubId }) {
     const [date, setDate] = useState(new Date());
@@ -15,13 +16,10 @@ function ClubCalendar({ clubId }) {
     const [eventName, setEventName] = useState("");
     const [eventDate, setEventDate] = useState(new Date());
 
-    // Load events when component mounts
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await authAxios.get(
-                    `/clubs/events?club_id=${clubId}` // Use relative URL now
-                );
+                const response = await authAxios.get(`/clubs/events?club_id=${clubId}`);
                 setEvents(response.data);
             } catch (err) {
                 console.error("Error fetching events:", err);
@@ -29,9 +27,8 @@ function ClubCalendar({ clubId }) {
         };
 
         fetchEvents();
-    }, [clubId]); // Add clubId as dependency to re-fetch if the club changes
+    }, [clubId]);
 
-    // Create a new event
     const createNewEvent = async (eventName, eventDate) => {
         if (!eventName || !eventDate) {
             setError("Both event name and date are required.");
@@ -42,16 +39,12 @@ function ClubCalendar({ clubId }) {
             title: eventName,
             description: description,
             date: eventDate.toISOString(),
-            club: clubId // ✅ Include club ID
+            club: clubId
         };
 
         try {
-            const response = await authAxios.post("/clubs/events/", eventData); // ✅ Use authAxios
-
-            // Update the locally stored events
+            const response = await authAxios.post("/clubs/events/", eventData);
             setEvents(prevEvents => [...prevEvents, response.data]);
-
-            // Clear the form data
             setEventName("");
             setDescription("");
             setEventDate(new Date());
@@ -67,7 +60,7 @@ function ClubCalendar({ clubId }) {
         <div>
             <h3>{date.toDateString()}</h3>
 
-            <Button className={"m-2 mt-0"} onClick={() => setShowForm(true)}>
+            <Button className="m-2 mt-0" onClick={() => setShowForm(true)}>
                 Add Event
             </Button>
 
@@ -94,14 +87,7 @@ function ClubCalendar({ clubId }) {
 
                         return (
                             <OverlayTrigger trigger="click" placement="left" overlay={popover} rootClose>
-                                <div style={{
-                                    backgroundColor: "red",
-                                    width: "10px",
-                                    height: "10px",
-                                    borderRadius: "50%",
-                                    margin: "auto",
-                                    cursor: "pointer"
-                                }} />
+                                <div className="calendarEventDot" />
                             </OverlayTrigger>
                         );
                     }
@@ -120,30 +106,29 @@ function ClubCalendar({ clubId }) {
                         }}
                     >
                         <input
-                            style={{ marginRight: "2px", width: "fit-content" }}
+                            className="newEventInput"
                             type="text"
                             placeholder="Event Name"
                             value={eventName}
                             onChange={(e) => setEventName(e.target.value)}
                         />
                         <input
-                            style={{ marginLeft: "2px", width: "fit-content" }}
+                            className="newEventInput"
                             type="date"
                             value={eventDate.toISOString().split("T")[0]}
                             onChange={(e) => setEventDate(new Date(e.target.value))}
                         />
                         <textarea
-                            style={{ marginLeft: "2px", width: "fit-content" }}
-                            className="eventDescription"
+                            className="newEventTextarea"
                             placeholder="What's going on!"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
-                        <Button className={"m-2 mb-0"} type="submit">
+                        <Button className="m-2 mb-0" type="submit">
                             Submit
                         </Button>
                     </form>
-                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    {error && <p className="newEventError">{error}</p>}
                 </div>
             )}
         </div>

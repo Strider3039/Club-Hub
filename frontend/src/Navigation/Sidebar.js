@@ -1,4 +1,4 @@
-    import {Col, Row} from "react-bootstrap";
+    import {Col, Row, Button} from "react-bootstrap";
     import SideButton from "../CustomSideButton/CustomeSideButton";
     import React, {useEffect, useState} from "react";
     import {Link, useNavigate} from "react-router-dom";
@@ -67,16 +67,21 @@
                         <Modal.Title>Add Friend</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form>
+                        <Form onSubmit={(e) => {
+                            e.preventDefault();
+                            handleNewFriend();
+                        }}>
                             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                 <Form.Control
                                     type="text"
                                     placeholder="Username"
                                     value={friendUsername}
                                     onChange={(e) => setFriendUsername(e.target.value)}
-                                    onSubmit={handleNewFriend}
                                 />
                             </Form.Group>
+                            <Button variant="primary" type="submit">
+                                Send Friend Request
+                            </Button>
                         </Form>
                     </Modal.Body>
                 </Modal>

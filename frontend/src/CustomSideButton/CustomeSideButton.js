@@ -30,21 +30,7 @@ function CustomSideButton(props) {
                 </button>
 
                 {isHover && (
-                    <div
-                        className="popover"
-                        style={{
-                            position: "absolute",
-                            top: 0,
-                            left: "100%",
-                            zIndex: 1000,
-                            background: "white",
-                            padding: "5px",
-                            border: "1px solid #ccc",
-                            borderRadius: "5px",
-                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
-                            marginLeft: "1px",
-                        }}
-                    >
+                    <div className="popover">
                         {props.buttons?.map((btn, index) => (
                             <CustomSideButton
                                 key={index}

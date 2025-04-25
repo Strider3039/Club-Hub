@@ -164,24 +164,29 @@ function Friends() {
                     </Modal.Footer>
                 </Modal>
             </div>
-            <Modal show={showForm} onHide={() => setShowForm(false)} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Add a Friend</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                            <Form.Control
-                                type="text"
-                                placeholder="Username"
-                                value={friendUsername}
-                                onChange={(e) => setFriendUsername(e.target.value)}
-                                onSubmit={handleNewFriend}
-                            />
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+                <Modal show={showForm} onHide={() => setShowForm(false)} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Add Friend</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form onSubmit={(e) => {
+                            e.preventDefault();
+                            handleNewFriend();
+                        }}>
+                            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Username"
+                                    value={friendUsername}
+                                    onChange={(e) => setFriendUsername(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Button variant="primary" type="submit">
+                                Send Friend Request
+                            </Button>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
         </GenLayout>
     );
 }
