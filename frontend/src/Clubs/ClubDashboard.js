@@ -1,19 +1,52 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
-import GenLayout from "../Layout/GeneralLayout";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { Container, Row, Col, Modal, Button, Form, Card } from "react-bootstrap";
 import Calendar from "./ClubCalendar";
-import { fetchAnnouncements, postComment, postReply, toggleLike } from "../utils/authAxios";
-import authAxios from "../utils/authAxios";
+import GenLayout from "../Layout/GeneralLayout";
+import SideButton from "../CustomSideButton/CustomeSideButton";
+import authAxios, { fetchAnnouncements, postComment, postReply, toggleLike } from "../utils/authAxios";
 
 function ClubDashboard() {
+    const navigate = useNavigate();
     const { id } = useParams();
+
+    const [members, setMembers] = useState([]);
+    const [myRole, setMyRole] = useState("");
+    const [showRemoveMemberModal, setShowRemoveMemberModal] = useState(false);
+    const [usernameToRemove, setUsernameToRemove] = useState("");
+    const [showEditClubModal, setShowEditClubModal] = useState(false);
+    const [clubDescription, setClubDescription] = useState("");
     const [clubName, setClubName] = useState("");
     const [announcements, setAnnouncements] = useState([]);
     const [commentInputs, setCommentInputs] = useState({});
     const [replyInputs, setReplyInputs] = useState({});
-    const [role, setRole] = useState("");
-    const [members, setMembers] = useState([]);
+
+    useEffect(() => {
+        getMembers();
+        getClubInfo();
+        loadAnnouncements();
+    }, []);
+
+    const getMembers = async () => {
+        try {
+            const response = await authAxios.get(`membershipList/${id}/`);
+            setMembers(response.data);
+            const myEntry = response.data.find(m => m.username === localStorage.getItem("username"));
+            if (myEntry) setMyRole(myEntry.position);
+        } catch (error) {
+            console.error("Error fetching Member list: ", error);
+        }
+    };
+
+    const getClubInfo = async () => {
+        try {
+            const response = await authAxios.get(`/clubs/${id}/`);
+            setClubDescription(response.data.description);
+            setClubName(response.data.name);
+        } catch (error) {
+            console.error("Error fetching club info: ", error);
+        }
+    };
 
     const loadAnnouncements = async () => {
         try {
@@ -23,28 +56,6 @@ function ClubDashboard() {
             console.error("Error fetching announcements:", err);
         }
     };
-
-    const loadMembership = async () => {
-        try {
-            const res = await authAxios.get(`/membershipList/${id}/`);
-            const myEntry = res.data.find(m => m.username === localStorage.getItem("username"));
-            if (myEntry) setRole(myEntry.position);
-            setMembers(res.data);
-        } catch (err) {
-            console.error("Error loading membership:", err);
-        }
-    };
-
-    useEffect(() => {
-        loadAnnouncements();
-        loadMembership();
-        loadClubDetails();
-    }, [id]);
-
-    const loadClubDetails = async () => {
-        const response = await authAxios.get(`clubs/${id}/`);
-        setClubName(response.data.name);
-    }
 
     const handleComment = async (announcementId) => {
         const content = commentInputs[announcementId];
@@ -67,21 +78,64 @@ function ClubDashboard() {
         loadAnnouncements();
     };
 
-    const isOfficer = ["President", "Vice President", "officer"].includes(role);
+    const canManage = ["President", "Vice President"].includes(myRole);
+    const isPresident = myRole === "President";
+    const isOfficer = ["President", "Vice President", "officer"].includes(myRole);
 
     return (
-        <GenLayout pageTitle={clubName}>
-            <Container fluid className="p-4">
-                <Row>
-                    <Col md={8} className="bg-light border rounded p-3">
+        <GenLayout
+            pageTitle={`${clubName} Dashboard`}
+            buttons={
+                canManage && (
+                    <SideButton
+                        text={"Manage Club"}
+                        style={"popover"}
+                        placement={"right-start"}
+                        buttons={[
+                            { text: "Remove Member", onClick: () => setShowRemoveMemberModal(true) },
+                            { text: "Edit Club Info", onClick: () => setShowEditClubModal(true) }
+                        ]}
+                    />
+                )
+            }
+        >
+            <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
+                <Row className="align-items-start flex-grow-1 mb-3 text-center">
+                    <Col md={3} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
+                        <h5>Club Calendar</h5>
+                        <Calendar clubId={id} />
+                        <h6 className="mt-4">Members</h6>
+                        <div style={{ maxHeight: "200px", overflowY: "auto" }}>
+                            <ul className="list-unstyled">
+                                {members.map((member, index) => (
+                                    <li key={index} className="mb-3">
+                                        <strong>{member.username}</strong> — {member.position}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </Col>
+
+                    <Col md={8} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
                         <div className="d-flex justify-content-between align-items-center mb-3">
-                            <h5>Announcements</h5>
+                            <h5>About the Club</h5>
                             {isOfficer && (
                                 <Link to={`/clubs/${id}/announcements/new`}>
                                     <Button variant="primary" size="sm">➕ Create Announcement</Button>
                                 </Link>
                             )}
                         </div>
+
+                        <div className="text-start px-4">
+                            <p className="fw-semibold mb-2">
+                                <span className="text-muted">Name:</span> <span className="fs-5">{clubName}</span>
+                            </p>
+                            <p className="fw-semibold">
+                                <span className="text-muted">Description:</span> <span>{clubDescription}</span>
+                            </p>
+                        </div>
+
+                        <h5 className="mt-5">Announcements</h5>
                         {announcements.length === 0 ? (
                             <p>No announcements yet.</p>
                         ) : (
@@ -150,21 +204,6 @@ function ClubDashboard() {
                                 </Card>
                             ))
                         )}
-                    </Col>
-                    <Col md={4} className="bg-light border rounded p-3">
-                        <h5>Club Calendar</h5>
-                        <Calendar clubId={id} />
-
-                        <h6 className="mt-4">Members</h6>
-                        <div style={{ maxHeight: "200px", overflowY: "auto" }} className="mt-2">
-                            <ul className="list-unstyled">
-                                {members.map((member, index) => (
-                                    <li key={index} className="mb-2">
-                                        <strong>{member.username}</strong> — {member.position}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
                     </Col>
                 </Row>
             </Container>
