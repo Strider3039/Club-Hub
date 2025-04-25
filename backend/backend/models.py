@@ -41,7 +41,7 @@ class Event(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     date = models.DateTimeField()
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True, related_name='events')
 
     def __str__(self):
         return f"{self.title} - {self.club.name}"
