@@ -12,6 +12,7 @@ import Form from "react-bootstrap/Form";
 
 function Settings() {
     const [showChangePassForm, setShowChangePassForm] = useState(false);
+    const [showDeleteAccountForm, setShowDeleteAccountForm ] = useState(false);
     const [newPassword, setNewPassword] = useState("");
     const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
@@ -43,6 +44,10 @@ function Settings() {
             localStorage.removeItem("refresh");
             localStorage.removeItem("user");
 
+            setNewPassword("");
+            setCurrentPassword("");
+            setNewPasswordConfirm("");
+
             navigate("/login");
             window.location.reload();
         } catch (error) {
@@ -63,6 +68,8 @@ function Settings() {
             localStorage.removeItem("access");
             localStorage.removeItem("refresh");
             localStorage.removeItem("user");
+
+            setPasswordConfirmation("");
 
             navigate("/login");
             window.location.reload();
@@ -109,6 +116,7 @@ function Settings() {
                                     <Button
                                         variant="danger"
                                         size="sm"
+                                        onClick={() => setShowDeleteAccountForm(!showDeleteAccountForm)}
                                     >
                                         delete account
                                     </Button>
@@ -118,7 +126,15 @@ function Settings() {
                     </div>
                 </Row>
             </Container>
-                <Modal show={showChangePassForm} onHide={() => setShowChangePassForm(false)} centered>
+                <Modal show={showChangePassForm}
+                       onHide={() => {
+                           setShowChangePassForm(false);
+                           setCurrentPassword("");
+                           setNewPassword("");
+                           setNewPasswordConfirm("");
+                       }}
+                       centered
+                >
                     <Modal.Header closeButton>
                         <Modal.Title>Change Password</Modal.Title>
                     </Modal.Header>
@@ -127,21 +143,21 @@ function Settings() {
                             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                 <Form.Control
                                     style={{ marginBottom: "10px" }}
-                                    type="text"
+                                    type="password"
                                     placeholder="Current password"
                                     value={currentPassword}
                                     onChange={(e) => setCurrentPassword(e.target.value)}
                                 />
                                 <Form.Control
                                     style={{ marginBottom: "10px" }}
-                                    type="text"
+                                    type="password"
                                     placeholder="New Password"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                 />
                                 <Form.Control
                                     style={{ marginBottom: "10px" }}
-                                    type="text"
+                                    type="password"
                                     placeholder="Confirm Password"
                                     value={newPasswordConfirm}
                                     onChange={(e) => setNewPasswordConfirm(e.target.value)}
@@ -156,6 +172,37 @@ function Settings() {
                         </Button>
                     </Modal.Body>
                 </Modal>
+            <Modal show={showDeleteAccountForm}
+                   onHide={() => {
+                       setShowDeleteAccountForm(false);
+                       setPasswordConfirmation("")
+                   }}
+                   centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete Account</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                            <Form.Control
+                                style={{ marginBottom: "10px" }}
+                                type="password"
+                                placeholder="Current password"
+                                value={passwordConfirmation}
+                                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                            />
+                        </Form.Group>
+                    </Form>
+                    <Button
+                        className="me-2"
+                        variant="danger"
+                        onClick={() => deleteButtonClick()}
+                    >
+                        DELETE ACCOUNT
+                    </Button>
+                </Modal.Body>
+            </Modal>
         </GenLayout>
     );
 }
