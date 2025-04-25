@@ -13,6 +13,7 @@ function ClubDashboard() {
     const [commentInputs, setCommentInputs] = useState({});
     const [replyInputs, setReplyInputs] = useState({});
     const [role, setRole] = useState("");
+    const [members, setMembers] = useState([]);
 
     const loadAnnouncements = async () => {
         try {
@@ -28,6 +29,7 @@ function ClubDashboard() {
             const res = await authAxios.get(`/membershipList/${id}/`);
             const myEntry = res.data.find(m => m.username === localStorage.getItem("username"));
             if (myEntry) setRole(myEntry.position);
+            setMembers(res.data);
         } catch (err) {
             console.error("Error loading membership:", err);
         }
@@ -72,7 +74,14 @@ function ClubDashboard() {
             <Container fluid className="p-4">
                 <Row>
                     <Col md={8} className="bg-light border rounded p-3">
-                        <h5>Announcements</h5>
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h5>Announcements</h5>
+                            {isOfficer && (
+                                <Link to={`/clubs/${id}/announcements/new`}>
+                                    <Button variant="primary" size="sm">➕ Create Announcement</Button>
+                                </Link>
+                            )}
+                        </div>
                         {announcements.length === 0 ? (
                             <p>No announcements yet.</p>
                         ) : (
@@ -145,13 +154,17 @@ function ClubDashboard() {
                     <Col md={4} className="bg-light border rounded p-3">
                         <h5>Club Calendar</h5>
                         <Calendar clubId={id} />
-                        {isOfficer && (
-                            <div className="mt-3">
-                                <Link to={`/clubs/${id}/announcements/new`}>
-                                    <Button variant="primary" size="sm">➕ Create Announcement</Button>
-                                </Link>
-                            </div>
-                        )}
+
+                        <h6 className="mt-4">Members</h6>
+                        <div style={{ maxHeight: "200px", overflowY: "auto" }} className="mt-2">
+                            <ul className="list-unstyled">
+                                {members.map((member, index) => (
+                                    <li key={index} className="mb-2">
+                                        <strong>{member.username}</strong> — {member.position}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </Col>
                 </Row>
             </Container>
