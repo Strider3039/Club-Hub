@@ -71,17 +71,6 @@ function ClubDashboard() {
         <GenLayout pageTitle={clubName}>
             <Container fluid className="p-4">
                 <Row>
-                    <Col md={4} className="bg-light border rounded p-3">
-                        <h5>Club Calendar</h5>
-                        <Calendar clubId={id} />
-                        {isOfficer && (
-                            <div className="mt-3">
-                                <Link to={`/clubs/${id}/announcements/new`}>
-                                    <Button variant="primary" size="sm">➕ Create Announcement</Button>
-                                </Link>
-                            </div>
-                        )}
-                    </Col>
                     <Col md={8} className="bg-light border rounded p-3">
                         <h5>Announcements</h5>
                         {announcements.length === 0 ? (
@@ -151,6 +140,17 @@ function ClubDashboard() {
                                     </Card.Body>
                                 </Card>
                             ))
+                        )}
+                    </Col>
+                    <Col md={4} className="bg-light border rounded p-3">
+                        <h5>Club Calendar</h5>
+                        <Calendar clubId={id} />
+                        {isOfficer && (
+                            <div className="mt-3">
+                                <Link to={`/clubs/${id}/announcements/new`}>
+                                    <Button variant="primary" size="sm">➕ Create Announcement</Button>
+                                </Link>
+                            </div>
                         )}
                     </Col>
                 </Row>
