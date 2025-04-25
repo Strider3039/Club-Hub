@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ClubDashboard from "./Clubs/ClubDashboard";
 import Friends from "./Friends/Friends";
 import ProfileDashboard from "./Profile/ProfilePage";
+import Settings from "./Settings/Settings";
 import NavBar from "./Navigation/NavBar";
 import Sidebar from "./Navigation/Sidebar";
 
@@ -55,6 +56,7 @@ function App() {
                     <Route path="/dashboard" element={auth ? <ProfileDashboard /> : <Navigate to="/login" />} />
                     <Route path="/clubRegister" element={auth ? <ClubRegister /> : <Navigate to="/login" />} />
                     <Route path="/clubHome/:id" element={auth ? <ClubDashboard /> : <Navigate to="/login" />} />
+                    <Route path="/settings" element={auth ? <Settings /> : <Navigate to="/login" />} />
 
                     {/* Announcement Routes */}
                     <Route path="/clubs/:clubId/announcements" element={auth ? <Announcements /> : <Navigate to="/login" />} />

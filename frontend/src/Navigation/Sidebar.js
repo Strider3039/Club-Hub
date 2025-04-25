@@ -28,7 +28,7 @@
 
         return(
             <>
-                <div className="sidebar d-flex flex-column align-items-center py-4 ">
+                <div className="sidebar d-flex flex-column align-items-center py-4" style={{boxSizing: "border-box"}}>
                     {/* need custom button */}
                     <Row>
                         <Col>

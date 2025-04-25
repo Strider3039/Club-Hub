@@ -70,7 +70,6 @@ function NavBar({ toggleTheme, pageTitle}) {
               <Button variant="outline-light" onClick={toggleTheme}>
                 Toggle Theme
               </Button>
-
                         <Dropdown align="end">
                             <Dropdown.Toggle
                                 id="dropdown-basic"
@@ -79,7 +78,6 @@ function NavBar({ toggleTheme, pageTitle}) {
                             >
                                 Profile
                             </Dropdown.Toggle>
-
                             <Dropdown.Menu align="end" style={{zIndex: 9999}}>
                                 <Dropdown.Item as={Link} to="/settings">Settings</Dropdown.Item>
                                 <Dropdown.Item as={Link} to="/dashboard">Dashboard</Dropdown.Item>
