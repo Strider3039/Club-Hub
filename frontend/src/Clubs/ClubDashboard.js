@@ -59,7 +59,6 @@ function ClubDashboard() {
     };
 
     const isOfficer = ["President", "Vice President", "officer"].includes(role);
-    can
 
     return (
         <GenLayout pageTitle="Club Dashboard">
