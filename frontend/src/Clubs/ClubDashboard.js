@@ -8,6 +8,7 @@ import authAxios from "../utils/authAxios";
 
 function ClubDashboard() {
     const { id } = useParams();
+    const [clubName, setClubName] = useState("");
     const [announcements, setAnnouncements] = useState([]);
     const [commentInputs, setCommentInputs] = useState({});
     const [replyInputs, setReplyInputs] = useState({});
@@ -35,7 +36,13 @@ function ClubDashboard() {
     useEffect(() => {
         loadAnnouncements();
         loadMembership();
+        loadClubDetails();
     }, [id]);
+
+    const loadClubDetails = async () => {
+        const response = await authAxios.get(`clubs/${id}/`);
+        setClubName(response.data.name);
+    }
 
     const handleComment = async (announcementId) => {
         const content = commentInputs[announcementId];
@@ -61,7 +68,7 @@ function ClubDashboard() {
     const isOfficer = ["President", "Vice President", "officer"].includes(role);
 
     return (
-        <GenLayout pageTitle="Club Dashboard">
+        <GenLayout pageTitle={clubName}>
             <Container fluid className="p-4">
                 <Row>
                     <Col md={4} className="bg-light border rounded p-3">

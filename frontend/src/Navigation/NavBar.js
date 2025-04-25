@@ -48,14 +48,14 @@ function NavBar({ toggleTheme, pageTitle}) {
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex gap-4">
                         <li className="nav-item">
                             <h1>
-                                {pageTitle} |
+                                {pageTitle}
                             </h1>
                         </li>
-                        <li className="nav-item">
-                            <h2>
-                                <Link className="nav-link text-white" to="/home">Home</Link>
-                            </h2>
-                        </li>
+                        {/*<li className="nav-item">*/}
+                        {/*    <h2>*/}
+                        {/*        <Link className="nav-link text-white" to="/home">Home</Link>*/}
+                        {/*    </h2>*/}
+                        {/*</li>*/}
                         {/*<li className="nav-item">*/}
                         {/*    <Link className="nav-link text-white" to="/clubs">Clubs</Link>*/}
                         {/*</li>*/}
@@ -64,7 +64,7 @@ function NavBar({ toggleTheme, pageTitle}) {
                         {/*</li>*/}
                     </ul>
 
-            <Form.Control size="sm" type="text" className="mx-2 search-box" placeholder="Search..."  style={{ width: '30%' }}/>
+            {/*<Form.Control size="sm" type="text" className="mx-2 search-box" placeholder="Search..."  style={{ width: '30%' }}/>*/}
 
             <div className="d-flex align-items-center gap-3">
               <Button variant="outline-light" onClick={toggleTheme}>
