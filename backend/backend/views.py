@@ -164,6 +164,22 @@ class ClubListView(APIView):
         serializer = ClubSerializer(clubs, many=True, context={'request': request})
         return Response(serializer.data)
 
+
+class HomeEventsView(APIView):
+    # make a view for showing all events for each club user is a member of
+    def get(self, request):
+        user = request.user
+        memberships = Membership.objects.filter(user=user)
+        events = Event.objects.filter(club__in=memberships.values_list('club', flat=True))
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
+    def post(self, request):
+        serializer = EventSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class ClubEventsView(APIView):
 
     def get(self, request):
