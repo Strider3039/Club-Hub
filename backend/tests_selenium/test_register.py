@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 import time
 import tempfile
 import random
@@ -42,7 +43,7 @@ try:
     #driver.find_element(By.XPATH, '//input[@placeholder="Date of Birth"]').send_keys("01/01/2000")
     driver.find_element(By.XPATH, '//input[@placeholder="Username"]').send_keys(username)
     driver.find_element(By.XPATH, '//input[@placeholder="Password"]').send_keys("TestPass123!")
-    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("TestPass123!")
+    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("TestPass123!", Keys.ENTER)
 
     print(f"Url2: {driver.current_url}")
 
@@ -51,10 +52,10 @@ try:
     #)
     #register_button.click()
 
-    register_button = driver.find_element(By.XPATH, '//button[text()="Register"]')
-    driver.execute_script("arguments[0].click();", register_button)
+    #register_button = driver.find_element(By.XPATH, '//button[text()="Register"]')
+    #driver.execute_script("arguments[0].click();", register_button)
 
-    print(f"Url3: {driver.current_url}")
+    #print(f"Url3: {driver.current_url}")
 
     if "/login" in driver.current_url:
         print(f"Registration successful!\nUsername: {username}\nEmail: {email}")
