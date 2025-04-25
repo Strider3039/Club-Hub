@@ -1,0 +1,35 @@
+.general-layout-wrapper {
+    z-index: 9999;
+}
+
+.general-layout-container {
+    padding: 0;
+    margin: 0;
+    height: auto;
+    width: 100%;
+}
+
+.general-layout-row {
+    width: 100%;
+    margin-right: 0;
+}
+
+.sidebar-column {
+    padding: 0;
+    height: auto;
+    background-color: #f8f9fa; /* Bootstrap light background */
+}
+
+.main-content-column {
+    background-color: #ffffff;
+}
+
+.navbar-column {
+    width: 100%;
+    margin-bottom: 7px;
+}
+
+.page-content-column {
+    min-height: 100vh;
+    width: 100%;
+}

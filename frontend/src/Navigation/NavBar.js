@@ -36,12 +36,6 @@ function NavBar({ toggleTheme, pageTitle}) {
         <nav className="custom-navbar navbar-expand-lg shadow-sm">
             <Container fluid>
                 <Link className="navbar-brand d-flex align-items-center" to="/home">
-                    {/*<img*/}
-                    {/*    src={isDark ? DarkLogo : LightLogo}*/}
-                    {/*    alt="ClubHub Logo"*/}
-                    {/*    height="60"*/}
-                    {/*    className="me-2"*/}
-                    {/*/>*/}
                 </Link>
 
                 <div className="collapse navbar-collapse">
@@ -51,17 +45,6 @@ function NavBar({ toggleTheme, pageTitle}) {
                                 {pageTitle}
                             </h1>
                         </li>
-                        {/*<li className="nav-item">*/}
-                        {/*    <h2>*/}
-                        {/*        <Link className="nav-link text-white" to="/home">Home</Link>*/}
-                        {/*    </h2>*/}
-                        {/*</li>*/}
-                        {/*<li className="nav-item">*/}
-                        {/*    <Link className="nav-link text-white" to="/clubs">Clubs</Link>*/}
-                        {/*</li>*/}
-                        {/*<li className="nav-item">*/}
-                        {/*    <Link className="nav-link text-white" to="/friends">Friends</Link>*/}
-                        {/*</li>*/}
                     </ul>
 
             {/*<Form.Control size="sm" type="text" className="mx-2 search-box" placeholder="Search..."  style={{ width: '30%' }}/>*/}
@@ -80,7 +63,7 @@ function NavBar({ toggleTheme, pageTitle}) {
                             </Dropdown.Toggle>
                             <Dropdown.Menu align="end" style={{zIndex: 9999}}>
                                 <Dropdown.Item as={Link} to="/settings">Settings</Dropdown.Item>
-                                <Dropdown.Item as={Link} to="/dashboard">Dashboard</Dropdown.Item>
+                                {/*<Dropdown.Item as={Link} to="/dashboard">Dashboard</Dropdown.Item>*/}
                                 <Dropdown.Divider />
                                 <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                             </Dropdown.Menu>

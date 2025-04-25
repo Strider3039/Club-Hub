@@ -8,11 +8,7 @@ import ClubRegister from "./Clubs/RegisterClub";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ClubDashboard from "./Clubs/ClubDashboard";
 import Friends from "./Friends/Friends";
-import ProfileDashboard from "./Profile/ProfilePage";
 import Settings from "./Settings/Settings";
-import NavBar from "./Navigation/NavBar";
-import Sidebar from "./Navigation/Sidebar";
-
 import Announcements from "./Announcements/Announcements";
 import CreateAnnouncement from "./Announcements/CreateAnnouncement";
 import AnnouncementDetail from "./Announcements/AnnouncementDetail";
@@ -53,7 +49,6 @@ function App() {
                     <Route path="/home" element={auth ? <Home /> : <Navigate to="/login" />} />
                     <Route path="/clubs" element={auth ? <ClubSearch /> : <Navigate to="/login" />} />
                     <Route path="/friends" element={auth ? <Friends /> : <Navigate to="/login" />} />
-                    <Route path="/dashboard" element={auth ? <ProfileDashboard /> : <Navigate to="/login" />} />
                     <Route path="/clubRegister" element={auth ? <ClubRegister /> : <Navigate to="/login" />} />
                     <Route path="/clubHome/:id" element={auth ? <ClubDashboard /> : <Navigate to="/login" />} />
                     <Route path="/settings" element={auth ? <Settings /> : <Navigate to="/login" />} />
