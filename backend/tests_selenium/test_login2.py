@@ -22,22 +22,16 @@ driver = webdriver.Chrome(service=service, options=options)
 
 try:
     driver.get("http://localhost:3000/login")
-    print("Title is:", driver.title)
-
-    username = "testlogin"
-    password = "pass"
-
-    driver.find_element(By.XPATH, '//input[@placeholder="Username"]').send_keys(username)
-    driver.find_element(By.XPATH, '//input[@placeholder="Password"]').send_keys(password)
+    print("Test login without credentials.")
 
     driver.find_element(By.XPATH, '//button[text()="Login"]').click()
 
     time.sleep(5)
 
-    if "/home" in driver.current_url:
-        print(f"Registration successful.")
+    if "/login" in driver.current_url:
+        print(f"Test passed. Blank credentials does not log user in.")
     else:
-        print("Login failed.")
+        print("Test failed not on login page.")
 
 except Exception as e:
     print("An error occurred during the test:", e)

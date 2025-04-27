@@ -24,7 +24,7 @@ driver = webdriver.Chrome(service=service, options=options)
 
 try:
     driver.get("http://localhost:3000/register")
-    print("Title is:", driver.title)
+    print("Test register with valid credentials.")
 
     random_number = random.randint(1000, 9999)
     username = f"testuser{random_number}"
@@ -42,13 +42,9 @@ try:
     time.sleep(5)
 
     if "/login" in driver.current_url:
-        print(f"Registration successful!\nUsername: {username}\nEmail: {email}")
+        print(f"Test passed. Registration successful!\nUsername: {username}\nEmail: {email}")
     else:
-        try:
-            error_element = driver.find_element(By.CLASS_NAME, "error")
-            print(f"Registration failed with error: {error_element.text}")
-        except:
-            print(f"Registration might have failed but no error message was found.\nUsername: {username}\nEmail: {email}")
+        print(f"Test failed. User should be taken to the login page.\nUsername: {username}\nEmail: {email}")
 
 except Exception as e:
     print("An error occurred during the test:", e)
