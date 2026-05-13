@@ -4,10 +4,10 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Add the working directory to the Python path
-ENV PYTHONPATH /app
+ENV PYTHONPATH=/app
 
-# Copy the requirements file from the backend folder
-COPY backend/requirements.txt /app/
+# Copy the requirements file from the build context
+COPY requirements.txt /app/
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
