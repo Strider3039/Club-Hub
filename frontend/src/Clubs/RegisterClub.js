@@ -1,72 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import authAxios from "../utils/authAxios"; // ✅ Use the custom axios
+import authAxios from "../utils/authAxios";
 import "./RegisterClub.css";
-import Button from "react-bootstrap/Button";
 
 function RegisterClub() {
     const navigate = useNavigate();
 
     const [clubName, setClubName] = useState("");
     const [description, setDescription] = useState("");
-    const [members, setMembers] = useState([]);
-    const [officers, setOfficers] = useState([]);
-    const [currentUserId, setCurrentUserId] = useState(null);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
-    // On load: get current user and set them as the first club member
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
-
-        if (storedUser) {
-            try {
-                const user = JSON.parse(storedUser);
-                if (user && user.id) {
-                    setCurrentUserId(user.id);
-                    setMembers([user.id]);
-                    setOfficers([user.id]);
-                } else {
-                    setError("Invalid user data. Please log in again.");
-                }
-            } catch (err) {
-                console.error("Failed to parse user:", err);
-                setError("Error reading user info.");
-            }
-        } else {
+        if (!storedUser) {
             setError("You must be logged in to register a club.");
         }
     }, []);
 
-    const handleBack = () => {
-        navigate("/clubs");
-    }
-
-    // Handle form submission
     const handleRegister = async (e) => {
         e.preventDefault();
         setError("");
         setSuccess("");
 
-        const clubData = {
-            name: clubName,
-            description: description,
-            members: members,
-            officers: officers,
-        };
-
         try {
-            const response = await authAxios.post("/clubs/", clubData); // ✅ Use authAxios
+            const response = await authAxios.post("/clubs/", {
+                name: clubName,
+                description: description,
+            });
 
             if (response.status === 201) {
-                const newClubId = response.data.club_id;
                 setSuccess("Club registered successfully!");
-                setError("");
-                navigate(`/clubs/${newClubId}/`);
+                navigate("/clubs");
             }
         } catch (err) {
-            console.error("Backend error:", err.response?.data || err.message);
-            if (err.response && err.response.data) {
+            if (err.response?.data) {
                 setError(err.response.data.message || JSON.stringify(err.response.data));
             } else {
                 setError("An error occurred. Please try again.");
@@ -76,28 +44,51 @@ function RegisterClub() {
 
     return (
         <div className="ClubRegister">
-            <h1>Register Club</h1>
-            <form onSubmit={handleRegister}>
-                <input
-                    className="clubName"
-                    type="text"
-                    placeholder="Club Name"
-                    value={clubName}
-                    onChange={(e) => setClubName(e.target.value)}
-                />
-                <textarea
-                    className="clubDescription"
-                    placeholder="Give your club a description!"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-                <button type="submit">Register</button>
-            </form>
-            {error && <p className="error">{error}</p>}
-            {success && <p className="success">{success}</p>}
-            <Button variant="link" className="bg-transparent text-black"  onClick={handleBack}>
-                Back to Club Search
-            </Button>
+            <div className="club-register-card">
+                <h1>Create a Club</h1>
+                <p className="register-subtitle">Start your community on ClubHub</p>
+
+                <form onSubmit={handleRegister}>
+                    <div className="club-register-field">
+                        <label htmlFor="clubName">Club Name</label>
+                        <input
+                            id="clubName"
+                            type="text"
+                            placeholder="e.g. Photography Society"
+                            value={clubName}
+                            onChange={(e) => setClubName(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="club-register-field">
+                        <label htmlFor="description">Description</label>
+                        <textarea
+                            id="description"
+                            className="clubDescription"
+                            placeholder="Tell people what your club is about..."
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                    </div>
+
+                    <button type="submit" className="club-register-submit-btn">
+                        Create Club
+                    </button>
+                </form>
+
+                {error   && <p className="register-feedback error">{error}</p>}
+                {success && <p className="register-feedback success">{success}</p>}
+
+                <div className="text-center mt-3">
+                    <button
+                        onClick={() => navigate("/clubs")}
+                        style={{ background: "none", border: "none", color: "#A60F2D", cursor: "pointer", fontWeight: 500 }}
+                    >
+                        ← Back to Club Search
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres
+    image: postgres:17
     container_name: clubhub_db
     restart: always
     environment:
@@ -18,7 +18,7 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-    command: sh -c "python manage.py wait_for_db && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py wait_for_db && bash ./start.sh"
     depends_on:
       - db
     environment:

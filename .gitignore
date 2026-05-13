@@ -26,3 +26,9 @@ build/
 
 # === Coverage / Testing ===
 coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Local-only API test suite (not committed)
+backend/backend/tests/

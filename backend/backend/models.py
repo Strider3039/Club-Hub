@@ -44,19 +44,19 @@ class Event(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     date = models.DateTimeField()
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True, related_name='events')
 
     def __str__(self):
-        return f"{self.title} - {self.club.name}"
-    
+        return f"{self.title} - {self.club.name if self.club else 'No Club'}"
+
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     date = models.DateTimeField()
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True, related_name='announcements')
 
-    def str(self):
-        return f"{self.title} - {self.club.name if self.club else 'Null Club'}"
+    def __str__(self):
+        return f"{self.title} - {self.club.name if self.club else 'No Club'}"
     
 class Friendship(models.Model):
     from_user = models.ForeignKey(

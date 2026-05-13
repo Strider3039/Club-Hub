@@ -204,7 +204,7 @@ class ClubAnnouncementView(APIView):
         if member is None:
             return Response({"error": "Only members can view announcements."}, status=status.HTTP_403_FORBIDDEN)
 
-        announcements = club.annoucement.all()
+        announcements = club.announcements.all().order_by('-date')
         serializer = AnnouncementSerializer(announcements, many=True)
         return Response(serializer.data)
     

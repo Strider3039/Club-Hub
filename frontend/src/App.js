@@ -9,27 +9,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ClubDashboard from "./Clubs/ClubDashboard";
 import Friends from "./Friends/Friends";
 import ProfileDashboard from "./Profile/ProfilePage";
-import NavBar from "./Navigation/NavBar";
-import Sidebar from "./Navigation/Sidebar";
+import AccountSettings from "./Dashboard/Dashboard";
 
-// Check authentication by looking for the access token in localStorage
 const isAuthenticated = () => {
-    const token = localStorage.getItem("access");
-    console.log("Token check:", token);
-    return token !== null;
+    return localStorage.getItem("access") !== null;
 };
 
 function App() {
     const [auth, setAuth] = useState(isAuthenticated());
-
-    // 🌗 Theme state
-    const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-
-    const toggleTheme = () => {
-        const newTheme = theme === "light" ? "dark" : "light";
-        setTheme(newTheme);
-        localStorage.setItem("theme", newTheme);
-    };
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -39,9 +26,8 @@ function App() {
     }, []);
 
     return (
-        <div className={`app ${theme}`}>
+        <div className="app">
             <Router>
-                {/*{auth && <Navigation toggleTheme={toggleTheme} />}*/}
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/login" element={!auth ? <Login /> : <Navigate to="/home" />} />
@@ -54,6 +40,7 @@ function App() {
                     <Route path="/dashboard" element={auth ? <ProfileDashboard /> : <Navigate to="/login" />} />
                     <Route path="/clubRegister" element={auth ? <ClubRegister /> : <Navigate to="/login" />} />
                     <Route path="/clubHome/:id" element={auth ? <ClubDashboard /> : <Navigate to="/login" />} />
+                    <Route path="/settings" element={auth ? <AccountSettings /> : <Navigate to="/login" />} />
 
                     {/* Catch-all */}
                     <Route path="*" element={auth ? <Navigate to="/home" /> : <Navigate to="/login" />} />

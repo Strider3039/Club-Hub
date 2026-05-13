@@ -23,10 +23,12 @@ from .views import ClubListView
 from .views import PendingFriendRequestsView
 from .views import ClubEventsView
 from .views import ClubJoinView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Admin URL
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # Authorization URLs
     path('register/', views.RegisterView.as_view(), name='register'),
@@ -42,7 +44,7 @@ urlpatterns = [
     path('clubs/delete/<int:club_id>/', views.ClubDeleteView.as_view(), name='club-delete'),
     path('clubs/update/<int:club_id>/', views.ClubUpdateView.as_view(), name='club-update'),
     path('clubs/<int:club_id>/', views.ClubDetailView.as_view(), name='club-detail'),
-    # path('clubs/announcements/<int:club_id>/', views.AnnouncementListView.as_view(), name='club-announcements'),
+    path('clubs/announcements/<int:club_id>/', views.ClubAnnouncementView.as_view(), name='club-announcements'),
 
     # Friends URLs
     path('friends/', FriendListView.as_view(), name='friend-list'),

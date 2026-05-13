@@ -1,41 +1,24 @@
-import {Col, Container, Row} from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import NavBar from "../Navigation/NavBar";
 import Sidebar from "../Navigation/Sidebar";
-import React, {useState} from "react";
+import React from "react";
+import "./GeneralLayout.css";
 
-
-function GeneralLayout({children, pageTitle, buttons}) {
-
-    // 🌗 Theme state
-    const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-
-    const toggleTheme = () => {
-        const newTheme = theme === "light" ? "dark" : "light";
-        setTheme(newTheme);
-        localStorage.setItem("theme", newTheme);
-        window.location.reload();
-    };
-
+function GeneralLayout({ children, pageTitle, buttons }) {
     return (
-        <div style={{zIndex: 9999}}>
-            <Container fluid className="p-0 m-0 h-auto w-100">
-                <Row className="w-100 mr-0" >
-                    <Col xs={"auto"} style={{padding: "0px"}} className="h-auto bg-light">
+        <div className="general-layout">
+            <Container fluid className="p-0 m-0">
+                <Row className="g-0">
+                    <Col xs="auto" className="general-layout-sidebar">
                         <Sidebar>
                             {buttons}
                         </Sidebar>
                     </Col>
-                    <Col className="bg-white">
-                        <Row >
-                            <Col className="w-100" style={{marginBottom: "7px"}}>
-                                <NavBar toggleTheme={toggleTheme} pageTitle={pageTitle} />
-                            </Col>
-                        </Row>
-                        <Row >
-                            <Col className="min-vh-100 w-100">
-                                {children}
-                            </Col>
-                        </Row>
+                    <Col className="general-layout-main">
+                        <NavBar pageTitle={pageTitle} />
+                        <div className="general-layout-content">
+                            {children}
+                        </div>
                     </Col>
                 </Row>
             </Container>

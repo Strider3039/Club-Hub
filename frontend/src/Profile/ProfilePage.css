@@ -1,0 +1,162 @@
+/* ===== Profile Page ===== */
+
+.profile-info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 20px;
+}
+
+.profile-avatar-large {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-size: 36px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    border: 3px solid var(--primary-light);
+    box-shadow: 0 2px 8px rgba(166, 15, 45, 0.25);
+}
+
+.profile-details {
+    text-align: left;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin: 16px 0;
+}
+
+.profile-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.profile-detail-row:last-child {
+    border-bottom: none;
+}
+
+.profile-detail-label {
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+}
+
+.profile-detail-value {
+    color: var(--text);
+    font-weight: 500;
+    text-align: right;
+    word-break: break-word;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-stat-num {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.profile-stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.profile-stat-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--border);
+}
+
+/* Clubs grid */
+.profile-clubs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-club-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s, box-shadow 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.profile-club-card:hover {
+    background-color: var(--surface);
+    box-shadow: var(--shadow);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.profile-club-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid var(--primary-light);
+}
+
+.profile-club-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.profile-club-info p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-club-arrow {
+    font-size: 22px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    line-height: 1;
+}

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./ClubSearch.css";
 import { useNavigate } from "react-router-dom";
 import authAxios from "../utils/authAxios";
-import Button from "react-bootstrap/Button";
-import { Container, Row, Col } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import GenLayout from "../Layout/GeneralLayout";
 
 function ClubSearch() {
@@ -11,37 +10,33 @@ function ClubSearch() {
     const [searchTerm, setSearchTerm] = useState("");
     const [clubs, setClubs] = useState([]);
     const [filteredClubs, setFilteredClubs] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchClubs = async () => {
             try {
-                const response = await authAxios.get("/clubs/list/", { params: { club_id: 1 } });
+                const response = await authAxios.get("/clubs/list/");
                 setClubs(response.data);
                 setFilteredClubs(response.data);
             } catch (error) {
                 console.error("Failed to fetch clubs:", error.response?.data || error.message);
+            } finally {
+                setLoading(false);
             }
         };
-
         fetchClubs();
     }, []);
 
     const handleSearchChange = (e) => {
         const term = e.target.value;
         setSearchTerm(term);
-        const filtered = clubs.filter((club) =>
-            club.name.toLowerCase().includes(term.toLowerCase())
+        setFilteredClubs(
+            clubs.filter((club) => club.name.toLowerCase().includes(term.toLowerCase()))
         );
-        setFilteredClubs(filtered);
     };
 
-    const handleClubClick = (clubId) => {
-        navigate(`/clubHome/${clubId}`);
-    };
-
-    const handleRegister = () => {
-        navigate("/clubRegister");
-    };
+    const handleClubClick = (clubId) => navigate(`/clubHome/${clubId}`);
+    const handleRegister = () => navigate("/clubRegister");
 
     const handleJoinClub = async (e, clubId) => {
         e.stopPropagation();
@@ -51,70 +46,85 @@ function ClubSearch() {
                 club.id === clubId ? { ...club, is_member: true } : club
             );
             setClubs(updatedClubs);
-            const updatedFiltered = updatedClubs.filter((club) =>
-                club.name.toLowerCase().includes(searchTerm.toLowerCase())
+            setFilteredClubs(
+                updatedClubs.filter((club) => club.name.toLowerCase().includes(searchTerm.toLowerCase()))
             );
-            setFilteredClubs(updatedFiltered);
         } catch (error) {
             console.error("Failed to join club:", error.response?.data || error.message);
         }
     };
 
     return (
-        <GenLayout pageTitle={"ClubSearch"}>
-            <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
-                <Row className="align-items-start flex-grow-1 mb-3 text-center">
-                    <Col></Col>
-                    <Col xs={1}>
-                        <Button className="create-button" onClick={handleRegister}>
-                            Create Club
-                        </Button>
-                    </Col>
-                    <Col xs={12} md={6} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                        <div className="mb-3">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search clubs..."
-                                value={searchTerm}
-                                onChange={handleSearchChange}
-                            />
-                        </div>
+        <GenLayout pageTitle="Clubs">
+            <div className="page-wrapper">
+                <div className="page-header">
+                    <div>
+                        <h2>Browse Clubs</h2>
+                        <p className="page-header-subtitle">Find a community and join the conversation.</p>
+                    </div>
+                    <Button variant="danger" onClick={handleRegister}>
+                        + Create Club
+                    </Button>
+                </div>
 
-                        <div className="clubs-list">
-                            <h5 className="mb-3 text-secondary">
-                                Showing results for <strong>{searchTerm || "All Clubs"}</strong>
-                            </h5>
+                <div className="app-card">
+                    <div className="app-card-header">
+                        <h6 className="app-card-title">
+                            {searchTerm ? `Results for "${searchTerm}"` : "All Clubs"}
+                        </h6>
+                        <span className="friends-badge">{filteredClubs.length}</span>
+                    </div>
 
-                            <div className="clubs-list" style={{ maxHeight: "80vh", overflowY: "auto" }}>
-                                <ul className="list-group">
-                                    {filteredClubs.map((club) => (
-                                        <li
-                                            key={club.id}
-                                            className="list-group-item list-group-item-action mb-2 rounded d-flex justify-content-between align-items-center"
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() => handleClubClick(club.id)}
-                                        >
-                                            <div>
-                                                <h5 className="mb-1 fw-bold">{club.name}</h5>
-                                                <p className="mb-0 text-muted">{club.description}</p>
-                                            </div>
-                                            <Button
-                                                variant={club.is_member ? "success" : "primary"}
-                                                disabled={club.is_member}
-                                                onClick={(e) => handleJoinClub(e, club.id)}
-                                            >
-                                                {club.is_member ? "Joined" : "Join"}
-                                            </Button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                    <div className="club-search-bar">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search clubs by name..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                        />
+                    </div>
+
+                    {loading ? (
+                        <div className="text-center py-5">
+                            <Spinner animation="border" variant="danger" />
                         </div>
-                    </Col>
-                    <Col></Col>
-                </Row>
-            </Container>
+                    ) : filteredClubs.length === 0 ? (
+                        <div className="club-search-empty">
+                            <p className="text-muted mb-3">No clubs found.</p>
+                            <Button variant="danger" onClick={handleRegister}>
+                                Create the first one
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="club-search-grid">
+                            {filteredClubs.map((club) => (
+                                <div
+                                    key={club.id}
+                                    className="club-search-card"
+                                    onClick={() => handleClubClick(club.id)}
+                                >
+                                    <div className="club-search-avatar">{club.name[0]}</div>
+                                    <div className="club-search-info">
+                                        <h6 className="mb-1">{club.name}</h6>
+                                        <p className="text-muted small mb-0">
+                                            {club.description || "No description"}
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant={club.is_member ? "success" : "danger"}
+                                        disabled={club.is_member}
+                                        size="sm"
+                                        onClick={(e) => handleJoinClub(e, club.id)}
+                                    >
+                                        {club.is_member ? "✓ Joined" : "Join"}
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
         </GenLayout>
     );
 }

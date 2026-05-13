@@ -1,0 +1,242 @@
+/* ===== Home Page ===== */
+
+/* Profile card */
+.home-profile-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.home-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-size: 28px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    border: 3px solid var(--primary-light);
+    box-shadow: 0 2px 8px rgba(166, 15, 45, 0.25);
+}
+
+.home-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+}
+
+.home-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.home-stat-num {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.home-stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    font-weight: 500;
+}
+
+.home-stat-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--border);
+}
+
+/* Quick links */
+.home-quick-btn {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+
+.home-quick-btn:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.home-quick-btn:last-child {
+    margin-bottom: 0;
+}
+
+/* Club cards */
+.home-clubs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.home-club-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.1s, border-color 0.2s, background-color 0.2s;
+}
+
+.home-club-card:hover {
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    transform: translateY(-1px);
+    border-color: var(--primary);
+}
+
+.home-club-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid var(--primary-light);
+}
+
+.home-club-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.home-club-desc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.home-club-arrow {
+    font-size: 22px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* Action buttons */
+.home-action-btn {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    border: 1px solid var(--primary);
+    border-radius: var(--radius-sm);
+    padding: 9px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.home-action-btn:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.home-action-btn.w-100 {
+    width: 100%;
+    text-align: center;
+}
+
+.home-action-btn-sm {
+    display: inline-block;
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: var(--radius-sm);
+    padding: 5px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.home-action-btn-sm:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* Friends list */
+.home-friends-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.home-friend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.home-friend-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.home-friend-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+/* Empty state */
+.home-empty-state {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-muted);
+}
+
+.home-empty-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}

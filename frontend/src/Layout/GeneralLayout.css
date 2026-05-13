@@ -1,0 +1,25 @@
+/* ===== General Layout ===== */
+
+.general-layout {
+    min-height: 100vh;
+    background-color: var(--bg);
+}
+
+.general-layout-sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    min-height: 100vh;
+    width: 220px;
+}
+
+.general-layout-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg);
+}
+
+.general-layout-content {
+    flex: 1;
+    padding: 0;
+}

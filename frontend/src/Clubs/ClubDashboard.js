@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Container, Row, Col, Modal, Button, Form } from "react-bootstrap";
+import { Row, Col, Modal, Button, Form } from "react-bootstrap";
 import Calendar from "./ClubCalendar";
 import GenLayout from "../Layout/GeneralLayout";
 import SideButton from "../CustomSideButton/CustomeSideButton";
 import authAxios from "../utils/authAxios";
+import "./ClubDashboard.css";
 
 function ClubDashboard() {
     const navigate = useNavigate();
@@ -17,10 +18,16 @@ function ClubDashboard() {
     const [showEditClubModal, setShowEditClubModal] = useState(false);
     const [clubDescription, setClubDescription] = useState("");
     const [clubName, setClubName] = useState("");
+    const [announcements, setAnnouncements] = useState([]);
+    const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+    const [announcementTitle, setAnnouncementTitle] = useState("");
+    const [announcementBody, setAnnouncementBody] = useState("");
 
     useEffect(() => {
         getMembers();
         getClubInfo();
+        getAnnouncements();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getMembers = async () => {
@@ -30,7 +37,7 @@ function ClubDashboard() {
             const myEntry = response.data.find(m => m.username === localStorage.getItem("username"));
             if (myEntry) setMyRole(myEntry.position);
         } catch (error) {
-            console.error("Error fetching Member list: ", error);
+            console.error("Error fetching members:", error);
         }
     };
 
@@ -40,7 +47,33 @@ function ClubDashboard() {
             setClubDescription(response.data.description);
             setClubName(response.data.name);
         } catch (error) {
-            console.error("Error fetching club info: ", error);
+            console.error("Error fetching club info:", error);
+        }
+    };
+
+    const getAnnouncements = async () => {
+        try {
+            const response = await authAxios.get(`/clubs/announcements/${id}/`);
+            setAnnouncements(response.data);
+        } catch (error) {
+            console.error("Error fetching announcements:", error);
+        }
+    };
+
+    const handlePostAnnouncement = async () => {
+        if (!announcementTitle.trim() || !announcementBody.trim()) return;
+        try {
+            await authAxios.post(`/clubs/announcements/${id}/`, {
+                title: announcementTitle,
+                description: announcementBody,
+                date: new Date().toISOString(),
+            });
+            setAnnouncementTitle("");
+            setAnnouncementBody("");
+            setShowAnnouncementModal(false);
+            getAnnouncements();
+        } catch (error) {
+            alert("Failed to post announcement.");
         }
     };
 
@@ -51,10 +84,8 @@ function ClubDashboard() {
                 description: clubDescription,
             });
             alert("Club updated successfully.");
-            // close modal after editing
             setShowEditClubModal(false);
         } catch (error) {
-            console.error("Error updating club: ", error);
             alert("Failed to update club.");
         }
     };
@@ -66,7 +97,6 @@ function ClubDashboard() {
             alert("Club deleted successfully.");
             navigate("/clubs");
         } catch (error) {
-            console.error("Error deleting club: ", error);
             alert("Failed to delete club.");
         }
     };
@@ -76,10 +106,8 @@ function ClubDashboard() {
             await authAxios.patch(`/membershipUpdate/${id}/${userId}/`, {
                 position: newRole,
             });
-            alert("Role updated.");
             getMembers();
         } catch (error) {
-            console.error("Error updating role: ", error);
             alert("Failed to update role.");
         }
     };
@@ -89,13 +117,12 @@ function ClubDashboard() {
         try {
             const member = members.find(m => m.username === userName);
             if (member) {
-                const userId = member.user_id;
-                await authAxios.delete(`/membershipDelete/${id}/${userId}/`);
-                alert("Member removed.");
+                await authAxios.delete(`/membershipDelete/${id}/${member.user_id}/`);
                 getMembers();
+                setUsernameToRemove("");
+                setShowRemoveMemberModal(false);
             }
         } catch (error) {
-            console.error("Error removing member: ", error);
             alert("Failed to remove member.");
         }
     };
@@ -103,9 +130,16 @@ function ClubDashboard() {
     const canManage = ["President", "Vice President"].includes(myRole);
     const isPresident = myRole === "President";
 
+    const roleBadgeClass = (pos) => {
+        if (pos === "President") return "club-role-badge club-role-president";
+        if (pos === "Vice President") return "club-role-badge club-role-vp";
+        if (pos === "officer" || pos === "Officer") return "club-role-badge club-role-officer";
+        return "club-role-badge club-role-member";
+    };
+
     return (
         <GenLayout
-            pageTitle={`${clubName} Dashboard`}
+            pageTitle={clubName || "Club"}
             buttons={
                 canManage && (
                     <SideButton
@@ -113,116 +147,232 @@ function ClubDashboard() {
                         style={"popover"}
                         placement={"right-start"}
                         buttons={[
-                            { text: "Remove Member", onClick: () => setShowRemoveMemberModal(true) },
-                            { text: "Edit Club Info", onClick: () => setShowEditClubModal(true) }
+                            { text: "Post Announcement", onClick: () => setShowAnnouncementModal(true) },
+                            { text: "Remove Member",    onClick: () => setShowRemoveMemberModal(true) },
+                            { text: "Edit Club Info",   onClick: () => setShowEditClubModal(true) },
                         ]}
                     />
                 )
             }
         >
-            <Container fluid className="vh-100 mt-0 p-4 flex-column bg-light">
-                <Row className="align-items-start flex-grow-1 mb-3 text-center">
-                    <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                        <h5>Club Calendar</h5>
-                        <Calendar clubId={id} />
-                    </Col>
+            <div className="page-wrapper">
+                <div className="page-header">
+                    <div>
+                        <h2>{clubName}</h2>
+                        <p className="page-header-subtitle">{clubDescription || "No description"}</p>
+                    </div>
+                    {isPresident && (
+                        <Button variant="outline-danger" size="sm" onClick={handleDeleteClub}>
+                            Delete Club
+                        </Button>
+                    )}
+                </div>
 
-                    <Col xs={6} className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                        <h5 className="mb-4">About the Club</h5>
-                        <div className="text-start px-4">
-                            <p className="fw-semibold mb-2">
-                                <span className="text-muted">Name:</span> <span className="fs-5">{clubName}</span>
-                            </p>
-                            <p className="fw-semibold">
-                                <span className="text-muted">Description:</span> <span>{clubDescription}</span>
-                            </p>
+                {/* Announcements */}
+                <div className="app-card mb-4">
+                    <div className="app-card-header">
+                        <h6 className="app-card-title">Announcements</h6>
+                        <div className="d-flex align-items-center gap-2">
+                            <span className="friends-badge">{announcements.length}</span>
+                            {canManage && (
+                                <Button variant="danger" size="sm" onClick={() => setShowAnnouncementModal(true)}>
+                                    + Post
+                                </Button>
+                            )}
                         </div>
-                    </Col>
-
-                    <Col className="p-3 m-2 bg-light border border-dark-subtle text-dark rounded">
-                        <h5>Members</h5>
-                        <ul className="list-unstyled">
-                            {members.map((member, index) => (
-                                <li key={index} className="mb-3 d-flex justify-content-between align-items-center">
-                                    <span>
-                                        <strong>{member.username}</strong> — {member.position}
-                                    </span>
-                                    {canManage && member.username !== localStorage.getItem("username") && (
-                                        <Form.Select
-                                            size="sm"
-                                            defaultValue={member.position}
-                                            style={{ width: "150px" }}
-                                            onChange={(e) => handleUpdateRole(member.user_id, e.target.value)}
-                                        >
-                                            <option value="member">Member</option>
-                                            <option value="Officer">Officer</option>
-                                            <option value="Vice President">Vice President</option>
-                                            <option value="President">President</option>
-                                        </Form.Select>
-                                    )}
+                    </div>
+                    {announcements.length === 0 ? (
+                        <div className="friends-empty">
+                            <p className="text-muted mb-0">No announcements yet.</p>
+                        </div>
+                    ) : (
+                        <ul className="announcement-list">
+                            {announcements.slice(0, 5).map((a) => (
+                                <li key={a.id} className="announcement-item">
+                                    <div className="announcement-header">
+                                        <h6 className="announcement-title">{a.title}</h6>
+                                        <span className="announcement-date">
+                                            {new Date(a.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                        </span>
+                                    </div>
+                                    <p className="announcement-body">{a.description}</p>
                                 </li>
                             ))}
                         </ul>
+                    )}
+                </div>
+
+                <Row className="g-4">
+                    {/* Calendar */}
+                    <Col xs={12} lg={5}>
+                        <div className="app-card">
+                            <div className="app-card-header">
+                                <h6 className="app-card-title">Calendar</h6>
+                            </div>
+                            <Calendar clubId={id} />
+                        </div>
                     </Col>
 
-                    {isPresident && (
-                        <div className="text-center mt-3">
-                            <Button variant="danger" onClick={handleDeleteClub}>
-                                Delete Club
-                            </Button>
+                    {/* About */}
+                    <Col xs={12} lg={4}>
+                        <div className="app-card">
+                            <div className="app-card-header">
+                                <h6 className="app-card-title">About</h6>
+                            </div>
+                            <div className="club-detail-list">
+                                <div className="club-detail-row">
+                                    <span className="club-detail-label">Name</span>
+                                    <span className="club-detail-value">{clubName}</span>
+                                </div>
+                                <div className="club-detail-row club-detail-row-block">
+                                    <span className="club-detail-label">Description</span>
+                                    <span className="club-detail-value">{clubDescription || "—"}</span>
+                                </div>
+                                <div className="club-detail-row">
+                                    <span className="club-detail-label">Members</span>
+                                    <span className="club-detail-value">{members.length}</span>
+                                </div>
+                                <div className="club-detail-row">
+                                    <span className="club-detail-label">Your Role</span>
+                                    <span className="club-detail-value">
+                                        <span className={roleBadgeClass(myRole)}>{myRole || "—"}</span>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                    )}
+                    </Col>
+
+                    {/* Members */}
+                    <Col xs={12} lg={3}>
+                        <div className="app-card">
+                            <div className="app-card-header">
+                                <h6 className="app-card-title">Members</h6>
+                                <span className="friends-badge">{members.length}</span>
+                            </div>
+                            <ul className="club-members-list">
+                                {members.map((member) => (
+                                    <li key={member.user_id} className="club-member-item">
+                                        <div className="club-member-info">
+                                            <div className="club-member-avatar">
+                                                {member.username[0].toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <div className="club-member-name">{member.username}</div>
+                                                <span className={roleBadgeClass(member.position)}>
+                                                    {member.position}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {canManage && member.username !== localStorage.getItem("username") && (
+                                            <Form.Select
+                                                size="sm"
+                                                defaultValue={member.position}
+                                                className="club-member-role-select"
+                                                onChange={(e) => handleUpdateRole(member.user_id, e.target.value)}
+                                            >
+                                                <option value="member">Member</option>
+                                                <option value="officer">Officer</option>
+                                                <option value="Vice President">Vice President</option>
+                                                <option value="President">President</option>
+                                            </Form.Select>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </Col>
                 </Row>
+            </div>
 
-                {/* Remove Member Modal */}
-                <Modal show={showRemoveMemberModal} onHide={() => setShowRemoveMemberModal(false)} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Member to Remove</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
-                            <Form.Group className="mb-3">
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Username"
-                                    value={usernameToRemove}
-                                    onChange={(e) => setUsernameToRemove(e.target.value)}
-                                />
-                                <Button onClick={() => handleRemoveMember(usernameToRemove)}>Remove</Button>
-                            </Form.Group>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
+            {/* Remove Member Modal */}
+            <Modal show={showRemoveMemberModal} onHide={() => setShowRemoveMemberModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Remove Member</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter username..."
+                                value={usernameToRemove}
+                                onChange={(e) => setUsernameToRemove(e.target.value)}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowRemoveMemberModal(false)}>Cancel</Button>
+                    <Button variant="danger" onClick={() => handleRemoveMember(usernameToRemove)}>Remove</Button>
+                </Modal.Footer>
+            </Modal>
 
-                {/* Edit Club Info Modal */}
-                <Modal show={showEditClubModal} onHide={() => setShowEditClubModal(false)} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Edit Club Info</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
-                            <Form.Group className="mb-3">
-                                <h6>Club Name</h6>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Club Name"
-                                    value={clubName}
-                                    onChange={(e) => setClubName(e.target.value)}
-                                />
-                                <h6>Club Description</h6>
-                                <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    placeholder="Club Description"
-                                    value={clubDescription}
-                                    onChange={(e) => setClubDescription(e.target.value)}
-                                />
-                                <Button onClick={handleEditClub}>Save</Button>
-                            </Form.Group>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-            </Container>
+            {/* Post Announcement Modal */}
+            <Modal show={showAnnouncementModal} onHide={() => setShowAnnouncementModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Post Announcement</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Title</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Announcement title..."
+                                value={announcementTitle}
+                                onChange={(e) => setAnnouncementTitle(e.target.value)}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Message</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={4}
+                                placeholder="What would you like to announce?"
+                                value={announcementBody}
+                                onChange={(e) => setAnnouncementBody(e.target.value)}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowAnnouncementModal(false)}>Cancel</Button>
+                    <Button variant="danger" onClick={handlePostAnnouncement}>Post</Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Edit Club Info Modal */}
+            <Modal show={showEditClubModal} onHide={() => setShowEditClubModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Club Info</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Club Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={clubName}
+                                onChange={(e) => setClubName(e.target.value)}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={4}
+                                value={clubDescription}
+                                onChange={(e) => setClubDescription(e.target.value)}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowEditClubModal(false)}>Cancel</Button>
+                    <Button variant="danger" onClick={handleEditClub}>Save Changes</Button>
+                </Modal.Footer>
+            </Modal>
         </GenLayout>
     );
 }

@@ -1,77 +1,128 @@
+/* ===== Register Page ===== */
+
 .Register {
-    box-sizing: border-box;
-    border-radius: 10px;
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-items: center;
-    background: #f0f0f0;
-    border: 1px solid #ccc;
-    width: 300px;
-    margin: 100px auto;
+    background: linear-gradient(135deg, #A60F2D 0%, #6b0a1c 100%);
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.Register h1 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-}
-
-.Register form {
+.register-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 40px 36px;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    max-width: 440px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
 }
 
-.Register input[type="text"],
-.Register input[type="password"],
-.Register input[type="email"],
-.Register input[type="date"] {
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+.register-logo {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.Register button {
-    width: 90%;
-    padding: 10px;
-    margin: 20px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.register-logo img {
+    height: 56px;
 }
 
-.Register button:hover {
-    background-color: #0056b3;
+.register-card h2 {
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 4px;
 }
 
-.Register p {
-    margin-top: 10px;
+.register-card .register-subtitle {
+    color: #6c757d;
     font-size: 14px;
-    color: #666;
+    margin-bottom: 24px;
 }
 
-.Register a {
-    color: #007bff;
+.register-row {
+    display: flex;
+    gap: 12px;
+}
+
+.register-row .register-field {
+    flex: 1;
+}
+
+.register-field {
+    margin-bottom: 14px;
+}
+
+.register-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.register-field input {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1.5px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    color: #1a1a2e;
+    box-sizing: border-box;
+}
+
+.register-field input:focus {
+    border-color: #A60F2D;
+    box-shadow: 0 0 0 3px rgba(166, 15, 45, 0.12);
+}
+
+.register-submit-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    background: #A60F2D;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.register-submit-btn:hover {
+    background: #8b1a1a;
+}
+
+.register-submit-btn:active {
+    transform: scale(0.98);
+}
+
+.register-footer {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.register-footer a {
+    color: #A60F2D;
+    font-weight: 600;
     text-decoration: none;
 }
 
-.Register a:hover {
+.register-footer a:hover {
     text-decoration: underline;
 }
 
-.Register .error {
-    color: red;
-    font-size: 14px;
+.register-error {
+    color: #dc3545;
+    font-size: 13px;
     margin-top: 10px;
+    text-align: center;
+    background: #fff5f5;
+    border: 1px solid #f5c2c7;
+    border-radius: 6px;
+    padding: 8px 12px;
 }

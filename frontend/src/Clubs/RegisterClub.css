@@ -1,85 +1,107 @@
+/* ===== Register Club Page ===== */
+
 .ClubRegister {
-    box-sizing: border-box;
-    border-radius: 10px;
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-items: center;
-    background: #f0f0f0;
-    border: 1px solid #ccc;
-    width: 300px;
-    margin: 100px auto;
+    background: linear-gradient(135deg, #A60F2D 0%, #6b0a1c 100%);
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.ClubRegister h1 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-}
-
-.ClubRegister form {
+.club-register-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 40px 36px;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    max-width: 460px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
 }
 
-.ClubRegister input[type="text"]{
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+.club-register-card h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 6px;
+}
+
+.club-register-card .register-subtitle {
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+.club-register-field {
+    margin-bottom: 18px;
+}
+
+.club-register-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.club-register-field input,
+.clubDescription {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    color: #1a1a2e;
+    font-family: inherit;
+}
+
+.club-register-field input:focus,
+.clubDescription:focus {
+    border-color: #A60F2D;
+    box-shadow: 0 0 0 3px rgba(166, 15, 45, 0.12);
 }
 
 .clubDescription {
-    height: 200px;
-    width: 90%;
+    height: 120px;
     resize: vertical;
-    padding: 10px;
-    font-size: 16px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
 }
 
-.ClubRegister button {
-    width: 90%;
-    padding: 10px;
-    margin: 20px 0 0 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
+.club-register-submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #A60F2D;
     color: white;
+    border: none;
+    border-radius: 8px;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s;
+    margin-top: 4px;
 }
 
-.ClubRegister button:hover {
-    background-color: #0056b3;
+.club-register-submit-btn:hover {
+    background: #8b1a1a;
 }
 
-.ClubRegister p {
+.register-feedback {
+    font-size: 13px;
     margin-top: 10px;
-    font-size: 14px;
-    color: #666;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 12px;
 }
 
-.ClubRegister a {
-    color: #007bff;
-    text-decoration: none;
+.register-feedback.error {
+    color: #dc3545;
+    background: #fff5f5;
+    border: 1px solid #f5c2c7;
 }
 
-.ClubRegister a:hover {
-    text-decoration: underline;
-}
-
-.ClubRegister .error {
-    color: red;
-    font-size: 14px;
-    margin-top: 10px;
+.register-feedback.success {
+    color: #198754;
+    background: #f0fff4;
+    border: 1px solid #a3cfbb;
 }

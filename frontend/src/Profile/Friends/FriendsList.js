@@ -1,4 +1,4 @@
-import Friend from './FriendItem';
+import FriendItem from './FriendItem';
 import './FriendsList.css'
 
 //this function accepts a list of friend objects
@@ -6,7 +6,7 @@ function FriendsList(props) {
 
     const itemList = props.friends;
 
-    const list = itemList.map(friend => <li key={friend.name}><Friend friendPfp={friend.pfp} friendName={friend.name} /></li>);
+    const list = itemList.map(friend => <li key={friend.name}><FriendItem friendPfp={friend.pfp} friendName={friend.name} /></li>);
 
     return (
         <>

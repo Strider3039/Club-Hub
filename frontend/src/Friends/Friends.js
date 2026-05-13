@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Friends.css";
 import authAxios from "../utils/authAxios";
-import { Button, Modal } from "react-bootstrap";
-import GenLayout from "../Layout/GeneralLayout"
+import { Button, Modal, Row, Col } from "react-bootstrap";
+import GenLayout from "../Layout/GeneralLayout";
 import Form from "react-bootstrap/Form";
 
 function Friends() {
@@ -12,7 +12,7 @@ function Friends() {
     const [showModal, setShowModal] = useState(false);
     const [friendsError, setFriendsError] = useState("");
     const [pendingError, setPendingError] = useState("");
-    const [showForm, setShowForm] = React.useState(false);
+    const [showForm, setShowForm] = useState(false);
     const [friendUsername, setFriendUsername] = useState("");
 
     const fetchFriends = async () => {
@@ -20,7 +20,6 @@ function Friends() {
             const response = await authAxios.get("/friends/");
             setFriendsList(response.data);
         } catch (err) {
-            console.error("Error fetching friends:", err.response?.data || err.message);
             setFriendsError("Failed to load friends.");
         }
     };
@@ -30,7 +29,6 @@ function Friends() {
             const response = await authAxios.get("/friend-requests/pending/");
             setPendingRequests(response.data);
         } catch (err) {
-            console.error("Error fetching pending requests:", err.response?.data || err.message);
             setPendingError("Failed to load pending requests.");
         }
     };
@@ -42,12 +40,12 @@ function Friends() {
 
     const handleNewFriend = async () => {
         if (!friendUsername) return;
-
         try {
             await authAxios.post("/friend-requests/", { friendUsername });
             alert("Friend request sent!");
+            setFriendUsername("");
+            setShowForm(false);
         } catch (err) {
-            console.error("Error adding friend:", err.response?.data || err.message);
             setFriendsError("Failed to add friend.");
         }
     };
@@ -58,7 +56,6 @@ function Friends() {
             fetchFriends();
             fetchPendingRequests();
         } catch (err) {
-            console.error("Error accepting request:", err.response?.data || err.message);
             setPendingError("Failed to accept friend request.");
         }
     };
@@ -69,7 +66,7 @@ function Friends() {
             setSelectedFriend(response.data);
             setShowModal(true);
         } catch (err) {
-            console.error("Error loading friend details:", err.response?.data || err.message);
+            console.error("Error loading friend details");
         }
     };
 
@@ -82,105 +79,168 @@ function Friends() {
             fetchFriends();
             setShowModal(false);
         } catch (err) {
-            console.error("Error removing friend:", err.response?.data || err.message);
             alert("Failed to remove friend.");
         }
     };
 
     return (
-        <GenLayout pageTitle={"Friends"}>
-            <div className="friends-page">
-                <div className="container-fluid px-5 mt-4">
-                    <div className="row gx-4 gy-4">
-                        {/* Pending Requests */}
-                        <div className="col-lg-3">
-                            <div className="section-card">
-                                <h4>Pending Requests</h4>
-                                {pendingError && <p className="text-danger">{pendingError}</p>}
-                                <ul>
-                                    {pendingRequests.length > 0 ? (
-                                        pendingRequests.map((req) => (
-                                            <li key={req.id}>
-                                                <span>{req.from_user.username}</span>
-                                                <Button size="sm" onClick={() => handleAcceptRequest(req.id)}>Accept</Button>
-                                            </li>
-                                        ))
-                                    ) : (
-                                        !pendingError && <p className="text-muted">No pending requests.</p>
-                                    )}
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Friends List */}
-                        <div className="col-lg-9">
-                            <div className="section-card">
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h3>My Friends</h3>
-                                    <Button onClick={() => setShowForm(!showForm)}>Add Friend</Button>
-                                </div>
-                                {friendsError && <p className="text-danger">{friendsError}</p>}
-                                <ul>
-                                    {friendsList.length > 0 ? (
-                                        friendsList.map((friend) => (
-                                            <li key={friend.id}>
-                                                <span>{friend.username}</span>
-                                                <div className="d-flex gap-2">
-                                                    <Button size="sm" variant="info" onClick={() => handleViewFriend(friend.id)}>View</Button>
-                                                    <Button size="sm" variant="danger" onClick={() => handleUnfriend(friend.id)}>Unfriend</Button>
-                                                </div>
-                                            </li>
-                                        ))
-                                    ) : (
-                                        !friendsError && <p className="text-muted">No friends found.</p>
-                                    )}
-                                </ul>
-                            </div>
-                        </div>
+        <GenLayout pageTitle="Friends">
+            <div className="page-wrapper">
+                <div className="page-header">
+                    <div>
+                        <h2>Friends</h2>
+                        <p className="page-header-subtitle">Manage your connections and friend requests.</p>
                     </div>
+                    <Button variant="danger" onClick={() => setShowForm(true)}>
+                        + Add Friend
+                    </Button>
                 </div>
 
-                {/* View Friend Modal */}
-                <Modal show={showModal} onHide={() => setShowModal(false)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Friend Details</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {selectedFriend ? (
-                            <div>
-                                <p><strong>Username:</strong> {selectedFriend.username}</p>
-                                <p><strong>First Name:</strong> {selectedFriend.first_name}</p>
-                                <p><strong>Last Name:</strong> {selectedFriend.last_name}</p>
-                                <p><strong>Email:</strong> {selectedFriend.email}</p>
-                                <p><strong>Clubs:</strong> {selectedFriend.clubs.length > 0 ? selectedFriend.clubs.join(", ") : "No clubs"}</p>
+                <Row className="g-4">
+                    {/* Pending Requests */}
+                    <Col xs={12} lg={4}>
+                        <div className="app-card">
+                            <div className="app-card-header">
+                                <h6 className="app-card-title">Pending Requests</h6>
+                                <span className="friends-badge">{pendingRequests.length}</span>
                             </div>
-                        ) : (
-                            <p>Loading...</p>
-                        )}
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="danger" onClick={() => handleUnfriend(selectedFriend.id)}>Unfriend</Button>
-                        <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
-                    </Modal.Footer>
-                </Modal>
+                            {pendingError && <p className="text-danger small">{pendingError}</p>}
+                            {pendingRequests.length > 0 ? (
+                                <ul className="friends-list">
+                                    {pendingRequests.map((req) => (
+                                        <li key={req.id} className="friends-item">
+                                            <div className="friends-item-info">
+                                                <div className="friends-avatar">
+                                                    {req.from_user.username[0].toUpperCase()}
+                                                </div>
+                                                <span className="friends-name">{req.from_user.username}</span>
+                                            </div>
+                                            <Button size="sm" variant="danger" onClick={() => handleAcceptRequest(req.id)}>
+                                                Accept
+                                            </Button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                !pendingError && (
+                                    <div className="friends-empty">
+                                        <p className="text-muted mb-0">No pending requests.</p>
+                                    </div>
+                                )
+                            )}
+                        </div>
+                    </Col>
+
+                    {/* Friends List */}
+                    <Col xs={12} lg={8}>
+                        <div className="app-card">
+                            <div className="app-card-header">
+                                <h6 className="app-card-title">My Friends</h6>
+                                <span className="friends-badge">{friendsList.length}</span>
+                            </div>
+                            {friendsError && <p className="text-danger small">{friendsError}</p>}
+                            {friendsList.length > 0 ? (
+                                <ul className="friends-list">
+                                    {friendsList.map((friend) => (
+                                        <li key={friend.id} className="friends-item">
+                                            <div className="friends-item-info">
+                                                <div className="friends-avatar">
+                                                    {friend.username[0].toUpperCase()}
+                                                </div>
+                                                <span className="friends-name">{friend.username}</span>
+                                            </div>
+                                            <div className="d-flex gap-2">
+                                                <Button size="sm" variant="outline-secondary" onClick={() => handleViewFriend(friend.id)}>
+                                                    View
+                                                </Button>
+                                                <Button size="sm" variant="outline-danger" onClick={() => handleUnfriend(friend.id)}>
+                                                    Unfriend
+                                                </Button>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                !friendsError && (
+                                    <div className="friends-empty">
+                                        <p className="text-muted mb-2">You haven't added any friends yet.</p>
+                                        <Button variant="danger" onClick={() => setShowForm(true)}>
+                                            Send your first request
+                                        </Button>
+                                    </div>
+                                )
+                            )}
+                        </div>
+                    </Col>
+                </Row>
             </div>
+
+            {/* View Friend Modal */}
+            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Friend Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedFriend ? (
+                        <div className="friend-detail-list">
+                            <div className="friend-detail-row">
+                                <span className="friend-detail-label">Username</span>
+                                <span className="friend-detail-value">{selectedFriend.username}</span>
+                            </div>
+                            <div className="friend-detail-row">
+                                <span className="friend-detail-label">First Name</span>
+                                <span className="friend-detail-value">{selectedFriend.first_name}</span>
+                            </div>
+                            <div className="friend-detail-row">
+                                <span className="friend-detail-label">Last Name</span>
+                                <span className="friend-detail-value">{selectedFriend.last_name}</span>
+                            </div>
+                            <div className="friend-detail-row">
+                                <span className="friend-detail-label">Email</span>
+                                <span className="friend-detail-value">{selectedFriend.email}</span>
+                            </div>
+                            <div className="friend-detail-row">
+                                <span className="friend-detail-label">Clubs</span>
+                                <span className="friend-detail-value">
+                                    {selectedFriend.clubs.length > 0 ? selectedFriend.clubs.join(", ") : "No clubs"}
+                                </span>
+                            </div>
+                        </div>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="outline-danger" onClick={() => handleUnfriend(selectedFriend.id)}>
+                        Unfriend
+                    </Button>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Add Friend Modal */}
             <Modal show={showForm} onHide={() => setShowForm(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Add a Friend</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Group className="mb-3">
+                            <Form.Label>Username</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Username"
+                                placeholder="Enter username..."
                                 value={friendUsername}
                                 onChange={(e) => setFriendUsername(e.target.value)}
-                                onSubmit={handleNewFriend}
+                                onKeyDown={(e) => e.key === 'Enter' && handleNewFriend()}
                             />
                         </Form.Group>
                     </Form>
                 </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowForm(false)}>Cancel</Button>
+                    <Button variant="danger" onClick={handleNewFriend}>Send Request</Button>
+                </Modal.Footer>
             </Modal>
         </GenLayout>
     );

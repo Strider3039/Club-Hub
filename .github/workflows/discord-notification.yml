@@ -30,11 +30,11 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           args: |
-            **Welcome back bitches!**
-            **Where did you do it:** ${{ github.ref_name }}
-            **This bitch did something:** ${{ env.AUTHOR }}  
-            **Audacity to say this:** ${{ env.MESSAGE }}  
-            **What have you done dumbass:** ${{ env.FILES }}  
-            **Let's see what this bullshit is:** [Click Here](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+            **Discord Commit**
+            **Location:** ${{ github.ref_name }}
+            **Author:** ${{ env.AUTHOR }}  
+            **Message:** ${{ env.MESSAGE }}  
+            **Changed Files:** ${{ env.FILES }}  
+            **View Commit:** [Click Here](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
