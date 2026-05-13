@@ -1,20 +1,19 @@
-# Step 1: Use the official Python image
 FROM python:3.10-slim
 
-# Step 2: Set working directory
+# Set working directory
 WORKDIR /app
 
-# Step 3: Copy requirements.txt
-COPY requirements.txt /app/
+# Add the working directory to the Python path
+ENV PYTHONPATH /app
 
-# Step 4: Install dependencies
+# Copy the requirements file from the backend folder
+COPY backend/requirements.txt /app/
+
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Step 5: Copy the rest of the backend code
+# Copy the rest of the project code
 COPY . /app/
 
-# Step 6: Expose port
-EXPOSE 8000
-
-# Step 7: Run Django development server
-CMD ["bash", "./start.sh"]
+# Use a shell command for variable interpolation in CMD
+CMD bash -c "gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT} --log-file -"
