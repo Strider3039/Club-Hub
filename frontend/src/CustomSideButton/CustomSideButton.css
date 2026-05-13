@@ -1,21 +1,27 @@
 .sideBarButton {
-    width: 250px;
+    min-width: 150px;
     height: 40px;
     margin: 0;
-    padding: 5px;
-    border: none;
+    padding: 0 14px;
+    border: 1px solid var(--border);
     text-align: center;
-    background-color: transparent;
-    border-radius: 5px;
+    background-color: var(--surface);
+    color: var(--text);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .sideBarButton:hover {
-    background-color: #e0e0e0;
+    background-color: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 .popover {
-    border-radius: 5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
 }
 
 .popover-trigger-wrapper {

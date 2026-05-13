@@ -114,57 +114,6 @@ body {
     border-radius: 2px;
 }
 
-/* ===== Sidebar ===== */
-.sidebar {
-    background: var(--surface);
-    min-height: 100vh;
-    padding: 0;
-}
-
-.sidebar-logo-wrap {
-    padding: 20px 16px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: center;
-}
-
-.sidebar-section {
-    padding: 16px;
-    border-bottom: 1px solid var(--border);
-}
-
-.sidebar-section-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    padding-left: 4px;
-}
-
-.sideBarButton {
-    width: 188px;
-    height: 40px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    text-align: left;
-    padding-left: 14px;
-    border: 1px solid transparent;
-    border-radius: var(--radius-sm);
-    background-color: transparent;
-    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
-    cursor: pointer;
-    margin-bottom: 4px;
-}
-
-.sideBarButton:hover {
-    background-color: var(--primary-light);
-    border-color: var(--primary-light);
-    color: var(--primary);
-}
-
 /* ===== Bootstrap overrides (uniform border tokens) ===== */
 .modal-content {
     border: 1px solid var(--border);
